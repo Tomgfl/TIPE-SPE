@@ -2,7 +2,8 @@ RAY MARCHING
 
 1) bien comprendre la méthode 
 2) complexité de trouver la disatnce avec un objet 3D (maths)
-3) Avantages / inconvenients (avec les autres methodes, ray-tracing ...)
-4) Coder la methode (sans doute en C)
-5) faire un lien avec le bruit de perlin
+3) Comprendre les Signed distance function (maths)
+4) Avantages / inconvenients (avec les autres methodes, ray-tracing ...)
+5) Coder la methode (sans doute en C)
+6) faire un lien avec le bruit de perlin
 
