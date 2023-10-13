@@ -1,0 +1,6 @@
+J. Han, H. Ki and K. Oh, "GPU Ray Marching for Real-Time Rendering of Participating Media," 2007 International Conference on Computational Science and its Applications (ICCSA 2007), Kuala Lampur, Malaysia, 2007, pp. 499-504, doi: 10.1109/ICCSA.2007.46.
+URL: https://ieeexplore-ieee-org.gorgone.univ-toulouse.fr/stamp/stamp.jsp?tp=&arnumber=4301187&isnumber=4301109
+
+T. Xu, X. Ren, J. Yang, B. Sheng and E. Wu, "Efficient Binocular Rendering of Volumetric Density Fields With Coupled Adaptive Cube-Map Ray Marching for Virtual Reality," in IEEE Transactions on Visualization and Computer Graphics, doi: 10.1109/TVCG.2023.3322416.
+URL: https://ieeexplore-ieee-org.gorgone.univ-toulouse.fr/stamp/stamp.jsp?tp=&arnumber=10273801&isnumber=4359476
+
