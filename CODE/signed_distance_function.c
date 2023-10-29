@@ -27,12 +27,20 @@ float SDF_tor(coord p, coord centre, float g_rayon, float p_rayon){
 
 
 float SDF_box(coord p, coord centre, float L, float l, float h){
-    float distanceToCenter = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y) + (p.z - centre.z)*(p.z - centre.z));
-    float x = MIN((fabs(p.x - (centre.x - (L/2)))), (fabs(p.x - (centre.x + (L/2)))));
-    float y = MIN((fabs(p.y - (centre.y - (l/2)))), (fabs(p.y - (centre.y + (l/2)))));
-    float z = MIN((fabs(p.z - (centre.z - (h/2)))), (fabs(p.z - (centre.z + (h/2)))));
-    float dist_max = sqrt(x*x + y*y + z*z);
-    return distanceToCenter - dist_max;
+    float dist;
+    float d[3];
+    d[0] = fabs(p.x - centre.x) - L/2;
+    d[1] = fabs(p.y - centre.y) - l/2;
+    d[2] = fabs(p.z - centre.z) - h/2;
+
+    float dist_int = fmax(fmax(d[0],d[1]),d[2]);
+    float dist_ext = sqrt(fmax(dist_int, 0.0));
+
+    if (dist_int < 0){
+        return dist_int;
+    }   else{
+        return dist_ext;
+    }
 }
 
 
@@ -48,7 +56,7 @@ float MIN_ALL_SDF(coord pts){
     coord R_1 = {0.0, 7.0, 1.0}; float r_1 = 1.0; // caracteristique d'une sphere
     coord R_2 = {1.5, 8.0, 0.5}; float r_2 = 0.5;
     coord R_3 = {-2.0, 9.0, 2.0}; float r_3 = 1.0;
-    coord C_1 = {1.0, 6.0, 3.0}; float L_1 = 2.0; float l_1 = 1.0; float h_1 = 0.5;
+    coord C_1 = {1.0, 6.0, 3.0}; float L_1 = 1.0; float l_1 = 1.0; float h_1 = 1.0;
     
 
     float sdf_1 = SDF_sphere(pts, R_1, r_1);
@@ -56,12 +64,11 @@ float MIN_ALL_SDF(coord pts){
     float sdf_3 = SDF_sphere(pts, R_3, r_3);
     float sdf_4 = SDF_box(pts, C_1, L_1, l_1, h_1);
     
-    
+  
     all_sdf[0] = sdf_1;
     all_sdf[1] = sdf_2;
     all_sdf[2] = sdf_3;
     all_sdf[3] = sdf_4;
-
 
     return min_lst(all_sdf, 4);
 }
