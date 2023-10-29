@@ -23,6 +23,15 @@ float SDF_tor(coord p, float g_rayon, float p_rayon){
 }
 
 
+float SDF_box(coord p, coord centre, float L, float l, float h){
+    float distX = min((p.x - (centre.x + (L/2))), (p.x - (centre.x - (L/2))));
+    float distY = min((p.y - (centre.y + (l/2))), (p.y - (centre.y - (l/2))));
+    float distZ = min((p.z - (centre.z + (h/2))), (p.z - (centre.z - (h/2))));
+    float dist = sqrt(distX*distX + distY*distY + distZ*distZ);
+    return dist;
+}
+
+
 
 
 

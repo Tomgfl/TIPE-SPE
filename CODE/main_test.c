@@ -72,10 +72,7 @@ color ray_marching(ray r){
         // actualisation du rayon
         position_actuelle.x = r.origine.x + r.direction.x * dist_tot;
         position_actuelle.y = r.origine.y + r.direction.y * dist_tot;
-        position_actuelle.z = r.origine.z + r.direction.z * dist_tot;  
-
-
-        
+        position_actuelle.z = r.origine.z + r.direction.z * dist_tot;      
     }
 
     // aucun objet atteint
