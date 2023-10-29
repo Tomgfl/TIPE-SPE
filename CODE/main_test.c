@@ -2,44 +2,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 #include "dessin_fct.h"
 #include "options.h"
 #include "signed_distance_function.h"
-
-
-
-// Renvoie le min d'une liste (pour les SDF) (ps : a mettre dans un autre fichier plus tard)
-float min_lst (float* lst, int n){
-    float fmin = lst[0];
-    for (int i = 1; i < n; i++){
-        if (lst[i] < fmin){
-            fmin = lst[i];
-        }
-    }
-    return fmin;
-}
-
-
-// renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
-float MIN_ALL_SDF(coord pts){
-    float all_sdf[2];
-
-    coord R_1 = {0.0, 7.0, 1.0}; float r_1 = 1.0; // caracteristique d'une sphere
-    coord R_2 = {1.5, 8.0, 0.5}; float r_2 = 0.5;
-    // coord R_3 = {1.5, 8.0, 0.5}; float r_3 = 0.5;
-
-    float sdf_1 = SDF_sphere(pts, R_1, r_1);
-    float sdf_2 = SDF_sphere(pts, R_2, r_2);
-    // float sdf_3 = SDF_sphere(pts, R_2, r_2);
-    
-    all_sdf[0] = sdf_1;
-    all_sdf[1] = sdf_2;
-
-    return min_lst(all_sdf, 2);
-}
-
-
+#include "vector.h"
+#include "utiles.h"
 
 
 
@@ -53,6 +22,17 @@ color c_bleu = {0,0,255};
 color c_vert = {0,255,0};
 color c_noir = {0,0,0};
 color c_blanc = {255,255,255};
+color c_gris = {63, 63, 63};
+
+// renvoie la lumiere avec le prod vect et la normale
+float light_diffuse(coord pts, coord source){
+    vector v_n = normalise_vecteur(vect_normal(pts));
+    float res = max(prod_scal(v_n, normalise_vecteur(get_vec_2_pts(pts,source))),0);
+    return res;
+}
+
+
+
 
 
 // renvoie la couleur d'un rayon avec le ray marching
@@ -60,13 +40,29 @@ color ray_marching(ray r){
     float dist_tot = 0.0;
     coord position_actuelle = r.origine;
 
+    coord Lumiere = {4.0, 7.0, 5.0}; // lumiere mis a la mano
+
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
         float dist = MIN_ALL_SDF(position_actuelle);
         dist_tot += dist;
 
         if (dist < DIST_MIN){ // Si on touche un objet
-            return c_vert;
+            // partie lumiere (formules comme ca sont moche, c'est a refaire)
+            float light;
+            float diffuse = light_diffuse(position_actuelle, Lumiere) *0.5;
+            float ambiante = 0.3;
+            // le 0.3, 0.7 et 50.0 sont mis de maniere random, c'est a ajuster
+
+            vector lum_direction = get_vec_2_pts(Lumiere,position_actuelle);
+            lum_direction.x *= -1.0; lum_direction.y *= -1.0; lum_direction.z *= -1.0;
+            // float specular = pow(max(prod_scal(lum_direction,vect_normal(position_actuelle)),0.0),1);
+
+            
+            light = diffuse + ambiante;
+
+            color res = {35.0 * light, 200.0 * light, 100.0*light};
+            return res;
         }
 
         if (dist_tot > MAX_TOTAL_LENGHT){ // Si on va trop loin
@@ -77,12 +73,14 @@ color ray_marching(ray r){
         position_actuelle.x = r.origine.x + r.direction.x * dist_tot;
         position_actuelle.y = r.origine.y + r.direction.y * dist_tot;
         position_actuelle.z = r.origine.z + r.direction.z * dist_tot;  
+
+
+        
     }
 
     // aucun objet atteint
-    return c_bleu;
+    return c_noir;
 }
-
 
 
 
@@ -119,6 +117,8 @@ int main(){
     coord B = {2.0, 3.0, 3.0};
     coord C = {2.0, 3.0, 0.0};
     coord D = {-2.0, 3.0, 0.0};
+
+    // coord Lumiere = {4.0, 7.0, 5.0};
 
     float dxe = 4.0/640.0;
     float dze = 3.0/480.0;

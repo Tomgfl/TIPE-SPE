@@ -8,7 +8,6 @@ x, y : coordonnes du pixel
 R,G,B : couleur du pixel
 size : taille du point */
 void draw_pixel(int x, int y, float R, float G, float B, float size){
-    
 
     glPointSize(size); 
     glBegin(GL_POINTS);

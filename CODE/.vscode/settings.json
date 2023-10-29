@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "signed_distance_function.h": "c",
+        "vector.h": "c"
+    }
+}
