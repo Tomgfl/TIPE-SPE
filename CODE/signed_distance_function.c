@@ -29,14 +29,14 @@ float SDF_tor(coord p, coord centre, float g_rayon, float p_rayon){
 float SDF_box(coord p, coord centre, float L, float l, float h){
     float dist;
     float d[3];
-    d[0] = fabs(p.x - centre.x) - L/2;
-    d[1] = fabs(p.y - centre.y) - l/2;
-    d[2] = fabs(p.z - centre.z) - h/2;
+    d[0] = fabs(p.x - centre.x) - L/2.0;
+    d[1] = fabs(p.y - centre.y) - l/2.0;
+    d[2] = fabs(p.z - centre.z) - h/2.0;
 
     float dist_int = fmax(fmax(d[0],d[1]),d[2]);
     float dist_ext = sqrt(fmax(dist_int, 0.0));
 
-    if (dist_int < 0){
+    if (dist_int > 0){
         return dist_int;
     }   else{
         return dist_ext;
