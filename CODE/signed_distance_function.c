@@ -4,6 +4,9 @@
 #include "vector.h"
 #include "utiles.h"
 
+#define MIN(i, j) (((i) < (j)) ? (i) : (j))
+#define MAX(i, j) (((i) > (j)) ? (i) : (j))
+
 
 
 
@@ -16,19 +19,20 @@ float SDF_sphere(coord pts, coord centre, float rayon){
 }
 
 
-float SDF_tor(coord p, float g_rayon, float p_rayon){
-    float distanceToCenter = sqrt(p.x * p.x + p.y * p.y);
+float SDF_tor(coord p, coord centre, float g_rayon, float p_rayon){
+    float distanceToCenter = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y));
     float sdf = sqrt(distanceToCenter * distanceToCenter + p.z * p.z) - g_rayon;
     return sdf - p_rayon;
 }
 
 
 float SDF_box(coord p, coord centre, float L, float l, float h){
-    float distX = min((p.x - (centre.x + (L/2))), (p.x - (centre.x - (L/2))));
-    float distY = min((p.y - (centre.y + (l/2))), (p.y - (centre.y - (l/2))));
-    float distZ = min((p.z - (centre.z + (h/2))), (p.z - (centre.z - (h/2))));
-    float dist = sqrt(distX*distX + distY*distY + distZ*distZ);
-    return dist;
+    float distanceToCenter = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y) + (p.z - centre.z)*(p.z - centre.z));
+    float x = MIN((fabs(p.x - (centre.x - (L/2)))), (fabs(p.x - (centre.x + (L/2)))));
+    float y = MIN((fabs(p.y - (centre.y - (l/2)))), (fabs(p.y - (centre.y + (l/2)))));
+    float z = MIN((fabs(p.z - (centre.z - (h/2)))), (fabs(p.z - (centre.z + (h/2)))));
+    float dist_max = sqrt(x*x + y*y + z*z);
+    return distanceToCenter - dist_max;
 }
 
 
@@ -39,22 +43,25 @@ float SDF_box(coord p, coord centre, float L, float l, float h){
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float MIN_ALL_SDF(coord pts){
-    float all_sdf[3];
+    float all_sdf[4];
 
-    coord R_1 = {0.0, 7.0, 1.0}; float r_1 = 1.0; // caracteristique d'une sphere
+   /* coord R_1 = {0.0, 7.0, 1.0}; float r_1 = 1.0; // caracteristique d'une sphere
     coord R_2 = {1.5, 8.0, 0.5}; float r_2 = 0.5;
     coord R_3 = {-2.0, 9.0, 2.0}; float r_3 = 1.0;
+   */ coord C_1 = {1.0, 6.0, 3.0}; float L_1 = 2.0; float l_1 = 1.0; float h_1 = 0.5;
     
 
-    float sdf_1 = SDF_sphere(pts, R_1, r_1);
+    /*float sdf_1 = SDF_sphere(pts, R_1, r_1);
     float sdf_2 = SDF_sphere(pts, R_2, r_2);
     float sdf_3 = SDF_sphere(pts, R_3, r_3);
+   */ float sdf_4 = SDF_box(pts, C_1, L_1, l_1, h_1);
     
     
-    all_sdf[0] = sdf_1;
+    /*all_sdf[0] = sdf_1;
     all_sdf[1] = sdf_2;
     all_sdf[2] = sdf_3;
+    all_sdf[3] = sdf_4;
+*/
 
-
-    return min_lst(all_sdf, 3);
+    return sdf_4;
 }
