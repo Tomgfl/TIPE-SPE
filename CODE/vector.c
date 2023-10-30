@@ -35,11 +35,11 @@ float prod_scal(vector v1, vector v2){
 
 
 // cree le vecteur entre 2 points
-vector get_vec_2_pts(coord p_1, coord p_2){
+vector get_vec_2_pts(coord p1, coord p2){
     vector vec;
-    vec.x = p_2.x - p_1.x;
-    vec.y = p_2.y - p_1.y;
-    vec.z = p_2.z - p_1.z;
+    vec.x = p2.x - p1.x;
+    vec.y = p2.y - p1.y;
+    vec.z = p2.z - p1.z;
     return vec;
 }
 
@@ -65,4 +65,11 @@ vector reflect (vector vi, vector vn){
     r.z = vi.z - 2.0*ps*vn.z;
 
     return r;
+}
+
+
+
+float dist_2_pts(coord p1, coord p2){
+
+    return sqrt( (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z) );
 }

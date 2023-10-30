@@ -23,6 +23,8 @@ color c_vert = {0,255,0};
 color c_noir = {0,0,0};
 color c_blanc = {255,255,255};
 color c_gris = {63, 63, 63};
+color c_fond = {3,27,73};
+
 
 // renvoie la lumiere avec le prod vect et la normale
 float light_diffuse(coord pts, coord source){
@@ -32,6 +34,54 @@ float light_diffuse(coord pts, coord source){
 }
 
 
+float all_light(coord pts, coord source){
+    float res = 0;
+    res += light_diffuse(pts, source);
+    res += 0.2; // lumiere ambiante
+
+    return res;
+}
+
+
+// fait un ray marching entre le point et la source de lumiere
+float shadow_1(coord pts, coord source){
+    vector direction = normalise_vecteur(get_vec_2_pts(pts, source));
+    coord position_actuelle = pts;
+
+    float dist_tot = 0.0;
+    position_actuelle.x = pts.x + direction.x * dist_tot;
+    position_actuelle.y = pts.y + direction.y * dist_tot;
+    position_actuelle.z = pts.z + direction.z * dist_tot;
+
+    for (int i = 0; i < MAX_RAY_STEPS/10; i++){ // on s'éloigne de la surface atteinte
+        dist_tot += MIN_ALL_SDF(position_actuelle);
+        position_actuelle.x = pts.x + direction.x * dist_tot;
+        position_actuelle.y = pts.y + direction.y * dist_tot;
+        position_actuelle.z = pts.z + direction.z * dist_tot;
+    }
+    
+
+    for (int i = 0; i < MAX_RAY_STEPS; i++){
+        
+        float dist = MIN_ALL_SDF(position_actuelle);
+        dist_tot += dist;
+
+        if (dist < DIST_MIN*0.01){
+            return 0.0;
+        }
+
+        if (dist_tot > MAX_TOTAL_LENGHT){ // Si on va trop loin
+            return 1.0;
+        }
+
+        position_actuelle.x = pts.x + direction.x * dist_tot;
+        position_actuelle.y = pts.y + direction.y * dist_tot;
+        position_actuelle.z = pts.z + direction.z * dist_tot;
+        
+    }
+
+    return 1.0;
+}
 
 
 
@@ -40,7 +90,7 @@ color ray_marching(ray r){
     float dist_tot = 0.0;
     coord position_actuelle = r.origine;
 
-    coord Lumiere = {4.0, 7.0, 5.0}; // lumiere mis a la mano
+    coord Lumiere = {4.0, 5.0, 5.0}; // lumiere mis a la mano
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
@@ -48,25 +98,18 @@ color ray_marching(ray r){
         dist_tot += dist;
 
         if (dist < DIST_MIN){ // Si on touche un objet
-            // partie lumiere (formules comme ca sont moche, c'est a refaire)
-            float light;
-            float diffuse = light_diffuse(position_actuelle, Lumiere) *0.5;
-            float ambiante = 0.3;
-            // le 0.3, 0.7 et 50.0 sont mis de maniere random, c'est a ajuster
 
-            vector lum_direction = get_vec_2_pts(Lumiere,position_actuelle);
-            lum_direction.x *= -1.0; lum_direction.y *= -1.0; lum_direction.z *= -1.0;
-            // float specular = pow(max(prod_scal(lum_direction,vect_normal(position_actuelle)),0.0),1);
+            float val_light = all_light(position_actuelle, Lumiere);
 
-            
-            light = diffuse + ambiante;
+            float val_shadow = shadow_1(position_actuelle, Lumiere);
+            // float val_shadow = 1;
 
-            color res = {35.0 * light, 200.0 * light, 100.0*light};
+            color res = {35.0*val_light*val_shadow, 200.0*val_light*val_shadow, 100.0*val_light*val_shadow};
             return res;
         }
 
         if (dist_tot > MAX_TOTAL_LENGHT){ // Si on va trop loin
-            return c_noir;
+            return c_fond;
         }
         
         // actualisation du rayon
@@ -76,11 +119,15 @@ color ray_marching(ray r){
     }
 
     // aucun objet atteint
-    return c_noir;
+    return c_fond;
 }
 
 
 
+struct screen_s{
+    
+};
+typedef struct screen_s screen; 
 
 
 
@@ -107,26 +154,26 @@ int main(){
 
 
     // cf voir geogebra
-    coord cam_c = {0.0, 0.0, 0.0};
-    vector cam_v = {0.0, 1.0, 0.0};
+    coord cam_c = {0.0, 0.0, 3.0};
+    //vector cam_v = {0.0, 1.0, 0.0};
 
-    coord A = {-2.0, 3.0, 3.0};
-    coord B = {2.0, 3.0, 3.0};
-    coord C = {2.0, 3.0, 0.0};
-    coord D = {-2.0, 3.0, 0.0};
-
+    // L'ecran est definie par 1 pts, une taille de base et un vecteur
+    coord A = {-2.0, 3.0, 4.0}; // coin en haut a gauche
+    float longueur_base = 4.0; // longueur de l'ecran
+    //coord B = {2.0, 3.0, 3.0};
+    vector dir_ecran = {0.0, 0.0, 1.0};
+    // coord C = {2.0, 3.0, 0.0};
+    // coord D = {-2.0, 3.0, 0.0};
     // coord Lumiere = {4.0, 7.0, 5.0};
-
-    float dxe = 4.0/640.0;
-    float dze = 3.0/480.0;
+    float de = longueur_base/WIDTH; // "taille du pixel"
 
     coord ecran[WIDTH][HEIGHT]; // coordonnes de chaque pixels de l'ecran
 
     for (int i = 0; i < WIDTH; i++){
         for (int j = 0; j < HEIGHT; j++){
-            ecran[i][j].x = -2.0 + dxe*i;
-            ecran[i][j].y = 3.0;
-            ecran[i][j].z = 3.0 - dze*j;
+            ecran[i][j].x = A.x+ de*i;
+            ecran[i][j].y = A.y;
+            ecran[i][j].z = A.z - de*j;
         }
     }
 
@@ -153,7 +200,9 @@ int main(){
         //     }  
         // }
 
-        
+        // z += 0.5;
+        // cam_c.z = z;
+        // cam_c.z += 0.1;
         color ecran_color[WIDTH][HEIGHT];
 
         // pour chaque pixel de l'ecran
