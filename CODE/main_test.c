@@ -37,13 +37,13 @@ float light_diffuse(coord pts, coord source){
 float all_light(coord pts, coord source){
     float res = 0;
     res += light_diffuse(pts, source);
-    res += 0.2; // lumiere ambiante
+    res += 0.3; // lumiere ambiante
 
     return res;
 }
 
 
-// fait un ray marching entre le point et la source de lumiere
+// fait un ray marching entre le point et la source de lumiere (pas le plus opti je pense)
 float shadow_1(coord pts, coord source){
     vector direction = normalise_vecteur(get_vec_2_pts(pts, source));
     coord position_actuelle = pts;
@@ -102,9 +102,11 @@ color ray_marching(ray r){
             float val_light = all_light(position_actuelle, Lumiere);
 
             float val_shadow = shadow_1(position_actuelle, Lumiere);
-            // float val_shadow = 1;
 
-            color res = {35.0*val_light*val_shadow, 200.0*val_light*val_shadow, 100.0*val_light*val_shadow};
+            // val_light = 1;
+            // val_shadow = 1;
+
+            color res = {150.0*val_light*val_shadow, 150.0*val_light*val_shadow, 15.0*val_light*val_shadow};
             return res;
         }
 
@@ -154,28 +156,55 @@ int main(){
 
 
     // cf voir geogebra
-    coord cam_c = {0.0, 0.0, 3.0};
+    ////coord cam_c = {0.0, 0.0, 2.0};
     //vector cam_v = {0.0, 1.0, 0.0};
 
     // L'ecran est definie par 1 pts, une taille de base et un vecteur
-    coord A = {-2.0, 3.0, 4.0}; // coin en haut a gauche
-    float longueur_base = 4.0; // longueur de l'ecran
+    ////coord A = {-2.0, 3.0, 4.0}; // coin en haut a gauche
+    ////float longueur_base = 4.0; // longueur de l'ecran
     //coord B = {2.0, 3.0, 3.0};
-    vector dir_ecran = {0.0, 0.0, 1.0};
+    ////vector dir_ecran = {0.0, 0.0, 1.0};
     // coord C = {2.0, 3.0, 0.0};
     // coord D = {-2.0, 3.0, 0.0};
     // coord Lumiere = {4.0, 7.0, 5.0};
-    float de = longueur_base/WIDTH; // "taille du pixel"
+    ////float de = longueur_base/WIDTH; // "taille du pixel"
 
-    coord ecran[WIDTH][HEIGHT]; // coordonnes de chaque pixels de l'ecran
+    // coord ecran[WIDTH][HEIGHT]; // coordonnes de chaque pixels de l'ecran
 
-    for (int i = 0; i < WIDTH; i++){
-        for (int j = 0; j < HEIGHT; j++){
-            ecran[i][j].x = A.x+ de*i;
-            ecran[i][j].y = A.y;
-            ecran[i][j].z = A.z - de*j;
-        }
-    }
+    // for (int i = 0; i < WIDTH; i++){
+    //     for (int j = 0; j < HEIGHT; j++){
+    //         ecran[i][j].x = A.x+ de*i;
+    //         ecran[i][j].y = A.y;
+    //         ecran[i][j].z = A.z - de*j;
+    //     }
+    // }
+
+    // ecran 3 devant camera (y)
+    // de longueur 6
+    // la cam est donc centrée sur l'écran
+
+
+    // --- V1 ---
+    coord cam_c = {0.1 ,-2 ,0.3};
+    float l_ecran = 6.0;
+    float de = l_ecran / WIDTH; 
+    // coord ecran[WIDTH][HEIGHT]; // coordonnes de chaque pixels de l'ecran
+    float screen_mid_x = l_ecran/2.0;
+    float screen_mid_z = (l_ecran*HEIGHT)/(2.0*WIDTH);
+    float screen_dist_y = 3.0;
+
+    // for (int i = 0; i < WIDTH; i++){
+    //     for (int j = 0; j < HEIGHT; j++){
+    //         ecran[i][j].x = cam_c.x - screen_mid_x + de*i;
+    //         ecran[i][j].y = cam_c.y + screen_dist_y;
+    //         ecran[i][j].z = cam_c.z + screen_mid_z - de*j;
+    //     }
+    // }
+    // --- V1 ---
+
+    // --- V2 --- pointeurs pour deplacer la cam facilement
+    coord* p_cam;
+    p_cam = &cam_c;
 
 
 
@@ -202,7 +231,9 @@ int main(){
 
         // z += 0.5;
         // cam_c.z = z;
-        // cam_c.z += 0.1;
+        // cam_c.x += -1;
+        // cam_c.y += -1;
+
         color ecran_color[WIDTH][HEIGHT];
 
         // pour chaque pixel de l'ecran
@@ -212,7 +243,8 @@ int main(){
                 // chaque rayon part de la camera en direction de chaque pixel(vect normaliser ie ||v|| = 1)
                 ray R;
                 R.origine = cam_c;
-                R.direction = normalise_vecteur(get_vec_2_pts(cam_c,ecran[i][j]));
+                // comme dans ecran mais calcul direct
+                R.direction = normalise_vecteur(get_vec_2_pts(cam_c,(coord){p_cam->x - screen_mid_x + de*i, p_cam->y + screen_dist_y, p_cam->z + screen_mid_z - de*j}));
                 
 
                 color C = ray_marching(R);
