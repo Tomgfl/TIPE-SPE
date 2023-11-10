@@ -119,7 +119,20 @@ float SDF_plan(coord p, vector n, float h){
 }
 
 
+// renvoie le produit entre la matrice de rotation Rx et le vec v
+coord rotation_x (coord v, float angle){// angle en rad
+    return (coord){v.x, v.y*cos(angle) - v.z*sin(angle), v.y*sin(angle) + v.z*cos(angle)};
+}
 
+// renvoie le produit entre la matrice de rotation Rx et le vec v
+coord rotation_y (coord v, float angle){// angle en rad
+    return (coord){v.x*cos(angle) + v.z*sin(angle), v.y, v.z*cos(angle) - v.x*sin(angle)};
+}
+
+// renvoie le produit entre la matrice de rotation Rx et le vec v
+coord rotation_z (coord v, float angle){// angle en rad
+    return (coord){};
+}
 
 
 
@@ -138,23 +151,27 @@ float MIN_ALL_SDF(coord pts){
     //coord C_1 = {-2.0, 7.0, 2.0}; float L_1 = 3.0; float l_1 = 1.0; float h_1 = 0.3;
     coord T_1 = {0.0, 9.0, 2.5}; float Rt = 3; float rt = 0.2;
     coord R_4 = {6, 10, 2};
+    coord R_5 = {-4, 6, 1};
     vector n = {0.0, 0.0, 1.0};
 
     //float sdf_1 = SDF_sphere(pts, R_1, r_1);
     //float sdf_2 = SDF_sphere(pts, R_2, r_2);
     float sdf_3 = SDF_sphere(pts, R_3, r_3);
     //float sdf_4 = SDF_box(pts, C_1, L_1, l_1, h_1);
-    float sdf_5 = SDF_Tor(pts, T_1, Rt, rt);    
+    float sdf_5 = SDF_Tor(rotation_y(pts,2*3.14), T_1, Rt, rt);    
     float sdf_6 = SDF_plan(pts, n, 0.0);
 
     float sdf_7 = SDF_box(pts, R_4, 2, 3, 1);
+
+    float sdf_8 = SDF_box(pts,R_5, 1, 1, 1);
     
-    float sdf_8 = mult_objects(pts);
-    all_sdf[0] = sdf_8;
+    // float sdf_8 = mult_objects(pts);
+    // all_sdf[0] = sdf_8;
     // all_sdf[0] = sdf_6;
-    all_sdf[1] = sdf_3;
-    all_sdf[2] = sdf_5;
-    all_sdf[3] = sdf_7;
+    all_sdf[0] = sdf_3;
+    all_sdf[1] = sdf_5;
+    all_sdf[2] = sdf_7;
+    all_sdf[3] = sdf_8;
 
     // all_sdf[0] = sdf_3;
     ////all_sdf[1] = sdf_5;

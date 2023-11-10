@@ -25,5 +25,9 @@ float SDF_Tor(coord p, coord centre, float R, float r);
 
 float MIN_ALL_SDF(coord pts);
 
+// operations
+
+
+
 
 #endif 
