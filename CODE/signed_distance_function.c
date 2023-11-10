@@ -28,7 +28,7 @@ float SDF_sphere(coord p, coord centre, float rayon){
 
 float mult_objects(coord pos) {
     // translate
-    float iTime = 1.0;
+    // float iTime = 1.0;
     
     // pos.x += 0.0;
     // pos.y += 0.0;
@@ -36,15 +36,15 @@ float mult_objects(coord pos) {
 
     coord modResult;
     // modResult.x = fmodf(pos.x, 2.0);
-    modResult.y = fmodf(pos.y, 1.0);
-    modResult.x = pos.x;
+    modResult.y = fmodf(pos.y, 2.0);
+    modResult.x = fmodf(pos.x, 2.0);
     // modResult.y = pos.y;
     // modResult.z = fmodf(pos.z, 2.0);
     modResult.z = pos.z;
 
     //float d1 = sqrt((modResult.x - 1.0) * (modResult.x - 1.0) + (modResult.y - 1.0) * (modResult.y - 1.0) + (modResult.z - 1.0) * (modResult.z - 1.0)) - 0.54321;
     // float d1 = SDF_box(modResult, (coord){1.0,1.0,1.0}, 0.5,0.5,0.5);
-    float d1 = SDF_sphere(modResult, (coord){0.0,0.0,-2}, 0.5);
+    float d1 = SDF_Tor(modResult, (coord){1.0,1.0,-1}, 0.5, 0.3);
     return d1;
 }
 
@@ -129,34 +129,45 @@ float SDF_plan(coord p, vector n, float h){
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float MIN_ALL_SDF(coord pts){
-    float all_sdf[1];
+    int nb = 4;
+    float all_sdf[nb];
 
     //coord R_1 = {0.0, 7.0, 1.0}; float r_1 = 1.0; // caracteristique d'une sphere
     //coord R_2 = {1.5, 8.0, 0.5}; float r_2 = 0.5;
-    coord R_3 = {0.0, 9.0, 2.0}; float r_3 = 1.5;
+    coord R_3 = {0.0, 9.0, 2.5}; float r_3 = 1.5;
     //coord C_1 = {-2.0, 7.0, 2.0}; float L_1 = 3.0; float l_1 = 1.0; float h_1 = 0.3;
-    coord T_1 = {0.0, 9.0, 2.0}; float Rt = 3; float rt = 0.2;
+    coord T_1 = {0.0, 9.0, 2.5}; float Rt = 3; float rt = 0.2;
+    coord R_4 = {6, 10, 2};
     vector n = {0.0, 0.0, 1.0};
 
     //float sdf_1 = SDF_sphere(pts, R_1, r_1);
     //float sdf_2 = SDF_sphere(pts, R_2, r_2);
     float sdf_3 = SDF_sphere(pts, R_3, r_3);
     //float sdf_4 = SDF_box(pts, C_1, L_1, l_1, h_1);
-    ////float sdf_5 = SDF_Tor(pts, T_1, Rt, rt);    
-    ////float sdf_6 = SDF_plan(pts, n, 0.0);
+    float sdf_5 = SDF_Tor(pts, T_1, Rt, rt);    
+    float sdf_6 = SDF_plan(pts, n, 0.0);
+
+    float sdf_7 = SDF_box(pts, R_4, 2, 3, 1);
     
+    float sdf_8 = mult_objects(pts);
+    all_sdf[0] = sdf_8;
+    // all_sdf[0] = sdf_6;
+    all_sdf[1] = sdf_3;
+    all_sdf[2] = sdf_5;
+    all_sdf[3] = sdf_7;
+
     // all_sdf[0] = sdf_3;
     ////all_sdf[1] = sdf_5;
     ////all_sdf[2] = sdf_6;
 
     // all_sdf[0] = mult_objects(pts);
     // all_sdf[0] = sdf_3;
-    all_sdf[0] = fractal_1_test(pts);
+    // all_sdf[0] = fractal_1_test(pts);
 
 
 
     //all_sdf[2] = sdf_3;
     //all_sdf[3] = sdf_4;*/
 
-    return min_lst(all_sdf, 1);
+    return min_lst(all_sdf, nb);
 }

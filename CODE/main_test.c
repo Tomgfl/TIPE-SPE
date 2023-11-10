@@ -121,7 +121,7 @@ color ray_marching(ray r){
     }
 
     // aucun objet atteint
-    return c_fond;
+    return c_rouge;
 }
 
 
@@ -185,7 +185,7 @@ int main(){
 
 
     // --- V1 ---
-    coord cam_c = {0.1 ,-2 ,0.3};
+    coord cam_c = {0 ,0 ,3};
     float l_ecran = 6.0;
     float de = l_ecran / WIDTH; 
     // coord ecran[WIDTH][HEIGHT]; // coordonnes de chaque pixels de l'ecran

@@ -21,6 +21,7 @@ typedef struct ray_s ray;
 float SDF_sphere(coord pts, coord centre, float rayon);
 float SDF_box(coord p, coord centre, float L, float l, float h);
 float SDF_plan(coord p, vector n, float h);
+float SDF_Tor(coord p, coord centre, float R, float r);
 
 float MIN_ALL_SDF(coord pts);
 
