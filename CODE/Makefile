@@ -1,2 +1,3 @@
 test_ecran : main_test.c dessin_fct.c dessin_fct.c options.h vector.c signed_distance_function.c utiles.c
 	gcc main_test.c dessin_fct.c vector.c utiles.c signed_distance_function.c -O3 -lm -lglfw -lGL -o test_ecran
+	

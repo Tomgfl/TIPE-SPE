@@ -185,7 +185,7 @@ int main(){
 
 
     // --- V1 ---
-    coord cam_c = {0 ,0 ,3};
+    coord cam_c = {0.5 ,-1 ,0};
     float l_ecran = 6.0;
     float de = l_ecran / WIDTH; 
     // coord ecran[WIDTH][HEIGHT]; // coordonnes de chaque pixels de l'ecran
@@ -216,7 +216,12 @@ int main(){
 
     /* Boucle principale */
     while (!glfwWindowShouldClose(window)){
+    // for (int i = 0; i < 50; i++){
+    
+        // pour empecher le pop up de pop
         
+
+
         // Affichage
         // display();
         glClear(GL_COLOR_BUFFER_BIT);
@@ -233,6 +238,7 @@ int main(){
         // cam_c.z = z;
         // cam_c.x += -1;
         // cam_c.y += -1;
+        
 
         color ecran_color[WIDTH][HEIGHT];
 
@@ -253,6 +259,9 @@ int main(){
 
             }
         }
+
+        // cam_c.x += 1;
+        // printf("ok");
         
         
 

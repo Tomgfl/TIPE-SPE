@@ -142,7 +142,7 @@ coord rotation_z (coord v, float angle){// angle en rad
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float MIN_ALL_SDF(coord pts){
-    int nb = 4;
+    int nb = 1;
     float all_sdf[nb];
 
     //coord R_1 = {0.0, 7.0, 1.0}; float r_1 = 1.0; // caracteristique d'une sphere
@@ -168,18 +168,18 @@ float MIN_ALL_SDF(coord pts){
     // float sdf_8 = mult_objects(pts);
     // all_sdf[0] = sdf_8;
     // all_sdf[0] = sdf_6;
-    all_sdf[0] = sdf_3;
-    all_sdf[1] = sdf_5;
-    all_sdf[2] = sdf_7;
-    all_sdf[3] = sdf_8;
+    //// all_sdf[0] = sdf_3;
+    //// all_sdf[1] = sdf_5;
+    //// all_sdf[2] = sdf_7;
+    //// all_sdf[3] = sdf_8;
 
     // all_sdf[0] = sdf_3;
-    ////all_sdf[1] = sdf_5;
-    ////all_sdf[2] = sdf_6;
+    // all_sdf[1] = sdf_5;
+    // all_sdf[2] = sdf_6;
 
     // all_sdf[0] = mult_objects(pts);
     // all_sdf[0] = sdf_3;
-    // all_sdf[0] = fractal_1_test(pts);
+    all_sdf[0] = fractal_1_test(rotation_x(pts, 3.14/7.0));
 
 
 
