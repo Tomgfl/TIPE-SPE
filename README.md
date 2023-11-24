@@ -15,6 +15,7 @@ A faire :
     - Rotations
     - SDF (cylindre, pyramide, lapin ...)
     - plusieurs sources de lumieres (avec des couleurs) ?
+    - Nurbs
     
   Modifs : 
   
