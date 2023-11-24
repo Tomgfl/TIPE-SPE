@@ -22,5 +22,3 @@ void draw_pixel(int x, int y, float R, float G, float B, float size){
     glVertex2f(n_x, n_y);
     glEnd();
 }
-
-

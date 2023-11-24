@@ -126,17 +126,28 @@ color ray_marching(ray r){
 
 
 
-struct screen_s{
-    
+
+
+// Tout ce qui concerne la camera et l'ecran
+struct camera_s{
+    coord position_c;   // Position de la camera
+    vector dir_ecran_c; // Direction de la camera
+    vector up_c;        // Vecteur representent le haut de la camera
+
+    float size_L_e;     // Longueur de l'ecran
+    float dist_screen;  // Distance de la camera a l'ecran
+
+    float size_l_e;     // Largeur de l'ecran (a calculer)
+    vector orthcam;     // vecteur orthogonal a up et dir (a calculer)
+    float de;           // Taille d'un pixel de l'ecran (a calculer)
+    vector vLde;        // Vecteur AB de taille de (a calculer)
+    vector vlde;        // Vecteur AD de taille de (a calculer)
+    coord A;            // Coin haut gauche de l'ecran (a calculer)
 };
-typedef struct screen_s screen; 
+typedef struct camera_s camera;
 
 
 
-void display(){
-    // utile ???
-    glClear(GL_COLOR_BUFFER_BIT);  
-}
 
 
 int main(){
@@ -184,27 +195,52 @@ int main(){
     // la cam est donc centrée sur l'écran
 
 
-    // --- V1 ---
-    coord cam_c = {0.5 ,-1 ,0};
-    float l_ecran = 6.0;
-    float de = l_ecran / WIDTH; 
-    // coord ecran[WIDTH][HEIGHT]; // coordonnes de chaque pixels de l'ecran
-    float screen_mid_x = l_ecran/2.0;
-    float screen_mid_z = (l_ecran*HEIGHT)/(2.0*WIDTH);
-    float screen_dist_y = 3.0;
+    // // --- V1 ---
+    // coord cam_c = {0.5 ,-1 ,0};
+    // float l_ecran = 6.0;
+    // float de = l_ecran / WIDTH; 
+    // // coord ecran[WIDTH][HEIGHT]; // coordonnes de chaque pixels de l'ecran
+    // float screen_mid_x = l_ecran/2.0;
+    // float screen_mid_z = (l_ecran*HEIGHT)/(2.0*WIDTH);
+    // float screen_dist_y = 3.0;
 
-    // for (int i = 0; i < WIDTH; i++){
-    //     for (int j = 0; j < HEIGHT; j++){
-    //         ecran[i][j].x = cam_c.x - screen_mid_x + de*i;
-    //         ecran[i][j].y = cam_c.y + screen_dist_y;
-    //         ecran[i][j].z = cam_c.z + screen_mid_z - de*j;
-    //     }
-    // }
-    // --- V1 ---
+    // // for (int i = 0; i < WIDTH; i++){
+    // //     for (int j = 0; j < HEIGHT; j++){
+    // //         ecran[i][j].x = cam_c.x - screen_mid_x + de*i;
+    // //         ecran[i][j].y = cam_c.y + screen_dist_y;
+    // //         ecran[i][j].z = cam_c.z + screen_mid_z - de*j;
+    // //     }
+    // // }
+    // // --- V1 ---
 
-    // --- V2 --- pointeurs pour deplacer la cam facilement
-    coord* p_cam;
-    p_cam = &cam_c;
+    // // --- V2 --- pointeurs pour deplacer la cam facilement
+    // coord* p_cam;
+    // p_cam = &cam_c;
+
+    // --- V3 --- //
+    camera CAMERA;
+    CAMERA.size_L_e = 6.0;
+    CAMERA.dir_ecran_c = normalise_vecteur((vector){0,1,0});
+    CAMERA.up_c = normalise_vecteur((vector){0,0,1});
+    CAMERA.position_c = (coord){0.5,-1,0};
+    CAMERA.dist_screen = 3.0;
+
+    CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
+    CAMERA.de = CAMERA.size_L_e / WIDTH;
+    CAMERA.size_l_e = HEIGHT*CAMERA.de;
+    CAMERA.A = (coord){CAMERA.position_c.x + CAMERA.dist_screen*CAMERA.dir_ecran_c.x + CAMERA.size_l_e/2.0*CAMERA.up_c.x + CAMERA.size_L_e/2.0*CAMERA.orthcam.x,
+               CAMERA.position_c.y + CAMERA.dist_screen*CAMERA.dir_ecran_c.y + CAMERA.size_l_e/2.0*CAMERA.up_c.y + CAMERA.size_L_e/2.0*CAMERA.orthcam.y,
+               CAMERA.position_c.z + CAMERA.dist_screen*CAMERA.dir_ecran_c.z + CAMERA.size_l_e/2.0*CAMERA.up_c.z + CAMERA.size_L_e/2.0*CAMERA.orthcam.z};
+
+    CAMERA.vlde = (vector){-CAMERA.de*CAMERA.up_c.x,
+                           -CAMERA.de*CAMERA.up_c.y,
+                           -CAMERA.de*CAMERA.up_c.z};
+
+    CAMERA.vLde = (vector){-CAMERA.de*CAMERA.orthcam.x,
+                           -CAMERA.de*CAMERA.orthcam.y,
+                           -CAMERA.de*CAMERA.orthcam.z};
+
+
 
 
 
@@ -248,10 +284,13 @@ int main(){
 
                 // chaque rayon part de la camera en direction de chaque pixel(vect normaliser ie ||v|| = 1)
                 ray R;
-                R.origine = cam_c;
-                // comme dans ecran mais calcul direct
-                R.direction = normalise_vecteur(get_vec_2_pts(cam_c,(coord){p_cam->x - screen_mid_x + de*i, p_cam->y + screen_dist_y, p_cam->z + screen_mid_z - de*j}));
-                
+                R.origine = CAMERA.position_c;
+                // comme dans ecran mais calcul direct ie calcule du vecteur de la cam vers chaque pixels
+                //R.direction = normalise_vecteur(get_vec_2_pts(cam_c,(coord){p_cam->x - screen_mid_x + de*i, p_cam->y + screen_dist_y, p_cam->z + screen_mid_z - de*j}));
+                R.direction = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
+                    (coord){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
+                            CAMERA.A.y + i*CAMERA.vLde.y + j*CAMERA.vlde.y,
+                            CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
 
                 color C = ray_marching(R);
                 draw_pixel(i, j, C.r, C.g, C.b, 1); // affiche le pixel
