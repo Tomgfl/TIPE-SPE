@@ -11,19 +11,49 @@
 
 
 
+// FONCTIONS DE SDF
 
-
-
-// float SDF_sphere(coord p, coord centre, float rayon){
-//     //printf("%f\n",fmodf(p.x,1.0));
-//     float distance = sqrt( (fmodf(p.x,1.0) - centre.x)*(fmodf(p.x,1.0) - centre.x) + (fmodf(p.y,1.0) - centre.y)*(fmodf(p.y,1.0) - centre.y) + (fmodf(p.z,1.0) - centre.z)*(fmodf(p.z,1.0) - centre.z) );
-//     return distance - rayon;
-// }
-
+// Fonction de SDF d'une sphère
 float SDF_sphere(coord p, coord centre, float rayon){
     float distance = sqrt( (p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y) + (p.z - centre.z)*(p.z - centre.z) );
     return distance - rayon;
 }
+
+
+// Fonction de SDF d'un Tor
+float SDF_Tor(coord p, coord centre, float R, float r) {
+    float distance_xy = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - R;
+    return sqrt(distance_xy*distance_xy + (p.z - centre.z)*(p.z - centre.z)) - r;
+}
+
+
+// Fonction de SDF d'une boite (parralépipède rectangle)
+float SDF_box(coord p, coord centre, float L, float l, float h){
+    float dist;
+    float d[3];
+    d[0] = fabs(p.x - centre.x) - L/2.0;
+    d[1] = fabs(p.y - centre.y) - l/2.0;
+    d[2] = fabs(p.z - centre.z) - h/2.0;
+
+    float dist_int = fmax(fmax(d[0],d[1]),d[2]);
+    float dist_ext = sqrt(fmax(dist_int, 0.0));
+
+    if (dist_int > 0){
+        return dist_int;
+    }   else{
+        return dist_ext;
+    }
+}
+
+
+// SDF du plan horizontal (sol)
+float SDF_plan(coord p, vector n, float h){
+    vector v = {p.x, p.y, p.z};
+    return prod_scal(v,n) + h;
+}
+
+
+
 
 
 float mult_objects(coord pos) {
@@ -89,34 +119,7 @@ float fractal_1_test(coord z) {
 
 
 
-float SDF_Tor(coord p, coord centre, float R, float r) {
-    float distance_xy = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - R;
-    return sqrt(distance_xy*distance_xy + (p.z - centre.z)*(p.z - centre.z)) - r;
-}
 
-
-float SDF_box(coord p, coord centre, float L, float l, float h){
-    float dist;
-    float d[3];
-    d[0] = fabs(p.x - centre.x) - L/2.0;
-    d[1] = fabs(p.y - centre.y) - l/2.0;
-    d[2] = fabs(p.z - centre.z) - h/2.0;
-
-    float dist_int = fmax(fmax(d[0],d[1]),d[2]);
-    float dist_ext = sqrt(fmax(dist_int, 0.0));
-
-    if (dist_int > 0){
-        return dist_int;
-    }   else{
-        return dist_ext;
-    }
-}
-
-
-float SDF_plan(coord p, vector n, float h){
-    vector v = {p.x, p.y, p.z};
-    return prod_scal(v,n) + h;
-}
 
 
 // renvoie le produit entre la matrice de rotation Rx et le vec v
