@@ -10,7 +10,6 @@ A faire :
     
   Ajouts :
 
-    - Rotation de la caméra
     - Operations (union, intersectio, min, max, smooth, translation)
     - SDF (cylindre, pyramide, lapin ...)
     - plusieurs sources de lumieres (avec des couleurs) ?
