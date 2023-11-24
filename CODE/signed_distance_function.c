@@ -123,18 +123,18 @@ float fractal_1_test(coord z) {
 
 
 // renvoie le produit entre la matrice de rotation Rx et le vec v
-coord rotation_x (coord v, float angle){// angle en rad
-    return (coord){v.x, v.y*cos(angle) - v.z*sin(angle), v.y*sin(angle) + v.z*cos(angle)};
+coord rotation_x (coord v, float angle){// angle en degres
+    return (coord){v.x, v.y*cos(angle*3.14/180) - v.z*sin(angle*3.14/180), v.y*sin(angle*3.14/180) + v.z*cos(angle*3.14/180)};
 }
 
 // renvoie le produit entre la matrice de rotation Rx et le vec v
-coord rotation_y (coord v, float angle){// angle en rad
-    return (coord){v.x*cos(angle) + v.z*sin(angle), v.y, v.z*cos(angle) - v.x*sin(angle)};
+coord rotation_y (coord v, float angle){// angle en degres
+    return (coord){v.x*cos(angle*3.14/180) + v.z*sin(angle*3.14/180), v.y, v.z*cos(angle*3.14/180) - v.x*sin(angle*3.14/180)};
 }
 
 // renvoie le produit entre la matrice de rotation Rx et le vec v
-coord rotation_z (coord v, float angle){// angle en rad
-    return (coord){};
+coord rotation_z (coord v, float angle){// angle en degres
+    return (coord){v.x*cos(angle*3.14/180) - v.y*sin(angle*3.14/180), v.x*sin(angle*3.14/180) + v.y*cos(angle*3.14/180), v.z};
 }
 
 
