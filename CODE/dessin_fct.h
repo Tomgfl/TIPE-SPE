@@ -2,7 +2,8 @@
 #define DESSIN_FCT_H
 
 #include <GLFW/glfw3.h>
+#include "light.h"
 
-void draw_pixel(int x, int y, float R, float G, float B, float size);
+void draw_pixel(int x, int y, color C, float size);
 
 #endif 

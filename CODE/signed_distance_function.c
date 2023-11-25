@@ -11,7 +11,7 @@
 
 
 
-// FONCTIONS DE SDF
+// --- FONCTIONS DE SDF --- //
 
 // Fonction de SDF d'une sphère
 float SDF_sphere(coord p, coord centre, float rayon){
@@ -55,7 +55,7 @@ float SDF_plan(coord p, vector n, float h){
 
 
 
-
+// --- TESTS --- //
 float mult_objects(coord pos) {
     // translate
     // float iTime = 1.0;
@@ -121,7 +121,7 @@ float fractal_1_test(coord z) {
 
 
 
-
+// --- ROTATIONS --- //
 // renvoie le produit entre la matrice de rotation Rx et le vec v
 coord rotation_x (coord v, float angle){// angle en degres
     return (coord){v.x, v.y*cos(angle*3.14/180) - v.z*sin(angle*3.14/180), v.y*sin(angle*3.14/180) + v.z*cos(angle*3.14/180)};
@@ -141,11 +141,17 @@ coord rotation_z (coord v, float angle){// angle en degres
 
 
 
+
+
+
+
+
+
 // --- SCENE --- //
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float MIN_ALL_SDF(coord pts){
-    int nb = 1;
+    int nb = 2;
     float all_sdf[nb];
 
     //coord R_1 = {0.0, 7.0, 1.0}; float r_1 = 1.0; // caracteristique d'une sphere
@@ -172,7 +178,7 @@ float MIN_ALL_SDF(coord pts){
     // all_sdf[0] = sdf_8;
     // all_sdf[0] = sdf_6;
     //// all_sdf[0] = sdf_3;
-    //// all_sdf[1] = sdf_5;
+    all_sdf[1] = sdf_5;
     //// all_sdf[2] = sdf_7;
     //// all_sdf[3] = sdf_8;
 
@@ -181,8 +187,8 @@ float MIN_ALL_SDF(coord pts){
     // all_sdf[2] = sdf_6;
 
     // all_sdf[0] = mult_objects(pts);
-    // all_sdf[0] = sdf_3;
-    all_sdf[0] = fractal_1_test(rotation_x(pts, 3.14/7.0));
+    all_sdf[0] = sdf_3;
+    // all_sdf[0] = fractal_1_test(rotation_x(pts, 3.14/7.0));
 
 
 
