@@ -27,7 +27,7 @@ color ray_marching(ray r){
     float dist_tot = 0.0;
     coord position_actuelle = r.origine;
 
-    coord Lumiere = {4.0, 5.0, 5.0}; // lumiere mis a la mano
+    coord Lumiere = {4.0, 5.0, 10.0}; // lumiere mis a la mano
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
@@ -79,12 +79,9 @@ int main(){
     CAMERA.size_L_e = 6.0;
     CAMERA.dir_ecran_c = (vector){0,1,0};
 
-    
-
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (coord){0.5,-1,0};
+    CAMERA.position_c = (coord){0,-10,6};
     CAMERA.dist_screen = 3.0;
-
 
     CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
     CAMERA.de = CAMERA.size_L_e / WIDTH;
