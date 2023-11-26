@@ -27,6 +27,30 @@ float SDF_Tor(coord p, coord centre, float R, float r) {
 }
 
 
+// SDF d'un cylindre
+float SDF_cylindre(coord p, coord centre, float H, float r){
+    
+    float baseCenterZ = centre.z - H / 2.0;
+
+    // Calcul de la distance du point au plan des bases du cylindre
+    double distToBase = fabs(p.z - baseCenterZ) - H/2.0;
+
+    // Calcul des distances dans le plan horizontal (sans tenir compte de la hauteur)
+    double distXY = sqrt(pow(p.x - centre.x, 2) + pow(p.y - centre.y, 2)) - r;
+
+    // Vérifier si le point est dans le cylindre
+    if ((distToBase <= 0) && (distXY <= 0)) {
+        // À l'intérieur du cylindre
+        return -MAX(distToBase, distXY);
+    } else if ((distToBase <= 0) || (distXY <= 0)){
+        // À l'extérieur du cylindre
+        return MAX(distToBase, distXY);
+    }   else {
+        return sqrt(distToBase * distToBase + distXY * distXY);
+    }
+}
+
+
 // Fonction de SDF d'une boite (parralépipède rectangle)
 float SDF_box(coord p, coord centre, float L, float l, float h){
     float dist;
@@ -152,7 +176,7 @@ coord rotation_z (coord v, float angle){// angle en degres
 
 // --- SCENE #1 --- // Tous les objets
 float scene_1(coord pts){
-    int nb = 4;
+    int nb = 5;
     float all_sdf[nb];
 
     vector n_plan = {0, 0, 1};
@@ -161,17 +185,21 @@ float scene_1(coord pts){
     coord C_1 = {-10,10,0};
     float sdf_box = SDF_box(pts, C_1, 3,3,3);
 
-    coord C_2 = {0,10,0};
+    coord C_2 = {10,10,0};
     float sdf_sphere = SDF_sphere(pts, C_2, 3);
 
-    coord C_3 = {10,10,0};
+    coord C_3 = {-10,10,10};
     float sdf_tor = SDF_Tor(pts, C_3, 2, 1);
+
+    coord C_4 = {0,10,0};
+    float sdf_cylindre = SDF_cylindre(pts, C_4, 6, 1);
 
 
     all_sdf[0] = sdf_plan;
     all_sdf[1] = sdf_box;
     all_sdf[2] = sdf_sphere;
     all_sdf[3] = sdf_tor;
+    all_sdf[4] = sdf_cylindre;
 
     return min_lst(all_sdf, nb);
 }
