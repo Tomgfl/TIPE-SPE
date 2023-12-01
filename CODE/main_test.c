@@ -10,6 +10,9 @@
 #include "vector.h"
 #include "utiles.h"
 #include "light.h"
+#include "scene.h"
+
+float time_scene = 0;
 
 
 color c_rouge = {255,0,0,1.0};
@@ -31,7 +34,7 @@ color ray_marching(ray r){
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
-        float dist = MIN_ALL_SDF(position_actuelle);
+        float dist = SCENE_PRINCIPAL(position_actuelle);
         dist_tot += dist;
 
         if (dist < DIST_MIN){ // Si on touche un objet
@@ -108,7 +111,8 @@ int main(){
         glClear(GL_COLOR_BUFFER_BIT);
 
 
-        // color ecran_color[WIDTH][HEIGHT];
+        
+        time_scene += 10.0;
 
         // pour chaque pixel de l'ecran
         for (int i = 0; i < WIDTH; i++){

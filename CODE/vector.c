@@ -1,15 +1,19 @@
 #include "vector.h"
 #include "options.h"
 #include "signed_distance_function.h"
+#include "scene.h"
 #include <math.h>
+
+
+
 
 // renvoie le vecteur normal a une surface (en un point proche d'une surface) a l'aide du gradient
 vector vect_normal(coord pts){
-    float dist = MIN_ALL_SDF(pts);
+    float dist = SCENE_PRINCIPAL(pts);
 
-    float grad_x = MIN_ALL_SDF((coord){pts.x + EPSILON, pts.y, pts.z}) - dist;
-    float grad_y = MIN_ALL_SDF((coord){pts.x, pts.y + EPSILON, pts.z}) - dist;
-    float grad_z = MIN_ALL_SDF((coord){pts.x, pts.y, pts.z + EPSILON}) - dist;
+    float grad_x = SCENE_PRINCIPAL((coord){pts.x + EPSILON, pts.y, pts.z}) - dist;
+    float grad_y = SCENE_PRINCIPAL((coord){pts.x, pts.y + EPSILON, pts.z}) - dist;
+    float grad_z = SCENE_PRINCIPAL((coord){pts.x, pts.y, pts.z + EPSILON}) - dist;
 
     vector v = {grad_x, grad_y, grad_z};
     return v;

@@ -2,6 +2,7 @@
 #include "options.h"
 #include "utiles.h"
 #include "signed_distance_function.h"
+#include "scene.h"
 
 
 
@@ -39,7 +40,7 @@ float shadow_1(coord pts, coord source){
     position_actuelle.z = pts.z + direction.z * dist_tot;
 
     for (int i = 0; i < MAX_RAY_STEPS/10; i++){ // on s'éloigne de la surface atteinte
-        dist_tot += MIN_ALL_SDF(position_actuelle);
+        dist_tot += SCENE_PRINCIPAL(position_actuelle);
         position_actuelle.x = pts.x + direction.x * dist_tot;
         position_actuelle.y = pts.y + direction.y * dist_tot;
         position_actuelle.z = pts.z + direction.z * dist_tot;
@@ -48,7 +49,7 @@ float shadow_1(coord pts, coord source){
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
-        float dist = MIN_ALL_SDF(position_actuelle);
+        float dist = SCENE_PRINCIPAL(position_actuelle);
         dist_tot += dist;
 
         if (dist < DIST_MIN*0.01){

@@ -3,6 +3,9 @@
 
 #include "vector.h"
 
+// Variable globale du temps de la scene
+
+
 // taille de l'ecran
 #define WIDTH 640
 #define HEIGHT 480
