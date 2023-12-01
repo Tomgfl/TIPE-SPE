@@ -11,9 +11,10 @@ A faire :
   Ajouts :
 
     - Operations (union, intersectio, min, max, smooth, translation)
-    - SDF (cylindre, pyramide, lapin ...)
+    - SDF (pyramide, triangle, cone,pyramide base n, lapin ...)
     - plusieurs sources de lumieres (avec des couleurs) ?
     - Nurbs
+    - fichier de test (calcules de temps pour les optimisations)
     
   Modifs : 
   
