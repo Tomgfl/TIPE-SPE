@@ -42,6 +42,4 @@ float SmoothSubstractSDF(float d1, float d2, float k);
 
 
 
-
-
 #endif 

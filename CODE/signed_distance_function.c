@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "signed_distance_function.h"
 #include "vector.h"
@@ -209,22 +210,21 @@ float SubstractSDF (float d1, float d2){
     return MAX(d1, -d2); 
 }
 
-
 // -- SMOOTH -- //
 // Union Smooth
 float SmoothUnionSDF(float d1, float d2, float k){
     float h = max(k-abs(d1-d2),0.0);
-    return min(d1, d2) - h*h*0.25/k;
+    return (min(d1, d2) - h*h*0.25/k);
 }
 
 // Intersection Smooth 
 float SmoothIntersectSDF(float d1, float d2, float k){
-    return -opSmoothUnion(-d1,-d2,k);
+    return -SmoothUnionSDF(-d1,-d2,k);
 }
 
 // Soustraction Smooth
 float SmoothSubstractSDF(float d1, float d2, float k){
-    return -opSmoothUnion(d1,-d2,k);
+    return -SmoothUnionSDF(-d1,d2,k);
 }
 
 
