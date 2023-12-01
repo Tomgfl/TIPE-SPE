@@ -192,7 +192,23 @@ coord rotation_z (coord v, float angle){// angle en degres
 
 
 
+// --- OPERATIONS --- //
+// Union de 2 formes
+float UnionSDF (float d1, float d2){
+    return MIN(d1,d2);
+}
 
+
+// Intersection de 2 formes
+float IntersectSDF (float d1, float d2){
+    return MAX(d1,d2);
+}
+
+
+// Soustraction : On enlève le forme 2 de la forme 1
+float SubstractSDF (float d1, float d2){
+    return MAX(d1, -d2); 
+}
 
 
 
