@@ -31,23 +31,52 @@ float SDF_Tor(coord p, coord centre, float R, float r) {
 float SDF_cylindre(coord p, coord centre, float H, float r){
     
     float baseCenterZ = centre.z - H / 2.0;
+    float distToBase = fabs(p.z - baseCenterZ) - H/2.0;                         // Distance face haute/basse
 
-    // Calcul de la distance du point au plan des bases du cylindre
-    double distToBase = fabs(p.z - baseCenterZ) - H/2.0;
+    float distXY = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - r;   // Distance latérale
 
-    // Calcul des distances dans le plan horizontal (sans tenir compte de la hauteur)
-    double distXY = sqrt(pow(p.x - centre.x, 2) + pow(p.y - centre.y, 2)) - r;
-
-    // Vérifier si le point est dans le cylindre
-    if ((distToBase <= 0) && (distXY <= 0)) {
-        // À l'intérieur du cylindre
-        return -MAX(distToBase, distXY);
-    } else if ((distToBase <= 0) || (distXY <= 0)){
-        // À l'extérieur du cylindre
+    if ((distToBase <= 0) && (distXY <= 0)) {           // Intérieur
+        return -MAX(distToBase, distXY);    
+    } else if ((distToBase <= 0) || (distXY <= 0)){     // Extérieur (dessus/côté)
         return MAX(distToBase, distXY);
-    }   else {
+    }   else {                                          // Extérieur (diagonale)
         return sqrt(distToBase * distToBase + distXY * distXY);
     }
+}
+
+
+// SDF d'un cône
+float SDF_Cone(coord p, coord centre, float H, float r){    // Centre du cylindre, rayon r de la base, hauteur H du cylindre
+    
+    float baseCenterZ = centre.z - H / 2.0;
+    float distToBase = fabs(p.z - baseCenterZ) - H/2.0;                         // Distance face haute/basse
+
+    float distXY = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - (r/2)*((H/2 - p.z + centre.z)/H);   // Distance latérale
+
+    if ((distToBase <= 0) && (distXY <= 0)) {           // Intérieur
+        return -MAX(distToBase, distXY);    
+    } else if ((distToBase <= 0) || (distXY <= 0)){     // Extérieur (dessus/côté)
+        return MAX(distToBase, distXY);
+    }   else {                                          // Extérieur (diagonale)
+        return sqrt(distToBase * distToBase + distXY * distXY);
+    }
+}
+
+
+
+// SDF d'une pyramide (base carrée) selon le centre de sa base
+float SDF_Pyramide(coord p, coord centre, float H, float c){
+
+    float distToBase;
+    if (p.z > centre.z + H){
+        distToBase = p.z - centre.z + H;
+    }   else{
+        distToBase = centre.z - p.z;
+    }
+
+    float distTo1, distTo2, distTo3, distTo4;
+
+    return 0;
 }
 
 
@@ -176,7 +205,7 @@ coord rotation_z (coord v, float angle){// angle en degres
 
 // --- SCENE #1 --- // Tous les objets
 float scene_1(coord pts){
-    int nb = 5;
+    int nb = 6;
     float all_sdf[nb];
 
     vector n_plan = {0, 0, 1};
@@ -191,8 +220,11 @@ float scene_1(coord pts){
     coord C_3 = {-10,10,10};
     float sdf_tor = SDF_Tor(pts, C_3, 2, 1);
 
-    coord C_4 = {0,10,0};
+    coord C_4 = {0,10,10};
     float sdf_cylindre = SDF_cylindre(pts, C_4, 6, 1);
+
+    coord C_5 = {0,10,0};
+    float sdf_cone = SDF_Cone(pts, C_5, 6, 2);
 
 
     all_sdf[0] = sdf_plan;
@@ -200,6 +232,7 @@ float scene_1(coord pts){
     all_sdf[2] = sdf_sphere;
     all_sdf[3] = sdf_tor;
     all_sdf[4] = sdf_cylindre;
+    all_sdf[5] = sdf_cone;
 
     return min_lst(all_sdf, nb);
 }
