@@ -32,9 +32,14 @@ coord rotation_y(coord v, float angle);
 coord rotation_z(coord v, float angle);
 
 // Operations
-float UnionSDF (float d1, float d2);
-float IntersectSDF (float d1, float d2);
-float SubstractSDF (float d1, float d2);
+float UnionSDF(float d1, float d2);
+float IntersectSDF(float d1, float d2);
+float SubstractSDF(float d1, float d2);
+// Smooth
+float SmoothUnionSDF(float d1, float d2, float k);
+float SmoothIntersectSDF(float d1, float d2, float k);
+float SmoothSubstractSDF(float d1, float d2, float k);
+
 
 
 

@@ -192,23 +192,41 @@ coord rotation_z (coord v, float angle){// angle en degres
 
 
 
+
 // --- OPERATIONS --- //
 // Union de 2 formes
 float UnionSDF (float d1, float d2){
     return MIN(d1,d2);
 }
 
-
 // Intersection de 2 formes
 float IntersectSDF (float d1, float d2){
     return MAX(d1,d2);
 }
 
-
 // Soustraction : On enlève le forme 2 de la forme 1
 float SubstractSDF (float d1, float d2){
     return MAX(d1, -d2); 
 }
+
+
+// -- SMOOTH -- //
+// Union Smooth
+float SmoothUnionSDF(float d1, float d2, float k){
+    float h = max(k-abs(d1-d2),0.0);
+    return min(d1, d2) - h*h*0.25/k;
+}
+
+// Intersection Smooth 
+float SmoothIntersectSDF(float d1, float d2, float k){
+    return -opSmoothUnion(-d1,-d2,k);
+}
+
+// Soustraction Smooth
+float SmoothSubstractSDF(float d1, float d2, float k){
+    return -opSmoothUnion(d1,-d2,k);
+}
+
 
 
 
