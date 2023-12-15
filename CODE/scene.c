@@ -40,10 +40,6 @@ float scene_1(coord pts){
 }
 
 
-float rot_x(coord c){
-
-
-}
 
 
 float scene_2(coord pts){
@@ -73,7 +69,7 @@ float scene_2(coord pts){
 
 
 
-// --- SCENE #1 --- // Tous les objets
+// --- SCENE #3 --- //
 float scene_3(coord pts){
     int nb = 4;
     float all_sdf[nb];
@@ -116,6 +112,10 @@ float scene_3(coord pts){
 
     return min_lst(all_sdf, nb);
 }
+
+
+
+
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float SCENE_PRINCIPAL(coord pts){
