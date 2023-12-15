@@ -84,4 +84,86 @@
 \tableofcontents
 \clearpage
 
+\section{Tout commence par le commencement}
+\subsection{Affichage}
+
+\subsection{SdF}
+Le principe de la Signed Distance Function (SdF) est de calculer la distance entre un point et un objet.
+\smallskip
+
+On peut donc donner à chaque forme de base une fonction distance afin de permettre, lors du lancer de chaque rayon, 
+de savoir si le rayon atteint l'objet (la SdF renverra une valeur négative lorsqu'il arrivera à un point dans l'objet),
+où s'il ne touche pas (à partir d'une certaine distance atteinte par le rayon, on considère qu'aucun objet est atteint et alors on renvoie un fond uniforme).
+\medskip 
+
+\underline{Exemple de la sphère :}
+\begin{lstlisting}
+float SDF_sphere(coord p, coord centre, float rayon){
+  float dist = 
+    sqrt((p.x-centre.x)*(p.x-centre.x)+(p.y-centre.y)*(p.y-centre.y)+(p.z-centre.z)*(p.z-centre.z));
+  return dist - rayon;
+}
+\end{lstlisting}
+\medskip 
+
+Les formes de base implémentées sont : 
+\begin{itemize}
+    \item Plan
+    \item Sphère
+    \item Tor
+    \item Boite
+    \item Pyramide 
+    \item Cylindre
+\end{itemize}
+
+\subsection{Affichage des lumières et ombres}
+
+\section{Opérations}
+\subsection{Opérations de base :}
+\subsubsection{Union}
+Afin de procéder l'union entre 2 objets/formes, il suffit de considérer à chaque fois la plus faible 
+valeur entre la sdf d'un objet et celle de l'autre, ce qui nous permettra, pour chaque rayon de lancé,
+de capter la présence de la première forme présente sur son chemin.
+
+\begin{lstlisting}
+float UnionSDF (float d1, float d2){
+    return MIN(d1,d2);
+}
+\end{lstlisting}
+
+\subsubsection{Intersection}
+Au contraire pour l'Intersection, il suffit de considérer la distance maximale :
+Si un des 2 objets n'est pas présent, la fonction intersection renverra toujours le maximum des 2 sdf,
+soit une distance positive et ainsi aucun objet ne sera atteint. Pour les points sur lesquels les 2 objets sont présents,
+la fonction renverra bien une distance négative (car les 2 le sont) à l'arrivée du rayon en ce point.
+
+\begin{lstlisting}
+float IntersectSDF (float d1, float d2){
+    return MAX(d1,d2);
+}
+\end{lstlisting}
+
+\subsubsection{Soustarction}
+La soustraction de F1 par F2 se traduit à $F1_{\backslash F2}$
+
+Il suffit donc de considérer les points où la sdf de F1 est positive, et celle de F2 négative.
+
+\begin{lstlisting}
+float SubstractSDF (float d1, float d2){
+    return MAX(d1, -d2); 
+}
+\end{lstlisting}
+
+\subsubsection{Rotations}
+
+\subsection{Amélioration des effets}
+\subsubsection{Fonctions de lissage - Smooth}
+
+\section{Optimisations}
+\subsection{Bounding Volumes Hierarchy (BVH-Trees)}
+Arbres K-dimensionnels de priorisation des SdF
+
+\subsection{Multi-threading}
+
+
 \end{document}
