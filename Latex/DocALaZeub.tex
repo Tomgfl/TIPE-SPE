@@ -1,0 +1,87 @@
+\documentclass{article}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{appendix}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
+\usepackage{mathrsfs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{makecell}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tabto}
+% \usepackage{hyperref}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xspace}
+\usepackage{pxfonts}
+
+
+\pagestyle{fancy}
+\lhead{Burgalat Eliot - Garcia Tom}
+\rhead{MPI - 2024}
+
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codeblue}{rgb}{0,0,0.6}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+
+\lstdefinestyle{mystyle}{
+   % backgroundcolor=\color{backcolour},  
+   commentstyle=\color{codegreen},
+   keywordstyle=\color{blue},
+   numberstyle=\tiny\color{codegray},
+   numbers=left,                   
+   stringstyle=\color{codegreen},
+   basicstyle=\ttfamily\small,
+   showstringspaces=false,
+   % breakatwhitespace=false,
+   % breaklines=true,                
+   % captionpos=b,                   
+   % keepspaces=true,                
+   % numbersep=5pt,                 
+   % showspaces=false,               
+   % showtabs=false,                 
+   % tabsize=2
+}
+\lstset{style=mystyle}
+
+
+
+
+\setcellgapes{1pt}
+\makegapedcells
+\newcolumntype{R}[1]{>{\raggedleft\arraybackslash}b{#1}}
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}b{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}b{#1}}
+
+\title{\underline{Ray Marching}}
+\date{}
+\author{Burgalat - Garcia}
+\renewcommand*\contentsname{Sommaire}
+
+
+\geometry{paperwidth=24cm}
+
+% --- Debut du doc --- %
+\begin{document}
+
+\maketitle
+\tableofcontents
+\clearpage
+
+\end{document}
