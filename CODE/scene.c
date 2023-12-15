@@ -40,6 +40,12 @@ float scene_1(coord pts){
 }
 
 
+float rot_x(coord c){
+
+
+}
+
+
 float scene_2(coord pts){
     int nb = 3;
     float all_sdf[nb];
@@ -53,9 +59,9 @@ float scene_2(coord pts){
     coord C_2 = {10,10,0};
     float sdf_sphere = SDF_sphere(pts, C_2, 3);
 
-    coord C_3 = {-10,10,10};
-    float sdf_tor = SDF_Tor(rotation_y(pts,time_scene), C_3, 2, 1);
-
+    coord C_3 = {-4,8,15};
+    float sdf_tor = SDF_Tor(rotation_x((coord){pts.x-C_3.x,pts.y-C_3.y,pts.z-C_3.z},time_scene), (coord){0,0,0}, 2, 1);
+    
 
     // all_sdf[0] = sdf_plan;
     all_sdf[0] = sdf_box;
@@ -97,12 +103,12 @@ float scene_3(coord pts){
     float sdf_box4 = SDF_box(pts, C_7, 12,12,12);
 
     coord C_8 = {-15,25,-5};
-    float sdf_sphere4 = SDF_sphere(pts, C_8, 6.5);
+    float sdf_sphere4 = SDF_sphere(pts, C_8, 6);
 
 
 
     all_sdf[0] = IntersectSDF(sdf_box, sdf_sphere);
-    all_sdf[1] = UnionSDF(sdf_box2, sdf_sphere2);
+    all_sdf[1] = SmoothUnionSDF(sdf_box2, sdf_sphere2,1);
     all_sdf[2] = SubstractSDF(sdf_box3, sdf_sphere3);
     all_sdf[3] = SubstractSDF(sdf_sphere4, sdf_box4);
 
