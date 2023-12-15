@@ -10,8 +10,8 @@ A faire :
     
   Ajouts :
 
-    - Operations (union, intersectio, min, max, smooth, translation)
-    - SDF (pyramide, triangle, cone,pyramide base n, lapin ...)
+    - Operations (opérations smooth, translation)
+    - SDF (cone, pingouin)
     - plusieurs sources de lumieres (avec des couleurs) ?
     - Nurbs
     - fichier de test (calcules de temps pour les optimisations)
