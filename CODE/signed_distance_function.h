@@ -25,6 +25,7 @@ float SDF_Cone(coord p, coord centre, float H, float r);
 float SDF_Pyramide(coord p, coord centre, float H, float c);
 float SDF_plan(coord p, vector n, float h);
 float SDF_Tor(coord p, coord centre, float R, float r);
+float SDF_Ellipsoid(coord p, coord centre, float a, float b, float c);
 
 // Rotations
 coord rotation_x(coord v, float angle);

@@ -114,13 +114,26 @@ float scene_3(coord pts){
 }
 
 
+// --- SCENE #4 --- // Test ellipsoid
+float scene_4(coord pts){
+    int nb = 1;
+    float all_sdf[nb];
+
+    coord C_1 = {-5,10,15};
+    float sdf_ellipsoid = SDF_Ellipsoid(rotation_z((coord){pts.x-C_1.x,pts.y-C_1.y,pts.z-C_1.z}, time_scene), (coord){0,0,0}, 2,3,5);
+
+    all_sdf[0] = sdf_ellipsoid;
+
+    return min_lst(all_sdf, nb);
+}
+
 
 
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float SCENE_PRINCIPAL(coord pts){
 
-    return scene_3(pts);
+    return scene_4(pts);
 
 }
 

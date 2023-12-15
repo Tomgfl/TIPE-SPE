@@ -107,6 +107,15 @@ float SDF_plan(coord p, vector n, float h){
 }
 
 
+// SDF d'une elliposïde
+float SDF_Ellipsoid(coord p, coord centre, float a, float b, float c){
+    float distx = p.x - centre.x;
+    float disty = p.y - centre.y;
+    float distz = p.z - centre.z;
+    return sqrt((distx*distx) / (a*a) + (disty * disty) / (b*b) + (distz * distz) / (c*c)) - 1.0;
+}
+
+
 
 
 // --- TESTS --- //
