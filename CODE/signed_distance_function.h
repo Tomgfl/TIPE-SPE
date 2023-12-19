@@ -18,7 +18,7 @@ typedef struct ray_s ray;
 
 
 // SDF
-float SDF_sphere(coord pts, coord centre, float rayon);
+float SDF_sphere(coord p, coord centre, float rayon);
 float SDF_box(coord p, coord centre, float L, float l, float h);
 float SDF_cylindre(coord p, coord centre, float H, float r);
 float SDF_Cone(coord p, coord centre, float H, float r);
@@ -26,6 +26,11 @@ float SDF_Pyramide(coord p, coord centre, float H, float c);
 float SDF_plan(coord p, vector n, float h);
 float SDF_Tor(coord p, coord centre, float R, float r);
 float SDF_Ellipsoid(coord p, coord centre, float a, float b, float c);
+
+// SDF Pingouin
+float SDF_head(coord p, coord centre, float rayon);
+float SDF_corps(coord p, coord centre, float rayon);
+float SDF_Pingoo(coord p, coord centre, float rayon);
 
 // Rotations
 coord rotation_x(coord v, float angle);

@@ -129,11 +129,25 @@ float scene_4(coord pts){
 
 
 
+float scene_pingoo(coord pts){
+    int nb = 1;
+    float all_sdf[nb];
+
+    coord C_1 = {0,20,0};
+    float tete = SDF_Pingoo(pts, C_1, 10); 
+
+    all_sdf[0] = tete;
+
+    return min_lst(all_sdf, nb);
+}
+
+
+
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float SCENE_PRINCIPAL(coord pts){
 
-    return scene_4(pts);
+    return scene_pingoo(pts);
 
 }
 

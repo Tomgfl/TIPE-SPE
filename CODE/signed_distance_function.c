@@ -117,6 +117,56 @@ float SDF_Ellipsoid(coord p, coord centre, float a, float b, float c){
 
 
 
+// --- NUUUUT NUUUUT --- //
+
+// Tête 
+float SDF_head(coord p, coord centre, float rayon){
+    float Contour = SDF_sphere(p, centre, rayon);
+
+    coord C_oeG = {centre.x - (rayon/4), centre.y - rayon,centre.z + (rayon/3)};
+    float oeilGa = SDF_sphere(p, C_oeG, rayon/6);
+    float oeilGauche = SmoothSubstractSDF(Contour, oeilGa, 0.1);
+
+
+    coord C_oeD = {centre.x + (rayon/4), centre.y - rayon,centre.z + (rayon/3)};
+    float oeilDr = SDF_sphere(p, C_oeD, rayon/6);
+    float Oeils = SmoothSubstractSDF(oeilGauche, oeilDr, 0.1);
+
+    // coord C_ch1 = {centre.x, centre.y, centre.z + 9*rayon/10};
+    // float cheveu1 = SDF_Pyramide(p, C_ch1, (rayon/5), (rayon/20));
+
+    // float Tete = SmoothUnionSDF(oeilGauche, cheveu1, 0.1);
+    return Oeils;
+}
+
+
+// Corps
+float SDF_corps(coord p, coord centre, float rayon){
+    float Contour = SDF_sphere(p, centre, rayon);
+
+    coord C_Bas = {centre.x, centre.y, centre.z - rayon};
+    float Bas = SDF_box(p, C_Bas, rayon, rayon, rayon/4);
+
+    float Corps = SmoothSubstractSDF(Contour, Bas, 0.1);
+
+    return Corps;
+}
+
+
+// Total 
+float SDF_Pingoo(coord p, coord centre, float rayon){
+    coord C_Tete = {centre.x, centre.y, centre.z + rayon/2};
+    float Tete = SDF_head(p, C_Tete, 1.1*rayon/2);
+
+    coord C_Corps = {centre.x, centre.y, centre.z - 0.8*rayon/3};
+    float Corps = SDF_corps(p, C_Corps, 2.1*rayon/3);
+
+    float Pingoo = SmoothUnionSDF(Tete, Corps, 1);
+    return Pingoo;
+}
+
+
+
 
 // --- TESTS --- //
 float mult_objects(coord pos) {

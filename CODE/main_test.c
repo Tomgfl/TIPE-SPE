@@ -30,7 +30,7 @@ color ray_marching(ray r){
     float dist_tot = 0.0;
     coord position_actuelle = r.origine;
 
-    coord Lumiere = {4.0, 5.0, 30.0}; // lumiere mis a la mano
+    coord Lumiere = {0.0, -100.0, 20.0}; // lumiere mis a la mano
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
