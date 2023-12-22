@@ -26,6 +26,7 @@ float SDF_Pyramide(coord p, coord centre, float H, float c);
 float SDF_plan(coord p, vector n, float h);
 float SDF_Tor(coord p, coord centre, float R, float r);
 float SDF_Ellipsoid(coord p, coord centre, float a, float b, float c);
+float SDF_triangle(coord p, coord a, coord b, coord c);
 
 // SDF Pingouin
 float SDF_head(coord p, coord centre, float rayon);

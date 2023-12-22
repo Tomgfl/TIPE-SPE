@@ -8,9 +8,13 @@
 
 #define MIN(i, j) (((i) < (j)) ? (i) : (j))
 #define MAX(i, j) (((i) > (j)) ? (i) : (j))
+#define SIGN(x) (x > 0) ? 1 : ((x < 0) ? -1 : 0)
+#define CLAMP(d, min, max) (((d) < (min)) ? (min) : (((d) > (max)) ? (max) : (d)))
 
-
-
+double clamp(double d, double min, double max) {
+  const double t = d < min ? min : d;
+  return t > max ? max : t;
+}
 
 // --- FONCTIONS DE SDF --- //
 
@@ -98,6 +102,41 @@ float SDF_box(coord p, coord centre, float L, float l, float h){
         return dist_ext;
     }
 }
+
+
+// SDF face triangle
+float SDF_triangle(coord p, coord a, coord b, coord c){
+    vector ba = (vector){b.x-a.x, b.y-a.y, b.z-a.z};
+    vector cb = (vector){c.x-b.x, c.y-b.y, c.z-b.z};
+    vector ac = (vector){a.x-c.x, a.y-c.y, a.z-c.z};
+
+    vector pa = (vector){p.x-a.x, p.y-a.y, p.z-a.z};
+    vector pb = (vector){p.x-b.x, p.y-b.y, p.z-b.z};
+    vector pc = (vector){p.x-c.x, p.y-c.y, p.z-c.z};
+
+    vector nor = prod_vect(ba,ac);
+
+    if (SIGN(prod_scal(prod_vect(ba,nor),pa)) + 
+        SIGN(prod_scal(prod_vect(cb,nor),pb)) + 
+        SIGN(prod_scal(prod_vect(ac,nor),pc)) < .0){
+            vector v_1 = v_sub(v_mult_scal(ba,clamp(prod_scal(ba,pa)/prod_scal(ba,ba),0.0,1.0)),pa);
+            vector v_2 = v_sub(v_mult_scal(cb,clamp(prod_scal(cb,pb)/prod_scal(cb,cb),0.0,1.0)),pb);
+            vector v_3 = v_sub(v_mult_scal(ac,clamp(prod_scal(ac,pc)/prod_scal(ac,ac),0.0,1.0)),pc);
+            float d_1 = prod_scal(v_1,v_1);
+            float d_2 = prod_scal(v_2,v_2);
+            float d_3 = prod_scal(v_3,v_3);
+            return (MIN(MIN(d_1,d_2),d_3));
+    }
+    else{
+        return (prod_scal(nor,pa)*prod_scal(nor,pa)/prod_scal(nor,nor));
+    }
+}
+
+
+
+
+
+
 
 
 // SDF du plan horizontal (sol)

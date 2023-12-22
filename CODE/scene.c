@@ -43,7 +43,7 @@ float scene_1(coord pts){
 
 
 float scene_2(coord pts){
-    int nb = 3;
+    int nb = 4;
     float all_sdf[nb];
 
     // vector n_plan = {0, 0, 1};
@@ -59,10 +59,13 @@ float scene_2(coord pts){
     float sdf_tor = SDF_Tor(rotation_x((coord){pts.x-C_3.x,pts.y-C_3.y,pts.z-C_3.z},time_scene), (coord){0,0,0}, 2, 1);
     
 
+    float sdf_triangle = SDF_triangle(pts,C_1,C_2,C_3);
+
     // all_sdf[0] = sdf_plan;
     all_sdf[0] = sdf_box;
     all_sdf[1] = sdf_sphere;
     all_sdf[2] = sdf_tor;
+    all_sdf[3] = sdf_triangle;
 
     return min_lst(all_sdf, nb);
 }
@@ -147,7 +150,7 @@ float scene_pingoo(coord pts){
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float SCENE_PRINCIPAL(coord pts){
 
-    return scene_pingoo(pts);
+    return scene_2(pts);
 
 }
 

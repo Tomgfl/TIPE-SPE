@@ -21,5 +21,6 @@ float light_diffuse(coord pts, coord source);
 // --- OMBRES --- //
 
 float shadow_1(coord pts, coord source);
+float shadow_2(coord pts, coord source, int steps);
 
 #endif

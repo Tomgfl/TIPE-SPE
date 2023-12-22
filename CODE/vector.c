@@ -38,6 +38,7 @@ float prod_scal(vector v1, vector v2){
 
 
 
+
 // cree le vecteur entre 2 points
 vector get_vec_2_pts(coord p1, coord p2){
     vector vec;
@@ -75,4 +76,21 @@ vector reflect (vector vi, vector vn){
 
 float dist_2_pts(coord p1, coord p2){
     return sqrt( (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z) );
+}
+
+
+vector v_add(vector v1, vector v2){
+    return (vector){v1.x + v2.x, v1.y + v2.y, v1.z + v2.z};
+}
+
+vector v_sub(vector v1, vector v2){
+    return (vector){v1.x - v2.x, v1.y - v2.y, v1.z - v2.z};
+}
+
+vector v_mult_scal(vector v, float a){
+    return (vector){a*v.x,a*v.y,a*v.z};
+}
+
+float norm_vector(vector v){
+    return sqrt( v.x*v.x + v.y*v.y + v.z*v.z ); 
 }
