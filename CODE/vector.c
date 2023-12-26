@@ -8,12 +8,12 @@
 
 
 // renvoie le vecteur normal a une surface (en un point proche d'une surface) a l'aide du gradient
-vector vect_normal(coord pts){
+vector vect_normal(vector pts){
     float dist = SCENE_PRINCIPAL(pts);
 
-    float grad_x = SCENE_PRINCIPAL((coord){pts.x + EPSILON, pts.y, pts.z}) - dist;
-    float grad_y = SCENE_PRINCIPAL((coord){pts.x, pts.y + EPSILON, pts.z}) - dist;
-    float grad_z = SCENE_PRINCIPAL((coord){pts.x, pts.y, pts.z + EPSILON}) - dist;
+    float grad_x = SCENE_PRINCIPAL((vector){pts.x + EPSILON, pts.y, pts.z}) - dist;
+    float grad_y = SCENE_PRINCIPAL((vector){pts.x, pts.y + EPSILON, pts.z}) - dist;
+    float grad_z = SCENE_PRINCIPAL((vector){pts.x, pts.y, pts.z + EPSILON}) - dist;
 
     vector v = {grad_x, grad_y, grad_z};
     return v;
@@ -40,7 +40,7 @@ float prod_scal(vector v1, vector v2){
 
 
 // cree le vecteur entre 2 points
-vector get_vec_2_pts(coord p1, coord p2){
+vector get_vec_2_pts(vector p1, vector p2){
     vector vec;
     vec.x = p2.x - p1.x;
     vec.y = p2.y - p1.y;
@@ -74,7 +74,7 @@ vector reflect (vector vi, vector vn){
 
 
 
-float dist_2_pts(coord p1, coord p2){
+float dist_2_pts(vector p1, vector p2){
     return sqrt( (p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y) + (p1.z - p2.z)*(p1.z - p2.z) );
 }
 
@@ -92,5 +92,5 @@ vector v_mult_scal(vector v, float a){
 }
 
 float norm_vector(vector v){
-    return sqrt( v.x*v.x + v.y*v.y + v.z*v.z ); 
+    return sqrt(v.x*v.x + v.y*v.y + v.z*v.z); 
 }

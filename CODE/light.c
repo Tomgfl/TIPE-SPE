@@ -9,14 +9,14 @@
 // --- LUMIERES --- //
 
 // renvoie la lumiere avec le prod vect et la normale
-float light_diffuse(coord pts, coord source){
+float light_diffuse(vector pts, vector source){
     vector v_n = normalise_vecteur(vect_normal(pts));
     float res = max(prod_scal(v_n, normalise_vecteur(get_vec_2_pts(pts,source))),0);
     return res;
 }
 
 
-float all_light(coord pts, coord source){
+float all_light(vector pts, vector source){
     float res = 0;
     res += light_diffuse(pts, source);
     res += 0.3; // lumiere ambiante
@@ -30,9 +30,9 @@ float all_light(coord pts, coord source){
 // --- OMBRES --- //
 
 // fait un ray marching entre le point et la source de lumiere (pas le plus opti je pense)
-float shadow_1(coord pts, coord source){
+float shadow_1(vector pts, vector source){
     vector direction = normalise_vecteur(get_vec_2_pts(pts, source));
-    coord position_actuelle = pts;
+    vector position_actuelle = pts;
 
     float dist_tot = 0.0;
     position_actuelle.x = pts.x + direction.x * dist_tot;

@@ -28,9 +28,9 @@ color c_fond = {3,27,73,1.0};
 // renvoie la couleur d'un rayon avec le ray marching
 color ray_marching(ray r){
     float dist_tot = 0.0;
-    coord position_actuelle = r.origine;
+    vector position_actuelle = r.origine;
 
-    coord Lumiere = {0.0, -100.0, 20.0}; // lumiere mis a la mano
+    vector Lumiere = {0.0, -100.0, 20.0}; // lumiere mis a la mano
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
@@ -83,13 +83,13 @@ int main(){
     CAMERA.dir_ecran_c = (vector){0,1,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (coord){0,-10,6};
+    CAMERA.position_c = (vector){0,-10,6};
     CAMERA.dist_screen = 3.0;
 
     CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
     CAMERA.de = CAMERA.size_L_e / WIDTH;
     CAMERA.size_l_e = HEIGHT*CAMERA.de;
-    CAMERA.A = (coord){CAMERA.position_c.x + CAMERA.dist_screen*CAMERA.dir_ecran_c.x + CAMERA.size_l_e/2.0*CAMERA.up_c.x + CAMERA.size_L_e/2.0*CAMERA.orthcam.x,
+    CAMERA.A = (vector){CAMERA.position_c.x + CAMERA.dist_screen*CAMERA.dir_ecran_c.x + CAMERA.size_l_e/2.0*CAMERA.up_c.x + CAMERA.size_L_e/2.0*CAMERA.orthcam.x,
                CAMERA.position_c.y + CAMERA.dist_screen*CAMERA.dir_ecran_c.y + CAMERA.size_l_e/2.0*CAMERA.up_c.y + CAMERA.size_L_e/2.0*CAMERA.orthcam.y,
                CAMERA.position_c.z + CAMERA.dist_screen*CAMERA.dir_ecran_c.z + CAMERA.size_l_e/2.0*CAMERA.up_c.z + CAMERA.size_L_e/2.0*CAMERA.orthcam.z};
 
@@ -124,7 +124,7 @@ int main(){
                 // comme dans ecran mais calcul direct ie calcule du vecteur de la cam vers chaque pixels
                 //R.direction = normalise_vecteur(get_vec_2_pts(cam_c,(coord){p_cam->x - screen_mid_x + de*i, p_cam->y + screen_dist_y, p_cam->z + screen_mid_z - de*j}));
                 R.direction = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
-                    (coord){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
+                    (vector){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
                             CAMERA.A.y + i*CAMERA.vLde.y + j*CAMERA.vlde.y,
                             CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
 
@@ -132,7 +132,12 @@ int main(){
                 draw_pixel(i, j, C, 1); // affiche le pixel
             }
         }
-        
+        // printf("ok\n");
+        //printf("%f \n",SDF_triangle((vector){-8.0,-0.63,0.72},(vector){-9.0,0,0},(vector){-6,0,0},(vector){-8.3,-1.86,2.13}));
+        //printf("%f \n",SDF_triangle((vector){-8.65,-1.3,1.7},(vector){-9.0,0,0},(vector){-6,0,0},(vector){-8.3,-1.86,2.13}));
+        // CAMERA.position_c.x -= 1;
+        // CAMERA.position_c.y += 1;
+        // CAMERA.position_c.z -= 1;
 
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

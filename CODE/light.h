@@ -15,12 +15,12 @@ typedef struct color_s color;
 
 // --- LUMIERES --- //
 
-float all_light(coord pts, coord source);
-float light_diffuse(coord pts, coord source);
+float all_light(vector pts, vector source);
+float light_diffuse(vector pts, vector source);
 
 // --- OMBRES --- //
 
-float shadow_1(coord pts, coord source);
-float shadow_2(coord pts, coord source, int steps);
+float shadow_1(vector pts, vector source);
+float shadow_2(vector pts, vector source, int steps);
 
 #endif

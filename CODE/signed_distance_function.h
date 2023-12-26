@@ -8,7 +8,7 @@
 
 // rayon
 struct ray_s{
-    coord origine;
+    vector origine;
     vector direction;
 };
 typedef struct ray_s ray;
@@ -18,25 +18,26 @@ typedef struct ray_s ray;
 
 
 // SDF
-float SDF_sphere(coord p, coord centre, float rayon);
-float SDF_box(coord p, coord centre, float L, float l, float h);
-float SDF_cylindre(coord p, coord centre, float H, float r);
-float SDF_Cone(coord p, coord centre, float H, float r);
-float SDF_Pyramide(coord p, coord centre, float H, float c);
-float SDF_plan(coord p, vector n, float h);
-float SDF_Tor(coord p, coord centre, float R, float r);
-float SDF_Ellipsoid(coord p, coord centre, float a, float b, float c);
-float SDF_triangle(coord p, coord a, coord b, coord c);
+float SDF_sphere(vector p, vector centre, float rayon);
+float SDF_box(vector p, vector centre, float L, float l, float h);
+float SDF_cylindre(vector p, vector centre, float H, float r);
+float SDF_Cone(vector p, vector centre, float H, float r);
+float SDF_Pyramide(vector p, vector centre, float H, float c);
+float SDF_plan(vector p, vector n, vector m);
+float SDF_Tor(vector p, vector centre, float R, float r);
+float SDF_Ellipsoid(vector p, vector centre, float a, float b, float c);
+float SDF_triangle(vector p, vector a, vector b, vector c);
+float SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c);
 
 // SDF Pingouin
-float SDF_head(coord p, coord centre, float rayon);
-float SDF_corps(coord p, coord centre, float rayon);
-float SDF_Pingoo(coord p, coord centre, float rayon);
+float SDF_head(vector p, vector centre, float rayon);
+float SDF_corps(vector p, vector centre, float rayon);
+float SDF_Pingoo(vector p, vector centre, float rayon);
 
 // Rotations
-coord rotation_x(coord v, float angle);
-coord rotation_y(coord v, float angle);
-coord rotation_z(coord v, float angle);
+vector rotation_x(vector v, float angle);
+vector rotation_y(vector v, float angle);
+vector rotation_z(vector v, float angle);
 
 // Operations
 float UnionSDF(float d1, float d2);

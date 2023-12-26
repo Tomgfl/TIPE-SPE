@@ -5,6 +5,7 @@
 #include "signed_distance_function.h"
 #include "vector.h"
 #include "utiles.h"
+#include "options.h"
 
 #define MIN(i, j) (((i) < (j)) ? (i) : (j))
 #define MAX(i, j) (((i) > (j)) ? (i) : (j))
@@ -19,21 +20,21 @@ double clamp(double d, double min, double max) {
 // --- FONCTIONS DE SDF --- //
 
 // Fonction de SDF d'une sphère
-float SDF_sphere(coord p, coord centre, float rayon){
+float SDF_sphere(vector p, vector centre, float rayon){
     float distance = sqrt( (p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y) + (p.z - centre.z)*(p.z - centre.z) );
     return distance - rayon;
 }
 
 
 // Fonction de SDF d'un Tor
-float SDF_Tor(coord p, coord centre, float R, float r) {
+float SDF_Tor(vector p, vector centre, float R, float r) {
     float distance_xy = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - R;
     return sqrt(distance_xy*distance_xy + (p.z - centre.z)*(p.z - centre.z)) - r;
 }
 
 
 // SDF d'un cylindre
-float SDF_cylindre(coord p, coord centre, float H, float r){
+float SDF_cylindre(vector p, vector centre, float H, float r){
     
     float baseCenterZ = centre.z - H / 2.0;
     float distToBase = fabs(p.z - baseCenterZ) - H/2.0;                         // Distance face haute/basse
@@ -51,7 +52,7 @@ float SDF_cylindre(coord p, coord centre, float H, float r){
 
 
 // SDF d'un cône
-float SDF_Cone(coord p, coord centre, float H, float r){    // Centre du cylindre, rayon r de la base, hauteur H du cylindre
+float SDF_Cone(vector p, vector centre, float H, float r){    // Centre du cylindre, rayon r de la base, hauteur H du cylindre
     
     float baseCenterZ = centre.z - H / 2.0;
     float distToBase = fabs(p.z - baseCenterZ) - H/2.0;                         // Distance face haute/basse
@@ -70,7 +71,7 @@ float SDF_Cone(coord p, coord centre, float H, float r){    // Centre du cylindr
 
 
 // SDF d'une pyramide (base carrée) selon le centre de sa base
-float SDF_Pyramide(coord p, coord centre, float H, float c){
+float SDF_Pyramide(vector p, vector centre, float H, float c){
 
     float distToBase;
     if (p.z > centre.z + H){
@@ -86,7 +87,7 @@ float SDF_Pyramide(coord p, coord centre, float H, float c){
 
 
 // Fonction de SDF d'une boite (parralépipède rectangle)
-float SDF_box(coord p, coord centre, float L, float l, float h){
+float SDF_box(vector p, vector centre, float L, float l, float h){
     float dist;
     float d[3];
     d[0] = fabs(p.x - centre.x) - L/2.0;
@@ -104,32 +105,94 @@ float SDF_box(coord p, coord centre, float L, float l, float h){
 }
 
 
-// SDF face triangle
-float SDF_triangle(coord p, coord a, coord b, coord c){
-    vector ba = (vector){b.x-a.x, b.y-a.y, b.z-a.z};
-    vector cb = (vector){c.x-b.x, c.y-b.y, c.z-b.z};
-    vector ac = (vector){a.x-c.x, a.y-c.y, a.z-c.z};
 
-    vector pa = (vector){p.x-a.x, p.y-a.y, p.z-a.z};
-    vector pb = (vector){p.x-b.x, p.y-b.y, p.z-b.z};
-    vector pc = (vector){p.x-c.x, p.y-c.y, p.z-c.z};
+float SDF_triangle(vector p, vector a, vector b, vector c){
+    vector ab = v_sub(b,a);
+    vector bc = v_sub(c,b);
+    vector ca = v_sub(a,c);
 
-    vector nor = prod_vect(ba,ac);
+    vector ba = v_sub(a,b);
+    vector cb = v_sub(b,c);
+    vector ac = v_sub(c,a);
 
-    if (SIGN(prod_scal(prod_vect(ba,nor),pa)) + 
-        SIGN(prod_scal(prod_vect(cb,nor),pb)) + 
-        SIGN(prod_scal(prod_vect(ac,nor),pc)) < .0){
-            vector v_1 = v_sub(v_mult_scal(ba,clamp(prod_scal(ba,pa)/prod_scal(ba,ba),0.0,1.0)),pa);
-            vector v_2 = v_sub(v_mult_scal(cb,clamp(prod_scal(cb,pb)/prod_scal(cb,cb),0.0,1.0)),pb);
-            vector v_3 = v_sub(v_mult_scal(ac,clamp(prod_scal(ac,pc)/prod_scal(ac,ac),0.0,1.0)),pc);
-            float d_1 = prod_scal(v_1,v_1);
-            float d_2 = prod_scal(v_2,v_2);
-            float d_3 = prod_scal(v_3,v_3);
-            return (MIN(MIN(d_1,d_2),d_3));
+    vector pa = v_sub(p,a);
+    vector pb = v_sub(p,b);
+    vector pc = v_sub(p,c);
+    
+    // Vecteur normal au plan du triangle
+    vector n = prod_vect(ab,bc);
+
+    // distance aux droites du contour du triangle
+    float d_1 = norm_vector(prod_vect(pa,ab))/norm_vector(ab);
+    float d_2 = norm_vector(prod_vect(pb,bc))/norm_vector(bc);
+    float d_3 = norm_vector(prod_vect(pa,ca))/norm_vector(ca);
+
+    // Distance au plan du triangle
+    float d_plan = fabs(prod_scal(pb,n))/norm_vector(n);
+
+    // Verification si le point est dans le triangle
+    vector n_ab = prod_vect(n,ab);
+    vector n_bc = prod_vect(n,bc);
+    vector n_ca = prod_vect(n,ca);
+    float d_trig;
+
+    if (prod_scal(pa,n_ab) > 0.0 &&
+        prod_scal(pb,n_bc) > 0.0 && 
+        prod_scal(pc,n_ca) > 0.0){
+        d_trig = d_plan;
+    } else {
+        d_trig = MIN(MIN(d_1,d_2),d_3); 
     }
-    else{
-        return (prod_scal(nor,pa)*prod_scal(nor,pa)/prod_scal(nor,nor));
+    
+    
+
+    return MAX(d_trig,SDF_sphere_circonscrite_triangle(p,a,b,c));
+}
+
+
+float SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c){
+    vector ab = v_sub(b,a);
+    vector bc = v_sub(c,b);
+    vector ac = v_sub(c,a);
+    vector n = prod_vect(ab,bc);
+
+    // Calcul de la sphere circonscrite au triangle (pour supprimer les droites, aucunes autres methodes (projections... ) n'a fonctionner)
+    // Calcule du centre du cercle
+    vector I = v_add(a,v_mult_scal(ab,0.5));  // milieu de ab
+    vector J = v_add(a,v_mult_scal(ac,0.5)); // milieur de ac
+    
+    vector vi = prod_vect(n,ab); // vecteur directeur de la mediatrice de ab
+    vector vj = prod_vect(n,ac); // vecteur directeur de la mediatrice de ac
+
+    // resoud le systeme pour trouver l'intersection des mediatrices
+    float t_1,t_2;
+    float det = - vi.x * vj.y + vj.x * vi.y; // determinant du systeme pour trouver l'intersection
+    if (det == 0){ 
+        if (vi.x != 0){
+            t_2 = 1.0;
+            t_1 = (J.x - I.x + vj.x)/(vi.x);
+        } else if (vj.x != 0){
+            t_1 = 1.0;
+            t_2 = (vi.x - J.x + I.x)/(vj.x);
+        } else {
+            t_1 = 1.0;
+            t_2 = 1.0;
+        }
+    } else {
+        t_1 = (-vj.y * (J.x - I.x) + vj.x * (J.y - I.y))/det;
+        t_2 = (vi.x * (J.y - I.y) - vi.y * (J.x - I.x))/det;
     }
+    
+    vector C_s_1 = v_add(I,v_mult_scal(vi,t_1));
+    vector C_s_2 = v_add(J,v_mult_scal(vj,t_2));
+
+    // printf("%f,%f,%f | %f,%f,%f \n", C_s_1.x,C_s_1.y,C_s_1.z,C_s_2.x,C_s_2.y,C_s_2.z);
+
+    float r_c = norm_vector(v_sub(a,C_s_1));
+
+    float S_c = SDF_sphere(p,C_s_1,r_c);
+
+    return S_c;
 }
 
 
@@ -139,15 +202,15 @@ float SDF_triangle(coord p, coord a, coord b, coord c){
 
 
 
-// SDF du plan horizontal (sol)
-float SDF_plan(coord p, vector n, float h){
-    vector v = {p.x, p.y, p.z};
-    return prod_scal(v,n) - h;
+// SDF du plan (n le vecteur normal et m un pts du plan)
+float SDF_plan(vector p, vector n, vector m){
+    vector v = v_sub(p,m);
+    return (fabs(prod_scal(n,v))/norm_vector(n));
 }
 
 
 // SDF d'une elliposïde
-float SDF_Ellipsoid(coord p, coord centre, float a, float b, float c){
+float SDF_Ellipsoid(vector p, vector centre, float a, float b, float c){
     float distx = p.x - centre.x;
     float disty = p.y - centre.y;
     float distz = p.z - centre.z;
@@ -159,15 +222,15 @@ float SDF_Ellipsoid(coord p, coord centre, float a, float b, float c){
 // --- NUUUUT NUUUUT --- //
 
 // Tête 
-float SDF_head(coord p, coord centre, float rayon){
+float SDF_head(vector p, vector centre, float rayon){
     float Contour = SDF_sphere(p, centre, rayon);
 
-    coord C_oeG = {centre.x - (rayon/4), centre.y - rayon,centre.z + (rayon/3)};
+    vector C_oeG = {centre.x - (rayon/4), centre.y - rayon,centre.z + (rayon/3)};
     float oeilGa = SDF_sphere(p, C_oeG, rayon/6);
     float oeilGauche = SmoothSubstractSDF(Contour, oeilGa, 0.1);
 
 
-    coord C_oeD = {centre.x + (rayon/4), centre.y - rayon,centre.z + (rayon/3)};
+    vector C_oeD = {centre.x + (rayon/4), centre.y - rayon,centre.z + (rayon/3)};
     float oeilDr = SDF_sphere(p, C_oeD, rayon/6);
     float Oeils = SmoothSubstractSDF(oeilGauche, oeilDr, 0.1);
 
@@ -180,10 +243,10 @@ float SDF_head(coord p, coord centre, float rayon){
 
 
 // Corps
-float SDF_corps(coord p, coord centre, float rayon){
+float SDF_corps(vector p, vector centre, float rayon){
     float Contour = SDF_sphere(p, centre, rayon);
 
-    coord C_Bas = {centre.x, centre.y, centre.z - rayon};
+    vector C_Bas = {centre.x, centre.y, centre.z - rayon};
     float Bas = SDF_box(p, C_Bas, rayon, rayon, rayon/4);
 
     float Corps = SmoothSubstractSDF(Contour, Bas, 0.1);
@@ -193,11 +256,11 @@ float SDF_corps(coord p, coord centre, float rayon){
 
 
 // Total 
-float SDF_Pingoo(coord p, coord centre, float rayon){
-    coord C_Tete = {centre.x, centre.y, centre.z + rayon/2};
+float SDF_Pingoo(vector p, vector centre, float rayon){
+    vector C_Tete = {centre.x, centre.y, centre.z + rayon/2};
     float Tete = SDF_head(p, C_Tete, 1.1*rayon/2);
 
-    coord C_Corps = {centre.x, centre.y, centre.z - 0.8*rayon/3};
+    vector C_Corps = {centre.x, centre.y, centre.z - 0.8*rayon/3};
     float Corps = SDF_corps(p, C_Corps, 2.1*rayon/3);
 
     float Pingoo = SmoothUnionSDF(Tete, Corps, 1);
@@ -208,7 +271,7 @@ float SDF_Pingoo(coord p, coord centre, float rayon){
 
 
 // --- TESTS --- //
-float mult_objects(coord pos) {
+float mult_objects(vector pos) {
     // translate
     // float iTime = 1.0;
     
@@ -216,7 +279,7 @@ float mult_objects(coord pos) {
     // pos.y += 0.0;
     // pos.z += 0.0;
 
-    coord modResult;
+    vector modResult;
     // modResult.x = fmodf(pos.x, 2.0);
     modResult.y = fmodf(pos.y, 2.0);
     modResult.x = fmodf(pos.x, 2.0);
@@ -225,17 +288,17 @@ float mult_objects(coord pos) {
     modResult.z = pos.z;
 
     //float d1 = sqrt((modResult.x - 1.0) * (modResult.x - 1.0) + (modResult.y - 1.0) * (modResult.y - 1.0) + (modResult.z - 1.0) * (modResult.z - 1.0)) - 0.54321;
-    // float d1 = SDF_box(modResult, (coord){1.0,1.0,1.0}, 0.5,0.5,0.5);
-    float d1 = SDF_Tor(modResult, (coord){1.0,1.0,-1}, 0.5, 0.3);
+    // float d1 = SDF_box(modResult, (vector){1.0,1.0,1.0}, 0.5,0.5,0.5);
+    float d1 = SDF_Tor(modResult, (vector){1.0,1.0,-1}, 0.5, 0.3);
     return d1;
 }
 
-float fractal_1_test(coord z) {
-    coord a1 = {1.0, 1.0, 1.0};
-    coord a2 = {-1.0, -1.0, 1.0};
-    coord a3 = {1.0, -1.0, -1.0};
-    coord a4 = {-1.0, 1.0, -1.0};
-    coord c;
+float fractal_1_test(vector z) {
+    vector a1 = {1.0, 1.0, 1.0};
+    vector a2 = {-1.0, -1.0, 1.0};
+    vector a3 = {1.0, -1.0, -1.0};
+    vector a4 = {-1.0, 1.0, -1.0};
+    vector c;
     int n = 0;
     float dist, d;
     int Iterations = 15;
@@ -275,18 +338,18 @@ float fractal_1_test(coord z) {
 
 // --- ROTATIONS --- //
 // renvoie le produit entre la matrice de rotation Rx et le vec v
-coord rotation_x (coord v, float angle){// angle en degres
-    return (coord){v.x, v.y*cos(angle*3.14/180) - v.z*sin(angle*3.14/180), v.y*sin(angle*3.14/180) + v.z*cos(angle*3.14/180)};
+vector rotation_x (vector v, float angle){// angle en degres
+    return (vector){v.x, v.y*cos(angle*3.14/180) - v.z*sin(angle*3.14/180), v.y*sin(angle*3.14/180) + v.z*cos(angle*3.14/180)};
 }
 
 // renvoie le produit entre la matrice de rotation Rx et le vec v
-coord rotation_y (coord v, float angle){// angle en degres
-    return (coord){v.x*cos(angle*3.14/180) + v.z*sin(angle*3.14/180), v.y, v.z*cos(angle*3.14/180) - v.x*sin(angle*3.14/180)};
+vector rotation_y (vector v, float angle){// angle en degres
+    return (vector){v.x*cos(angle*3.14/180) + v.z*sin(angle*3.14/180), v.y, v.z*cos(angle*3.14/180) - v.x*sin(angle*3.14/180)};
 }
 
 // renvoie le produit entre la matrice de rotation Rx et le vec v
-coord rotation_z (coord v, float angle){// angle en degres
-    return (coord){v.x*cos(angle*3.14/180) - v.y*sin(angle*3.14/180), v.x*sin(angle*3.14/180) + v.y*cos(angle*3.14/180), v.z};
+vector rotation_z (vector v, float angle){// angle en degres
+    return (vector){v.x*cos(angle*3.14/180) - v.y*sin(angle*3.14/180), v.x*sin(angle*3.14/180) + v.y*cos(angle*3.14/180), v.z};
 }
 
 

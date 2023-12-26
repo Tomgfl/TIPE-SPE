@@ -6,8 +6,8 @@
 #include "utiles.h"
 
 
-float scene_1(coord pts);
-float SCENE_PRINCIPAL(coord pts);
+float scene_1(vector pts);
+float SCENE_PRINCIPAL(vector pts);
 
 
 
