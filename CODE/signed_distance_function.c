@@ -144,7 +144,7 @@ float SDF_triangle(vector p, vector a, vector b, vector c){
         d_trig = MIN(MIN(d_1,d_2),d_3); 
     }
     
-    
+    // return SDF_sphere_circonscrite_triangle(p,a,b,c);
 
     return MAX(d_trig,SDF_sphere_circonscrite_triangle(p,a,b,c));
 }
@@ -168,6 +168,7 @@ float SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c){
     float t_1,t_2;
     float det = - vi.x * vj.y + vj.x * vi.y; // determinant du systeme pour trouver l'intersection
     if (det == 0){ 
+        // printf("det = 0\n");
         if (vi.x != 0){
             t_2 = 1.0;
             t_1 = (J.x - I.x + vj.x)/(vi.x);

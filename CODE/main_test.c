@@ -30,7 +30,7 @@ color ray_marching(ray r){
     float dist_tot = 0.0;
     vector position_actuelle = r.origine;
 
-    vector Lumiere = {0.0, -100.0, 20.0}; // lumiere mis a la mano
+    vector Lumiere = {5, -10, 20.0}; // lumiere mis a la mano
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
@@ -78,13 +78,23 @@ int main(){
 
 
     // --- V3 CAMERA --- //
+    // Pour toutes les scenes
+    // camera CAMERA;
+    // CAMERA.size_L_e = 6.0;
+    // CAMERA.dir_ecran_c = (vector){0,1,0};
+
+    // CAMERA.up_c = normalise_vecteur((vector){0,0,1});
+    // CAMERA.position_c = (vector){0,-10,6};
+    // CAMERA.dist_screen = 3.0;
+
     camera CAMERA;
-    CAMERA.size_L_e = 6.0;
+    CAMERA.size_L_e = 2.0;
     CAMERA.dir_ecran_c = (vector){0,1,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (vector){0,-10,6};
+    CAMERA.position_c = (vector){1.0,-6,.7};
     CAMERA.dist_screen = 3.0;
+
 
     CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
     CAMERA.de = CAMERA.size_L_e / WIDTH;
@@ -129,10 +139,18 @@ int main(){
                             CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
 
                 color C = ray_marching(R);
-                draw_pixel(i, j, C, 1); // affiche le pixel
+                draw_pixel(i, j, C, 1); // affiche le pixel                
             }
+            printf("\033[H \n");
+            printf("%.2f %%\n",(float)(i)/WIDTH*100.0);
+            fflush(stdout);
+
+
+            glfwSwapBuffers(window);
+            glfwPollEvents();
         }
         // printf("ok\n");
+
         //printf("%f \n",SDF_triangle((vector){-8.0,-0.63,0.72},(vector){-9.0,0,0},(vector){-6,0,0},(vector){-8.3,-1.86,2.13}));
         //printf("%f \n",SDF_triangle((vector){-8.65,-1.3,1.7},(vector){-9.0,0,0},(vector){-6,0,0},(vector){-8.3,-1.86,2.13}));
         // CAMERA.position_c.x -= 1;
@@ -144,6 +162,7 @@ int main(){
 
         /* Poll for and process events */
         glfwPollEvents();
+        break;
     }
 
     glfwTerminate();

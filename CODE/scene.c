@@ -1,5 +1,8 @@
 #include "scene.h"
 #include <stdio.h>
+#include "3d_obj/cube_sdf.h"
+#include "3d_obj/pingouin_1_sdf.h"
+#include "3d_obj/pingouin_2_sdf.h"
 
 extern float time_scene;
 
@@ -189,7 +192,7 @@ float scene_5(vector pts){
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float SCENE_PRINCIPAL(vector pts){
 
-    return scene_5(pts);
+    return SDF_pingouin_2(rotation_x(rotation_y((rotation_z(pts,30)), 180),90), pts);
 
 }
 
