@@ -224,22 +224,46 @@ float SDF_Ellipsoid(vector p, vector centre, float a, float b, float c){
 
 // Tête 
 float SDF_head(vector p, vector centre, float rayon){
-    float Contour = SDF_sphere(p, centre, rayon);
+    float Contour = SDF_sphere(p, centre, rayon);		//Centre (0,0,3), rayon 1
 
-    vector C_oeG = {centre.x - (rayon/4), centre.y - rayon,centre.z + (rayon/3)};
-    float oeilGa = SDF_sphere(p, C_oeG, rayon/6);
-    float oeilGauche = SmoothSubstractSDF(Contour, oeilGa, 0.1);
+    vector C_oeG = {p.x - 0.83*rayon, p.y - 0.4*rayon, p.z + 0.4*rayon};	//Centre (-0.83, 0.4, 0.34)
+    float oeilGa = SDF_sphere(p, C_oeG, 0.16*rayon);
+    float oeilGauche = UnionSDF(Contour, oeilGa);
 
 
-    vector C_oeD = {centre.x + (rayon/4), centre.y - rayon,centre.z + (rayon/3)};
-    float oeilDr = SDF_sphere(p, C_oeD, rayon/6);
-    float Oeils = SmoothSubstractSDF(oeilGauche, oeilDr, 0.1);
+    vector C_oeD = {p.x - 0.83*rayon, p.y + 0.4*rayon, p.z + 0.4*rayon};
+    float oeilDr = SDF_sphere(p, C_oeD, 0.16*rayon);
+    float Oeils = UnionSDF(oeilGauche, oeilDr);
 
-    // coord C_ch1 = {centre.x, centre.y, centre.z + 9*rayon/10};
-    // float cheveu1 = SDF_Pyramide(p, C_ch1, (rayon/5), (rayon/20));
-
-    // float Tete = SmoothUnionSDF(oeilGauche, cheveu1, 0.1);
-    return Oeils;
+    vector A = {p.x - 0.98*rayon, p.y, p.z+0.2*rayon};	//Point (-0.98, 0, 3.2)
+    vector B = {p.x - 1.37*rayon, p.y, p.z+0.13*rayon};	//Point (-1.37, 0, 3.13)
+    vector C1 = {p.x - 0.97*rayon, p.y + 0.24*rayon, p.z + 0.05*rayon};	//Point (-0.97, 0.24, 3.05)
+    vector C2 = {p.x - 0.97*rayon, p.y - 0.24*rayon, p.z + 0.05*rayon};	//Point (-0.97, -0.24, 3.05)
+    vector D = {p.x - 1.28*rayon, p.y, p.z+0.11*rayon};	//Point (-1.28, 0, 3.11)
+    vector E1 = {p.x - 0.99*rayon, p.y + 0.13*rayon, p.z - 0.05*rayon};	//Point (-0.99, 0.23, 2.95)
+    vector E2 = {p.x - 0.99*rayon, p.y - 0.13*rayon, p.z - 0.05*rayon};	//Point (-0.99, -0.13, 2.95)
+    
+    float bec1 = SDF_triangle(p, A, B, C1);
+    float bec2 = SDF_triangle(p, A, B, C2);
+    float bec3 = SDF_triangle(p, C1, D, E1);
+    float bec4 = SDF_triangle(p, E1, D, E2);
+    float bec5 = SDF_triangle(p, E2, D, C2);
+    
+    float Bec1_1 = UnionSDF(Oeils, bec1);
+    float Bec1_2 = UnionSDF(Bec1_1, bec2);
+    float Bec1_3 = UnionSDF(Bec1_2, bec3);
+    float Bec1_4 = UnionSDF(Bec1_3, bec4);
+    float Bec1_5 = UnionSDF(Bec1_4, bec5);
+   
+    vector C_Chap1 = {p.x, p.y, p.z + 1.3*rayon};
+    vector C_Chap2 = {p.x, p.y, p.z + 1.025*rayon};
+    float Chap1 = SDF_cylindre(p, C_Chap1, 0.6*rayon, 0.2*rayon);
+    float Chap2 = SDF_cylindre(p, C_Chap2, 0.05*rayon, 0.3*rayon);
+    
+    float Chap1_1 = UnionSDF(Bec1_5, Chap1);
+    float Chap1_2 = UnionSDF(Chap1_1, Chap2);   
+    
+    return Chap1_2;
 }
 
 
@@ -250,7 +274,7 @@ float SDF_corps(vector p, vector centre, float rayon){
     vector C_Bas = {centre.x, centre.y, centre.z - rayon};
     float Bas = SDF_box(p, C_Bas, rayon, rayon, rayon/4);
 
-    float Corps = SmoothSubstractSDF(Contour, Bas, 0.1);
+    float Corps = SubstractSDF(Contour, Bas);
 
     return Corps;
 }
@@ -264,7 +288,7 @@ float SDF_Pingoo(vector p, vector centre, float rayon){
     vector C_Corps = {centre.x, centre.y, centre.z - 0.8*rayon/3};
     float Corps = SDF_corps(p, C_Corps, 2.1*rayon/3);
 
-    float Pingoo = SmoothUnionSDF(Tete, Corps, 1);
+    float Pingoo = UnionSDF(Tete, Corps);
     return Pingoo;
 }
 

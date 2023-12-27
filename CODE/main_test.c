@@ -89,11 +89,11 @@ int main(){
 
     camera CAMERA;
     CAMERA.size_L_e = 2.0;
-    CAMERA.dir_ecran_c = (vector){0,1,0};
+    CAMERA.dir_ecran_c = (vector){1,0,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (vector){1.0,-6,.7};
-    CAMERA.dist_screen = 3.0;
+    CAMERA.position_c = (vector){0,0,0};
+    CAMERA.dist_screen = 2.0;
 
 
     CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
@@ -146,8 +146,8 @@ int main(){
             fflush(stdout);
 
 
-            glfwSwapBuffers(window);
-            glfwPollEvents();
+            // glfwSwapBuffers(window);                                             //Répétition ?
+            // glfwPollEvents();
         }
         // printf("ok\n");
 
@@ -162,7 +162,6 @@ int main(){
 
         /* Poll for and process events */
         glfwPollEvents();
-        break;
     }
 
     glfwTerminate();

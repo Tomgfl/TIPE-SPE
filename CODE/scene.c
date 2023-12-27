@@ -139,8 +139,8 @@ float scene_pingoo(vector pts){
     int nb = 1;
     float all_sdf[nb];
 
-    vector C_1 = {0,20,0};
-    float tete = SDF_Pingoo(pts, C_1, 10); 
+    vector C_1 = {10,0,0};
+    float tete = SDF_Pingoo(rotation_x((vector){pts.x-C_1.x,pts.y-C_1.y,pts.z-C_1.z}, time_scene), C_1, 4); 
 
     all_sdf[0] = tete;
 
@@ -192,8 +192,7 @@ float scene_5(vector pts){
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float SCENE_PRINCIPAL(vector pts){
 
-    return SDF_pingouin_2(rotation_x(rotation_y((rotation_z(pts,30)), 180),90), pts);
-
+    return scene_pingoo(pts);
 }
 
 
