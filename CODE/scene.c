@@ -139,8 +139,8 @@ float scene_pingoo(vector pts){
     int nb = 1;
     float all_sdf[nb];
 
-    vector C_1 = {10,0,0};
-    float tete = SDF_Pingoo(rotation_x((vector){pts.x-C_1.x,pts.y-C_1.y,pts.z-C_1.z}, time_scene), C_1, 4); 
+    vector C_1 = {15,0,-1};
+    float tete = SDF_Pingoo(pts, C_1, 3); 
 
     all_sdf[0] = tete;
 

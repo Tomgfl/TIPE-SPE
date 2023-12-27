@@ -226,22 +226,22 @@ float SDF_Ellipsoid(vector p, vector centre, float a, float b, float c){
 float SDF_head(vector p, vector centre, float rayon){
     float Contour = SDF_sphere(p, centre, rayon);		//Centre (0,0,3), rayon 1
 
-    vector C_oeG = {p.x - 0.83*rayon, p.y - 0.4*rayon, p.z + 0.4*rayon};	//Centre (-0.83, 0.4, 0.34)
+    vector C_oeG = {centre.x - 0.83*rayon, centre.y - 0.4*rayon, centre.z + 0.4*rayon};	//Centre (-0.83, 0.4, 0.34)
     float oeilGa = SDF_sphere(p, C_oeG, 0.16*rayon);
     float oeilGauche = UnionSDF(Contour, oeilGa);
 
 
-    vector C_oeD = {p.x - 0.83*rayon, p.y + 0.4*rayon, p.z + 0.4*rayon};
+    vector C_oeD = {centre.x - 0.83*rayon, centre.y + 0.4*rayon, centre.z + 0.4*rayon};
     float oeilDr = SDF_sphere(p, C_oeD, 0.16*rayon);
     float Oeils = UnionSDF(oeilGauche, oeilDr);
 
-    vector A = {p.x - 0.98*rayon, p.y, p.z+0.2*rayon};	//Point (-0.98, 0, 3.2)
-    vector B = {p.x - 1.37*rayon, p.y, p.z+0.13*rayon};	//Point (-1.37, 0, 3.13)
-    vector C1 = {p.x - 0.97*rayon, p.y + 0.24*rayon, p.z + 0.05*rayon};	//Point (-0.97, 0.24, 3.05)
-    vector C2 = {p.x - 0.97*rayon, p.y - 0.24*rayon, p.z + 0.05*rayon};	//Point (-0.97, -0.24, 3.05)
-    vector D = {p.x - 1.28*rayon, p.y, p.z+0.11*rayon};	//Point (-1.28, 0, 3.11)
-    vector E1 = {p.x - 0.99*rayon, p.y + 0.13*rayon, p.z - 0.05*rayon};	//Point (-0.99, 0.23, 2.95)
-    vector E2 = {p.x - 0.99*rayon, p.y - 0.13*rayon, p.z - 0.05*rayon};	//Point (-0.99, -0.13, 2.95)
+    vector A = {centre.x - 0.98*rayon, centre.y, centre.z+0.2*rayon};	//Point (-0.98, 0, 3.2)
+    vector B = {centre.x - 1.37*rayon, centre.y, centre.z+0.13*rayon};	//Point (-1.37, 0, 3.13)
+    vector C1 = {centre.x - 0.97*rayon, centre.y + 0.24*rayon, centre.z + 0.05*rayon};	//Point (-0.97, 0.24, 3.05)
+    vector C2 = {centre.x - 0.97*rayon, centre.y - 0.24*rayon, centre.z + 0.05*rayon};	//Point (-0.97, -0.24, 3.05)
+    vector D = {centre.x - 1.28*rayon, centre.y, centre.z+0.11*rayon};	//Point (-1.28, 0, 3.11)
+    vector E1 = {centre.x - 0.99*rayon, centre.y + 0.13*rayon, centre.z - 0.05*rayon};	//Point (-0.99, 0.23, 2.95)
+    vector E2 = {centre.x - 0.99*rayon, centre.y - 0.13*rayon, centre.z - 0.05*rayon};	//Point (-0.99, -0.13, 2.95)
     
     float bec1 = SDF_triangle(p, A, B, C1);
     float bec2 = SDF_triangle(p, A, B, C2);
@@ -255,8 +255,8 @@ float SDF_head(vector p, vector centre, float rayon){
     float Bec1_4 = UnionSDF(Bec1_3, bec4);
     float Bec1_5 = UnionSDF(Bec1_4, bec5);
    
-    vector C_Chap1 = {p.x, p.y, p.z + 1.3*rayon};
-    vector C_Chap2 = {p.x, p.y, p.z + 1.025*rayon};
+    vector C_Chap1 = {centre.x, centre.y, centre.z + 1.3*rayon};
+    vector C_Chap2 = {centre.x, centre.y, centre.z + 1.025*rayon};
     float Chap1 = SDF_cylindre(p, C_Chap1, 0.6*rayon, 0.2*rayon);
     float Chap2 = SDF_cylindre(p, C_Chap2, 0.05*rayon, 0.3*rayon);
     
@@ -288,7 +288,7 @@ float SDF_Pingoo(vector p, vector centre, float rayon){
     vector C_Corps = {centre.x, centre.y, centre.z - 0.8*rayon/3};
     float Corps = SDF_corps(p, C_Corps, 2.1*rayon/3);
 
-    float Pingoo = UnionSDF(Tete, Corps);
+    float Pingoo = SmoothUnionSDF(Tete, Corps, 0.05);
     return Pingoo;
 }
 

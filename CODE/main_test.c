@@ -30,7 +30,7 @@ color ray_marching(ray r){
     float dist_tot = 0.0;
     vector position_actuelle = r.origine;
 
-    vector Lumiere = {5, -10, 20.0}; // lumiere mis a la mano
+    vector Lumiere = {0, 0, 0}; // lumiere mis a la mano
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
