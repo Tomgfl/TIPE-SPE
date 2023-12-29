@@ -30,10 +30,10 @@ dessin_fct.o : dessin_fct.h dessin_fct.c options.h light.h
 # 3d_obj/pingouin_1_sdf.o : 3d_obj/pingouin_1_sdf.h 3d_obj.pingouin_1_sdf.c vector.h utiles.h signed_distance_function.h
 # 	$(CC) -c 3d_obj/pingouin_1_sdf.c -O3 -o 3d_obj/pingouin_1_sdf.o
 
-3d_obj/pingouin_2_sdf.o : 3d_obj/pingouin_2_sdf.h 3d_obj.pingouin_2_sdf.c vector.h utiles.h signed_distance_function.h
+3d_obj/pingouin_2_sdf.o : 3d_obj/pingouin_2_sdf.h 3d_obj/pingouin_2_sdf.c vector.h utiles.h signed_distance_function.h
 	$(CC) -c 3d_obj/pingouin_2_sdf.c -O3 -o 3d_obj/pingouin_2_sdf.o
 
-3d_obj/cube_sdf.o : 3d_obj/cube_sdf.h 3d_obj.cube_sdf.c vector.h utiles.h signed_distance_function.h
+3d_obj/cube_sdf.o : 3d_obj/cube_sdf.h 3d_obj/cube_sdf.c vector.h utiles.h signed_distance_function.h
 	$(CC) -c 3d_obj/cube_sdf.c -O3 -o 3d_obj/cube_sdf.o
 
 test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/*.o

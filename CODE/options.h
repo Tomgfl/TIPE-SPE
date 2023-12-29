@@ -7,8 +7,8 @@
 
 
 // taille de l'ecran
-#define WIDTH 320
-#define HEIGHT 240
+#define WIDTH 32
+#define HEIGHT 24
 
 // Parametres du ray marching
 #define MAX_RAY_STEPS 512 // nombre max d'étape
