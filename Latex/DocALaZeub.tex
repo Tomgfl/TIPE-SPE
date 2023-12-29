@@ -41,22 +41,22 @@
 
 
 \lstdefinestyle{mystyle}{
-   % backgroundcolor=\color{backcolour},  
-   commentstyle=\color{codegreen},
-   keywordstyle=\color{blue},
-   numberstyle=\tiny\color{codegray},
-   numbers=left,                   
-   stringstyle=\color{codegreen},
-   basicstyle=\ttfamily\small,
-   showstringspaces=false,
-   % breakatwhitespace=false,
-   % breaklines=true,                
-   % captionpos=b,                   
-   % keepspaces=true,                
-   % numbersep=5pt,                 
-   % showspaces=false,               
-   % showtabs=false,                 
-   % tabsize=2
+    % backgroundcolor=\color{backcolour},  
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{blue},
+    numberstyle=\tiny\color{codegray},
+    numbers=left,                   
+    stringstyle=\color{codegreen},
+    basicstyle=\ttfamily\small,
+    showstringspaces=false,
+    % breakatwhitespace=false,
+    % breaklines=true,                
+    % captionpos=b,                   
+    % keepspaces=true,                
+    % numbersep=5pt,                 
+    % showspaces=false,               
+    % showtabs=false,                 
+    % tabsize=2
 }
 \lstset{style=mystyle}
 
@@ -85,10 +85,28 @@
 \clearpage
 
 \section{Tout commence par le commencement}
+\subsection{Le principe du Ray Marching}
+
+Le Ray marching consiste a faire du rendu 3D grace a des Signed Distances Functions (SDF). 
+Qui sont des fonctions qui calculent la distance entre un point et un objet, avec une distance négative des que le point se trouve a l'interieur de l'objet.
+
+Pour cela, pour chaque pixel de la camera on va envoyer un rayon depuis la camera passant par ce pixel. 
+Pour savoir quel est la distance maximal que ce rayon peut parcourir, on calcule la distance minimal a tous les objets de la scene. 
+On peut donc avancer de cette distance et on repette cela jusqu'a atteindre un objet ou dépasser une distance minimal. 
+On peut donc colorier le pixel en fonction du resultat.
+
+\begin{figure}[H]
+    \begin{center}
+        \includegraphics[width=10cm]{images/Shema_1_ray_marching_2d.png}\caption{Schéma rayon Ray Marching en 2D}
+    \end{center}
+\end{figure}
+
+
+
 \subsection{Affichage}
 
 \subsection{SdF}
-Le principe de la Signed Distance Function (SdF) est de calculer la distance entre un point et un objet.
+Le principe de la Signed Distance Function (SdF) est de calculer la distance entre un point et un objet, avec une distance négative des que le point se trouve a l'interieur de l'objet.
 \smallskip
 
 On peut donc donner à chaque forme de base une fonction distance afin de permettre, lors du lancer de chaque rayon, 
@@ -115,6 +133,12 @@ Les formes de base implémentées sont :
     \item Pyramide 
     \item Cylindre
 \end{itemize}
+
+\bigskip
+\underline{Exemple du triangle :}
+\medskip
+
+Le triangle est l'une des forme les plus importante en modélisation 3D car tous objet peut etre réprensenté facilement (avec plus ou moins de précision) grace a seulement des triangles.
 
 \subsection{Affichage des lumières et ombres}
 
@@ -160,10 +184,23 @@ float SubstractSDF (float d1, float d2){
 \subsubsection{Fonctions de lissage - Smooth}
 
 \section{Optimisations}
+
 \subsection{Bounding Volumes Hierarchy (BVH-Trees)}
 Arbres K-dimensionnels de priorisation des SdF
 
 \subsection{Multi-threading}
+
+
+\subsection{Chiffres}
+
+\subsection{Méthode naive}
+Nous avons sélectionner plusieurs scenes de references pour visualiser les performances de notre programme.
+
+[insert scene]
+
+Premiere implementation (sans reel opti) : 
+
+[mettre des graphiques en camenbert et tout ca]
 
 
 \end{document}
