@@ -1,8 +1,4 @@
 #include "scene.h"
-#include <stdio.h>
-#include "3d_obj/cube_sdf.h"
-#include "3d_obj/pingouin_1_sdf.h"
-#include "3d_obj/pingouin_2_sdf.h"
 
 extern float time_scene;
 

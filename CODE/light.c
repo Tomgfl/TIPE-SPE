@@ -1,17 +1,20 @@
 #include "light.h"
-#include "options.h"
-#include "utiles.h"
-#include "signed_distance_function.h"
-#include "scene.h"
 
 
+color c_rouge = {255,0,0,1.0};
+color c_bleu = {0,0,255,1.0};
+color c_vert = {0,255,0,1.0};
+color c_noir = {0,0,0,1.0};
+color c_blanc = {255,255,255,1.0};
+color c_gris = {63, 63, 63,1.0};
+color c_fond = {3,27,73,1.0};
 
 // --- LUMIERES --- //
 
 // renvoie la lumiere avec le prod vect et la normale
 float light_diffuse(vector pts, vector source){
     vector v_n = normalise_vecteur(vect_normal(pts));
-    float res = max(prod_scal(v_n, normalise_vecteur(get_vec_2_pts(pts,source))),0);
+    float res = fmax(prod_scal(v_n, normalise_vecteur(get_vec_2_pts(pts,source))),0);
     return res;
 }
 

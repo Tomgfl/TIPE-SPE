@@ -2,20 +2,15 @@
 #define SIGNED_DISTANCE_FUNCTION_H
 
 #include "vector.h"
+#include <math.h>
+#include "utiles.h"
+// #include <stdio.h>
+// #include <stdlib.h>
 
-
-
-
-// rayon
-struct ray_s{
-    vector origine;
-    vector direction;
-};
-typedef struct ray_s ray;
-
-
-
-
+// #include "signed_distance_function.h"
+// #include "vector.h"
+// #include "utiles.h"
+// #include "options.h"
 
 // SDF
 float SDF_sphere(vector p, vector centre, float rayon);

@@ -1,8 +1,4 @@
 #include "vector.h"
-#include "options.h"
-#include "signed_distance_function.h"
-#include "scene.h"
-#include <math.h>
 
 
 

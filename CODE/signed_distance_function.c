@@ -1,21 +1,7 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include "signed_distance_function.h"
-#include "vector.h"
-#include "utiles.h"
-#include "options.h"
 
-#define MIN(i, j) (((i) < (j)) ? (i) : (j))
-#define MAX(i, j) (((i) > (j)) ? (i) : (j))
-#define SIGN(x) (x > 0) ? 1 : ((x < 0) ? -1 : 0)
-#define CLAMP(d, min, max) (((d) < (min)) ? (min) : (((d) > (max)) ? (max) : (d)))
 
-double clamp(double d, double min, double max) {
-  const double t = d < min ? min : d;
-  return t > max ? max : t;
-}
+
 
 // --- FONCTIONS DE SDF --- //
 
@@ -42,9 +28,9 @@ float SDF_cylindre(vector p, vector centre, float H, float r){
     float distXY = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - r;   // Distance latérale
 
     if ((distToBase <= 0) && (distXY <= 0)) {           // Intérieur
-        return -MAX(distToBase, distXY);    
+        return -fmax(distToBase, distXY);    
     } else if ((distToBase <= 0) || (distXY <= 0)){     // Extérieur (dessus/côté)
-        return MAX(distToBase, distXY);
+        return fmax(distToBase, distXY);
     }   else {                                          // Extérieur (diagonale)
         return sqrt(distToBase * distToBase + distXY * distXY);
     }
@@ -60,9 +46,9 @@ float SDF_Cone(vector p, vector centre, float H, float r){    // Centre du cylin
     float distXY = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - (r/2)*((H/2 - p.z + centre.z)/H);   // Distance latérale
 
     if ((distToBase <= 0) && (distXY <= 0)) {           // Intérieur
-        return -MAX(distToBase, distXY);    
+        return -fmax(distToBase, distXY);    
     } else if ((distToBase <= 0) || (distXY <= 0)){     // Extérieur (dessus/côté)
-        return MAX(distToBase, distXY);
+        return fmax(distToBase, distXY);
     }   else {                                          // Extérieur (diagonale)
         return sqrt(distToBase * distToBase + distXY * distXY);
     }
@@ -141,12 +127,12 @@ float SDF_triangle(vector p, vector a, vector b, vector c){
         prod_scal(pc,n_ca) > 0.0){
         d_trig = d_plan;
     } else {
-        d_trig = MIN(MIN(d_1,d_2),d_3); 
+        d_trig = fmin(fmin(d_1,d_2),d_3); 
     }
     
     // return SDF_sphere_circonscrite_triangle(p,a,b,c);
 
-    return MAX(d_trig,SDF_sphere_circonscrite_triangle(p,a,b,c));
+    return fmax(d_trig,SDF_sphere_circonscrite_triangle(p,a,b,c));
 }
 
 
@@ -383,17 +369,17 @@ vector rotation_z (vector v, float angle){// angle en degres
 // --- OPERATIONS --- //
 // Union de 2 formes
 float UnionSDF (float d1, float d2){
-    return MIN(d1,d2);
+    return fmin(d1,d2);
 }
 
 // Intersection de 2 formes
 float IntersectSDF (float d1, float d2){
-    return MAX(d1,d2);
+    return fmax(d1,d2);
 }
 
 // Soustraction : On enlève le forme 2 de la forme 1
 float SubstractSDF (float d1, float d2){
-    return MAX(d1, -d2); 
+    return fmax(d1, -d2); 
 }
 
 // -- SMOOTH -- //

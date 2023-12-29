@@ -1,8 +1,4 @@
-#include <GLFW/glfw3.h>
-#include <stdio.h>
-
-#include "options.h"
-#include "light.h"
+#include "dessin_fct.h"
 
 /* Affiche un pixel
 x, y : coordonnes du pixel

@@ -1,7 +1,11 @@
 #ifndef LIGHT_H 
 #define LIGHT_H
 
+
+#include "utiles.h"
+// #include "options.h"
 #include "vector.h"
+#include "scene.h"
 
 // --- COULEURS --- //
 struct color_s{
@@ -11,7 +15,20 @@ struct color_s{
 typedef struct color_s color;
 
 
+// rayon
+struct ray_s{
+    vector origine;
+    vector direction;
+};
+typedef struct ray_s ray;
 
+extern color c_rouge;
+extern color c_bleu;
+extern color c_vert;
+extern color c_noir;
+extern color c_blanc;
+extern color c_gris;
+extern color c_fond;
 
 // --- LUMIERES --- //
 

@@ -1,6 +1,11 @@
 #ifndef VECTOR_H 
 #define VECTOR_H
 
+#include "options.h"
+// #include "signed_distance_function.h"
+// #include "scene.h"
+#include <math.h>
+
 // vecteur 3d
 struct vector_s{
     float x, y, z;
@@ -8,12 +13,9 @@ struct vector_s{
 typedef struct vector_s vector;
 
 
-// // type pour un point (x,y,z)
-// struct coord_s{
-//     float x, y, z;
-// };
-// typedef struct coord_s coord;
 
+
+float SCENE_PRINCIPAL(vector p);
 
 vector vect_normal(vector pts); // Renvoie le vecteur normale a une surface (en un point)
 vector prod_vect(vector v1, vector v2); // renvoie le produit vectoriel

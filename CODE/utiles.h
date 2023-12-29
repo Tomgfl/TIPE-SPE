@@ -2,7 +2,7 @@
 #define UTILES_H
 
 float min_lst (float* lst, int n);
-float min(float x, float y);
-float max(float x, float y);
+// float MIN(float x, float y);
+// float MAX(float x, float y);
 
 #endif 
