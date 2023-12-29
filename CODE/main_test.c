@@ -47,7 +47,7 @@ int main(){
     CAMERA.dir_ecran_c = (vector){1,0,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (vector){0,0,0};
+    CAMERA.position_c = (vector){-7,-1.5,2};
     CAMERA.dist_screen = 2.0;
 
 

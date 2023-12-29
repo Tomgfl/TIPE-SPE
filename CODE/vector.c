@@ -7,12 +7,16 @@
 vector vect_normal(vector pts){
     float dist = SCENE_PRINCIPAL(pts);
 
-    float grad_x = SCENE_PRINCIPAL((vector){pts.x + EPSILON, pts.y, pts.z}) - dist;
-    float grad_y = SCENE_PRINCIPAL((vector){pts.x, pts.y + EPSILON, pts.z}) - dist;
-    float grad_z = SCENE_PRINCIPAL((vector){pts.x, pts.y, pts.z + EPSILON}) - dist;
+    // float grad_x = SCENE_PRINCIPAL((vector){pts.x + EPSILON, pts.y, pts.z}) - dist;
+    // float grad_y = SCENE_PRINCIPAL((vector){pts.x, pts.y + EPSILON, pts.z}) - dist;
+    // float grad_z = SCENE_PRINCIPAL((vector){pts.x, pts.y, pts.z + EPSILON}) - dist;
+
+    float grad_x = SCENE_PRINCIPAL(v_add(pts, (vector){EPSILON,0,0})) - dist;
+    float grad_y = SCENE_PRINCIPAL(v_add(pts, (vector){0,EPSILON,0})) - dist;
+    float grad_z = SCENE_PRINCIPAL(v_add(pts, (vector){0,0,EPSILON})) - dist;
 
     vector v = {grad_x, grad_y, grad_z};
-    return v;
+    return normalise_vecteur(v);
 }
 
 

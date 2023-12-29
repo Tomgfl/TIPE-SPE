@@ -1,5 +1,5 @@
 #include "signed_distance_function.h"
-
+#include <stdio.h>
 
 
 
@@ -150,28 +150,56 @@ float SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c){
     vector vi = prod_vect(n,ab); // vecteur directeur de la mediatrice de ab
     vector vj = prod_vect(n,ac); // vecteur directeur de la mediatrice de ac
 
-    // resoud le systeme pour trouver l'intersection des mediatrices
-    float t_1,t_2;
-    float det = - vi.x * vj.y + vj.x * vi.y; // determinant du systeme pour trouver l'intersection
-    if (det == 0){ 
-        // printf("det = 0\n");
-        if (vi.x != 0){
-            t_2 = 1.0;
-            t_1 = (J.x - I.x + vj.x)/(vi.x);
-        } else if (vj.x != 0){
-            t_1 = 1.0;
-            t_2 = (vi.x - J.x + I.x)/(vj.x);
-        } else {
-            t_1 = 1.0;
-            t_2 = 1.0;
-        }
+    // // resoud le systeme pour trouver l'intersection des mediatrices
+    // float t_1,t_2;
+    // float det = - vi.x * vj.y + vj.x * vi.y; // determinant du systeme pour trouver l'intersection
+    // if (det == 0){ 
+    //     // printf("det = 0\n");
+    //     if (vi.x != 0){
+    //         t_2 = 1.0;
+    //         t_1 = (J.x - I.x + vj.x)/(vi.x);
+    //     } else if (vj.x != 0){
+    //         t_1 = 1.0;
+    //         t_2 = (vi.x - J.x + I.x)/(vj.x);
+    //     } else {
+    //         t_1 = 1.0;
+    //         t_2 = 1.0;
+    //     }
+    // } else {
+    //     t_1 = (-vj.y * (J.x - I.x) + vj.x * (J.y - I.y))/det;
+    //     t_2 = (vi.x * (J.y - I.y) - vi.y * (J.x - I.x))/det;
+    // }
+
+    res_systeme_2 inter_1 = solve_systeme_2(vi.x, -vj.x, vi.y, -vj.y, J.x - I.x, J.y - I.y);
+    res_systeme_2 inter_2 = solve_systeme_2(vi.y, -vj.y, vi.z, -vj.z, J.y - I.y, J.z - I.z);
+    res_systeme_2 inter_3 = solve_systeme_2(vi.x, -vj.x, vi.z, -vj.z, J.x - I.x, J.z - I.z);
+
+    // if (inter.det == 0.0 || inter.det == -0.0){
+    //     // printf("%f|%f|%f\n", vi.x * -vj.y + vi.y * vj.x, vi.x * -vj.z + vi.z * vj.x, vi.y * -vj.z + vi.z * vj.y);
+    //     res_systeme_2 inter = solve_systeme_2(vi.y, -vj.y, vi.z, -vj.z, J.y - I.y, J.z - I.z);
+    //     if (inter.det == 0.0 || inter.det == -0.0){
+    //         res_systeme_2 inter = solve_systeme_2(vi.x, -vj.x, vi.z, -vj.z, J.x - I.x, J.z - I.z);
+    //         // printf("ok\n");
+    //     }
+    // }
+    // // printf("%f\n", inter.det);
+    
+    res_systeme_2 res;
+
+    if (fabs(inter_1.det) > fabs(inter_2.det)){
+        res = inter_1;
     } else {
-        t_1 = (-vj.y * (J.x - I.x) + vj.x * (J.y - I.y))/det;
-        t_2 = (vi.x * (J.y - I.y) - vi.y * (J.x - I.x))/det;
+        res = inter_2;
+    }
+
+    if (fabs(res.det) < fabs(inter_3.det)){
+        res = inter_3;
     }
     
-    vector C_s_1 = v_add(I,v_mult_scal(vi,t_1));
-    vector C_s_2 = v_add(J,v_mult_scal(vj,t_2));
+    
+    
+    vector C_s_1 = v_add(I,v_mult_scal(vi,res.x));
+    // vector C_s_2 = v_add(J,v_mult_scal(vj,t_2));
 
     // printf("%f,%f,%f | %f,%f,%f \n", C_s_1.x,C_s_1.y,C_s_1.z,C_s_2.x,C_s_2.y,C_s_2.z);
 

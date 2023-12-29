@@ -188,7 +188,7 @@ float scene_5(vector pts){
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 float SCENE_PRINCIPAL(vector pts){
 
-    return scene_pingoo(pts);
+    return SDF_cube(pts,pts);
 }
 
 
