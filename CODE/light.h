@@ -2,25 +2,12 @@
 #define LIGHT_H
 
 
+#include "options.h"
 #include "utiles.h"
-// #include "options.h"
 #include "vector.h"
 #include "scene.h"
 
-// --- COULEURS --- //
-struct color_s{
-    int r, g, b;
-    float opp; // oppaciter de la couleur 
-};
-typedef struct color_s color;
 
-
-// rayon
-struct ray_s{
-    vector origine;
-    vector direction;
-};
-typedef struct ray_s ray;
 
 extern color c_rouge;
 extern color c_bleu;
@@ -29,6 +16,10 @@ extern color c_noir;
 extern color c_blanc;
 extern color c_gris;
 extern color c_fond;
+
+extern color c_orange;
+extern color c_bistre;
+extern color c_bleu_berlin;
 
 // --- LUMIERES --- //
 

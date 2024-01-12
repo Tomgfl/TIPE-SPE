@@ -8,6 +8,9 @@ color c_noir = {0,0,0,1.0};
 color c_blanc = {255,255,255,1.0};
 color c_gris = {63, 63, 63,1.0};
 color c_fond = {3,27,73,1.0};
+color c_orange = {255,165,0,1.0};
+color c_bistre = {61,43,31,1.0};
+color c_bleu_berlin = {36,68,92,1.0};
 
 // --- LUMIERES --- //
 
@@ -43,7 +46,7 @@ float shadow_1(vector pts, vector source){
     position_actuelle.z = pts.z + direction.z * dist_tot;
 
     for (int i = 0; i < MAX_RAY_STEPS/10; i++){ // on s'éloigne de la surface atteinte
-        dist_tot += SCENE_PRINCIPAL(position_actuelle);
+        dist_tot += SCENE_PRINCIPAL(position_actuelle).dist;
         position_actuelle.x = pts.x + direction.x * dist_tot;
         position_actuelle.y = pts.y + direction.y * dist_tot;
         position_actuelle.z = pts.z + direction.z * dist_tot;
@@ -52,7 +55,7 @@ float shadow_1(vector pts, vector source){
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
-        float dist = SCENE_PRINCIPAL(position_actuelle);
+        float dist = SCENE_PRINCIPAL(position_actuelle).dist;
         dist_tot += dist;
 
         if (dist < DIST_MIN*0.01){

@@ -5,15 +5,15 @@
 
 // renvoie le vecteur normal a une surface (en un point proche d'une surface) a l'aide du gradient
 vector vect_normal(vector pts){
-    float dist = SCENE_PRINCIPAL(pts);
+    float dist = SCENE_PRINCIPAL(pts).dist;
 
     // float grad_x = SCENE_PRINCIPAL((vector){pts.x + EPSILON, pts.y, pts.z}) - dist;
     // float grad_y = SCENE_PRINCIPAL((vector){pts.x, pts.y + EPSILON, pts.z}) - dist;
     // float grad_z = SCENE_PRINCIPAL((vector){pts.x, pts.y, pts.z + EPSILON}) - dist;
 
-    float grad_x = SCENE_PRINCIPAL(v_add(pts, (vector){EPSILON,0,0})) - dist;
-    float grad_y = SCENE_PRINCIPAL(v_add(pts, (vector){0,EPSILON,0})) - dist;
-    float grad_z = SCENE_PRINCIPAL(v_add(pts, (vector){0,0,EPSILON})) - dist;
+    float grad_x = SCENE_PRINCIPAL(v_add(pts, (vector){EPSILON,0,0})).dist - dist;
+    float grad_y = SCENE_PRINCIPAL(v_add(pts, (vector){0,EPSILON,0})).dist - dist;
+    float grad_z = SCENE_PRINCIPAL(v_add(pts, (vector){0,0,EPSILON})).dist - dist;
 
     vector v = {grad_x, grad_y, grad_z};
     return normalise_vecteur(v);

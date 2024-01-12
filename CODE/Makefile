@@ -6,39 +6,43 @@ CC = gcc
 all : test_ecran
 
 vector.o : vector.c vector.h options.h
-	$(CC) -c vector.c -lm -O3 -o vector.o
+	$(CC) -c vector.c -lm -O3 -g -o vector.o
 
-utiles.o : utiles.c utiles.h
-	$(CC) -c utiles.c -O3 -o utiles.o
+utiles.o : utiles.c utiles.h options.h
+	$(CC) -c utiles.c -O3 -g -o utiles.o
 
-signed_distance_function.o : signed_distance_function.c signed_distance_function.h vector.h utiles.h
-	$(CC) -c signed_distance_function.c -lm -O3 -o signed_distance_function.o
+signed_distance_function.o : signed_distance_function.c signed_distance_function.h vector.h utiles.h options.h
+	$(CC) -c signed_distance_function.c -lm -O3 -g -o signed_distance_function.o
 
-scene.o : scene.h scene.c vector.h signed_distance_function.h utiles.h 3d_obj/*.h
-	$(CC) -c scene.c -O3 -o scene.o
+scene.o : scene.h scene.c vector.h signed_distance_function.h utiles.h 3d_obj/*.h options.h
+	$(CC) -c scene.c -O3 -g -o scene.o
 
 ray_marching.o : ray_marching.c ray_marching.h light.h vector.h options.h scene.h
-	$(CC) -c ray_marching.c -O3 -o ray_marching.o
+	$(CC) -c ray_marching.c -O3 -g -o ray_marching.o
 
-light.o : light.c light.h utiles.h vector.h scene.h
-	$(CC) -c light.c -O3 -o light.o
+light.o : light.c light.h utiles.h vector.h scene.h options.h 
+	$(CC) -c light.c -O3 -g -o light.o
 
 dessin_fct.o : dessin_fct.h dessin_fct.c options.h light.h
-	$(CC) -c dessin_fct.c -lglfw -lGL -O3 -o dessin_fct.o
+	$(CC) -c dessin_fct.c -lglfw -lGL -O3 -g -o dessin_fct.o
 
 # 3d obj
 # 3d_obj/pingouin_1_sdf.o : 3d_obj/pingouin_1_sdf.h 3d_obj.pingouin_1_sdf.c vector.h utiles.h signed_distance_function.h
 # 	$(CC) -c 3d_obj/pingouin_1_sdf.c -O3 -o 3d_obj/pingouin_1_sdf.o
 
-3d_obj/pingouin_2_sdf.o : 3d_obj/pingouin_2_sdf.h 3d_obj/pingouin_2_sdf.c vector.h utiles.h signed_distance_function.h
-	$(CC) -c 3d_obj/pingouin_2_sdf.c -O3 -o 3d_obj/pingouin_2_sdf.o
 
-3d_obj/cube_sdf.o : 3d_obj/cube_sdf.h 3d_obj/cube_sdf.c vector.h utiles.h signed_distance_function.h
-	$(CC) -c 3d_obj/cube_sdf.c -O3 -o 3d_obj/cube_sdf.o
+# a enlever
+# 3d_obj/pingouin_2_sdf.o : 3d_obj/pingouin_2_sdf.h 3d_obj/pingouin_2_sdf.c vector.h utiles.h signed_distance_function.h options.h
+# 	$(CC) -c 3d_obj/pingouin_2_sdf.c -O3 -o 3d_obj/pingouin_2_sdf.o
 
-test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o
-	$(CC) main_test.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o -lm -lglfw -lGL -O3 -o test_ecran
+# 3d_obj/cube_sdf.o : 3d_obj/cube_sdf.h 3d_obj/cube_sdf.c vector.h utiles.h signed_distance_function.h options.h
+# 	$(CC) -c 3d_obj/cube_sdf.c -O3 -o 3d_obj/cube_sdf.o
 
+#test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o
+#	$(CC) main_test.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o -lm -lglfw -lGL -O3 -o test_ecran
+
+test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o
+	$(CC) main_test.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o -lm -lglfw -lGL -O3 -g -o test_ecran
 
 
 clean : 

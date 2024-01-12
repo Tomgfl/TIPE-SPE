@@ -9,8 +9,11 @@ color ray_marching(ray r){
     vector Lumiere = {-10, -10, 100}; // lumiere mis a la mano
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
+
+        res_SDF result_scene = SCENE_PRINCIPAL(position_actuelle);
         
-        float dist = SCENE_PRINCIPAL(position_actuelle);
+        float dist = result_scene.dist;
+
         dist_tot += dist;
 
         if (dist < DIST_MIN){ // Si on touche un objet
@@ -19,7 +22,9 @@ color ray_marching(ray r){
 
             float val_shadow = shadow_1(position_actuelle, Lumiere);
 
-            color res = {150.0, 150.0, 15.0, val_light*val_shadow};
+            // color res = {150.0, 150.0, 15.0, val_light*val_shadow};
+            color res = result_scene.c;
+            res.opp = val_light*val_shadow;
             return res;
         }
 
