@@ -131,17 +131,17 @@ res_SDF scene_1(vector pts){
 
 
 
-// float scene_pingoo(vector pts){
-//     int nb = 1;
-//     float all_sdf[nb];
+res_SDF scene_pingoo(vector pts){
+    int nb = 1;
+    res_SDF all_sdf[nb];
 
-//     vector C_1 = {15,0,-1};
-//     float tete = SDF_Pingoo(pts, C_1, 3); 
+    vector C_1 = {10,10,10};
+    res_SDF tete = SDF_Pingoo(pts, C_1, 3); 
 
-//     all_sdf[0] = tete;
+    all_sdf[0] = tete;
 
-//     return min_lst(all_sdf, nb);
-// }
+    return min_lst_sdf(all_sdf, nb);
+}
 
 
 
@@ -188,7 +188,7 @@ res_SDF scene_1(vector pts){
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 res_SDF SCENE_PRINCIPAL(vector pts){
 
-    return scene_1(pts);
+    return scene_pingoo(pts);
 
     // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
 }
