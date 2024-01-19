@@ -101,8 +101,8 @@ int main(){
             fflush(stdout);
 
 
-            glfwSwapBuffers(window);                                             //Répétition ?
-            glfwPollEvents();
+            // glfwSwapBuffers(window);                                             //Répétition ?
+            // glfwPollEvents();
         }
         // printf("ok\n");
 
