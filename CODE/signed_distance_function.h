@@ -49,6 +49,8 @@ res_SDF SubstractSDF(res_SDF d1, res_SDF d2);
 res_SDF SmoothUnionSDF(res_SDF d1, res_SDF d2, float k);
 res_SDF SmoothIntersectSDF(res_SDF d1, res_SDF d2, float k);
 res_SDF SmoothSubstractSDF(res_SDF d1, res_SDF d2, float k);
+// Modification de forme
+res_SDF Disturb(vector p, res_SDF d);
 
 
 

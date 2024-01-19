@@ -2,6 +2,8 @@
 #include <stdio.h>
 
 
+extern float time_scene;
+
 
 // --- FONCTIONS DE SDF --- //
 
@@ -488,6 +490,17 @@ res_SDF SubstractSDF (res_SDF d1, res_SDF d2){
 // res_SDF SmoothSubstractSDF(res_SDF d1, res_SDF d2, float k){
 //     return -SmoothUnionSDF(-d1,d2,k);
 // }
+
+
+res_SDF Disturb(vector p, res_SDF d) {
+    float displacement = sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.x) * sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.y) * sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.z) * 0.25;
+    // float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
+    res_SDF res;
+    res.c = d.c;
+    res.dist = displacement + d.dist;
+
+    return res;
+}
 
 
 

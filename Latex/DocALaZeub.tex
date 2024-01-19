@@ -185,8 +185,14 @@ float SubstractSDF (float d1, float d2){
 
 \section{Optimisations}
 
+Test de structure de données pour l'optimisation.
+
+Deux méthodes possibles.
+
 \subsection{Bounding Volumes Hierarchy (BVH-Trees)}
-Arbres K-dimensionnels de priorisation des SdF
+
+
+\subsection{KD-tree}
 
 \subsection{Multi-threading}
 
@@ -213,25 +219,39 @@ Premiere implementation (sans reel opti) :
 
 \section{Proposition MCOT}
 
-Objectifs ? 
+
 
 Après avoir trouvé plusieurs vidéos sur le Ray Marching, méthode de 
-modélisation consistant à envoyer un faisceau sur chaque pixel de l'écran,
-nous nous sommes tout d'abord intéressé à l'implémentation de cette méthode
+modélisation utilisée dans certains jeux vidéo, consistant à envoyer un faisceau sur chaque pixel de l'écran,
+nous nous sommes tout d'abord intéressé à l'implémentation de cette méthode [1] [2]
 avec l'utilisation de figures et d'opérateurs simples.\\
 Le processus étant assez lent dès que la scène devenait complexe, nous avons donc
-cherché différents moyens d'amélioration du rendu.
+cherché différents moyens d'amélioration du rendu tels que des BVH [3].
+\smallskip 
+
+Biblio : 
+\begin{itemize}
+    \item [1] : https://iquilezles.org/
+    \item [2] : Efficient Binocular Rendering of Volumetric Density Fields with Coupled Adaptive Cube-Map Ray Marching for Virtual Reality
+    \item [3] : Performance Comparison of Bounding Volume Hierarchies and Kd-Trees for GPU Ray Tracing
+\end{itemize}
 \smallskip 
 
 Mots clés : 
 \begin{itemize}
     \item Ray Marching
-    \item Signed Distance Function 
-    \item Bounding Volume Hierarchy 
+    \item Nurbs
+    \item Kd-tree
     \item Threading
 \end{itemize}
-\smallskip
+\medskip
+
 
 Problématique : 
+Dans quelle mesure est-il possible de représenter des scènes aussi complexes possibles de manières fluides 
+pour des jeux vidéos en utilisant du Ray Marching ?
+
+
+
 
 \end{document}

@@ -5,6 +5,18 @@ extern float time_scene;
 // --- SCENE --- //
 
 
+res_SDF scene_sphere(vector pts){
+    int nb = 1;
+    res_SDF all_sdf[nb];
+
+    vector C = {0,0,7};
+    res_SDF sdf_sphere = SDF_sphere(pts, C, 2, c_orange);
+    sdf_sphere = Disturb(pts, sdf_sphere);
+
+    return sdf_sphere;
+
+}
+
 // --- SCENE #1 --- // Tous les objets
 res_SDF scene_1(vector pts){
     int nb = 6;
@@ -21,6 +33,7 @@ res_SDF scene_1(vector pts){
 
     vector C_3 = {10,10,0};
     res_SDF sdf_tor = SDF_Tor(pts, C_3, 2, 1, c_gris);
+    sdf_tor = Disturb(pts, sdf_tor);
 
     vector C_4 = {0,10,10};
     res_SDF sdf_cylindre = SDF_cylindre(pts, C_4, 6, 1, c_bistre);
@@ -188,7 +201,7 @@ res_SDF scene_pingoo(vector pts){
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
 res_SDF SCENE_PRINCIPAL(vector pts){
 
-    return scene_pingoo(pts);
+    return scene_sphere(pts);
 
     // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
 }

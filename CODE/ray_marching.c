@@ -6,7 +6,7 @@ color ray_marching(ray r){
     float dist_tot = 0.0;
     vector position_actuelle = r.origine;
 
-    vector Lumiere = {-10, -10, 100}; // lumiere mis a la mano
+    vector Lumiere = {0, -20, 30}; // lumiere mis a la mano
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
 
@@ -20,7 +20,8 @@ color ray_marching(ray r){
 
             float val_light = all_light(position_actuelle, Lumiere);
 
-            float val_shadow = shadow_1(position_actuelle, Lumiere);
+            float val_shadow = 1;
+            // float val_shadow = shadow_1(position_actuelle, Lumiere);
 
             // color res = {150.0, 150.0, 15.0, val_light*val_shadow};
             color res = result_scene.c;

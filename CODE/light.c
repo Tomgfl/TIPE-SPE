@@ -25,7 +25,7 @@ float light_diffuse(vector pts, vector source){
 float all_light(vector pts, vector source){
     float res = 0;
     res += light_diffuse(pts, source);
-    res += 0.3; // lumiere ambiante
+    res += 0.4; // lumiere ambiante
 
     return res;
 }
@@ -45,12 +45,12 @@ float shadow_1(vector pts, vector source){
     position_actuelle.y = pts.y + direction.y * dist_tot;
     position_actuelle.z = pts.z + direction.z * dist_tot;
 
-    for (int i = 0; i < MAX_RAY_STEPS/10; i++){ // on s'éloigne de la surface atteinte
-        dist_tot += SCENE_PRINCIPAL(position_actuelle).dist;
-        position_actuelle.x = pts.x + direction.x * dist_tot;
-        position_actuelle.y = pts.y + direction.y * dist_tot;
-        position_actuelle.z = pts.z + direction.z * dist_tot;
-    }
+    // for (int i = 0; i < MAX_RAY_STEPS/10; i++){ // on s'éloigne de la surface atteinte
+    //     dist_tot += SCENE_PRINCIPAL(position_actuelle).dist;
+    //     position_actuelle.x = pts.x + direction.x * dist_tot;
+    //     position_actuelle.y = pts.y + direction.y * dist_tot;
+    //     position_actuelle.z = pts.z + direction.z * dist_tot;
+    // }
     
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
