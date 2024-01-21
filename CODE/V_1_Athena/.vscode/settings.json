@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "dessin_fct.h": "c",
+        "utiles.h": "c",
+        "vector.h": "c"
+    }
+}

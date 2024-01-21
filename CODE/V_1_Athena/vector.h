@@ -13,7 +13,7 @@
 
 res_SDF SCENE_PRINCIPAL(vector p);
 
-vector vect_normal(vector pts); // Renvoie le vecteur normale a une surface (en un point)
+vector vect_normal(vector pts, res_SDF(*scene_act)(vector)); // Renvoie le vecteur normale a une surface (en un point)
 vector prod_vect(vector v1, vector v2); // renvoie le produit vectoriel
 float prod_scal(vector v1, vector v2); // renvoie le produit scalaire
 vector get_vec_2_pts(vector p1, vector p2); // cree le vecteur entre 2 points

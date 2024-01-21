@@ -9,6 +9,6 @@
 
 
 
-color ray_marching(ray r);
+color ray_marching(ray r, res_SDF (*scene_actuelle)(vector));
 
 #endif 

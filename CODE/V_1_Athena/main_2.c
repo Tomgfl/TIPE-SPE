@@ -16,38 +16,26 @@
 float time_scene = 0;
 
 
-
+res_SDF (*My_scene_p)(vector); // pointeur vers la scene
 
 
 int main(){
     srand(time(NULL));
+    My_scene_p = scene_effets;
+
     // --- GESTION DE LA FENETRE --- //
     GLFWwindow* window;
-    /* Initialize the library */
     if (!glfwInit()){return -1;}
-    /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Test 1", NULL, NULL);
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Main 2 - Effects sur les objets", NULL, NULL);
     if (!window){glfwTerminate();return -1;}
-    /* Make the window's context current */
     glfwMakeContextCurrent(window);
-
-
-    // --- V3 CAMERA --- //
-    // Pour toutes les scenes
-    // camera CAMERA;
-    // CAMERA.size_L_e = 6.0;
-    // CAMERA.dir_ecran_c = (vector){0,1,0};
-
-    // CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    // CAMERA.position_c = (vector){0,-10,6};
-    // CAMERA.dist_screen = 3.0;
 
     camera CAMERA;
     CAMERA.size_L_e = 2.0;
-    CAMERA.dir_ecran_c = (vector){0,1,0};
+    CAMERA.dir_ecran_c = (vector){1,0,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (vector){0,-20,5};
+    CAMERA.position_c = (vector){-10,0,10};
     CAMERA.dist_screen = 2.0;
 
 
@@ -67,7 +55,20 @@ int main(){
                            -CAMERA.de*CAMERA.orthcam.z};
 
 
+    // les directions dans lesquels doivent poartir les rayons 
+    vector** ecran_ray_directions = malloc(WIDTH*sizeof(vector*));
+    for (int i = 0; i < WIDTH; i++){
+        ecran_ray_directions[i] = malloc(HEIGHT*sizeof(vector));
+    }
     
+    for (int i = 0; i < WIDTH; i++){
+        for (int j = 0; j < HEIGHT; j++){
+            ecran_ray_directions[i][j] = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
+                    (vector){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
+                            CAMERA.A.y + i*CAMERA.vLde.y + j*CAMERA.vlde.y,
+                            CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
+        }
+    }    
 
     /* Boucle principale */
     while (!glfwWindowShouldClose(window)){
@@ -75,50 +76,35 @@ int main(){
     
         glClear(GL_COLOR_BUFFER_BIT);
 
-
-        
-        time_scene += 10.0;
+        time_scene += 1.0;
 
         // pour chaque pixel de l'ecran
         for (int i = 0; i < WIDTH; i++){
             for (int j = 0; j < HEIGHT; j++){
-
                 // chaque rayon part de la camera en direction de chaque pixel (vect normaliser)
                 ray R;
                 R.origine = CAMERA.position_c;
-                // comme dans ecran mais calcul direct ie calcule du vecteur de la cam vers chaque pixels
-                //R.direction = normalise_vecteur(get_vec_2_pts(cam_c,(coord){p_cam->x - screen_mid_x + de*i, p_cam->y + screen_dist_y, p_cam->z + screen_mid_z - de*j}));
-                R.direction = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
-                    (vector){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
-                            CAMERA.A.y + i*CAMERA.vLde.y + j*CAMERA.vlde.y,
-                            CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
-
-                color C = ray_marching(R);
+                R.direction = ecran_ray_directions[i][j];
+                color C = ray_marching(R, My_scene_p);
                 draw_pixel(i, j, C, 1); // affiche le pixel                
             }
-            printf("\033[H \n");
-            printf("%.2f %%\n",(float)(i)/WIDTH*100.0);
-            fflush(stdout);
-
-
+            // printf("\033[H \n");
+            // printf("%.2f %%\n",(float)(i)/WIDTH*100.0);
+            // fflush(stdout);
             // glfwSwapBuffers(window);                                             //Répétition ?
             // glfwPollEvents();
         }
         // printf("ok\n");
-
-        //printf("%f \n",SDF_triangle((vector){-8.0,-0.63,0.72},(vector){-9.0,0,0},(vector){-6,0,0},(vector){-8.3,-1.86,2.13}));
-        //printf("%f \n",SDF_triangle((vector){-8.65,-1.3,1.7},(vector){-9.0,0,0},(vector){-6,0,0},(vector){-8.3,-1.86,2.13}));
-        // CAMERA.position_c.x -= 1;
-        // CAMERA.position_c.y += 1;
-        // CAMERA.position_c.z -= 1;
-
-        /* Swap front and back buffers */
         glfwSwapBuffers(window);
-
-        /* Poll for and process events */
         glfwPollEvents();
     }
 
     glfwTerminate();
+
+    for (int i = 0; i < WIDTH; i++){
+        free(ecran_ray_directions[i]);
+    }
+    free(ecran_ray_directions);
+
     return 0;
 }

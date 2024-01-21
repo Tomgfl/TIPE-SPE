@@ -3,8 +3,6 @@
 extern float time_scene;
 
 // --- SCENE --- //
-
-
 res_SDF scene_sphere(vector pts){
     int nb = 1;
     res_SDF all_sdf[nb];
@@ -23,7 +21,7 @@ res_SDF scene_1(vector pts){
     res_SDF all_sdf[nb];
 
     vector n_plan = {0, 0, 1};
-    res_SDF sdf_plan = SDF_plan(pts, n_plan, (vector){0,0,-4}, c_vert);
+    res_SDF sdf_plan = SDF_plan(pts, n_plan, (vector){0,0,-4}, c_gris);
 
     vector C_1 = {-10,10,0};
     res_SDF sdf_box = SDF_box(pts, C_1, 4,4,4, c_bleu);
@@ -32,27 +30,47 @@ res_SDF scene_1(vector pts){
     res_SDF sdf_sphere = SDF_sphere(pts, C_2, 2, c_blanc);
 
     vector C_3 = {10,10,0};
-    res_SDF sdf_tor = SDF_Tor(pts, C_3, 2, 1, c_gris);
-    sdf_tor = Disturb(pts, sdf_tor);
+    res_SDF sdf_tor = SDF_Tor(pts, C_3, 2, 1, c_bleu_berlin);
+    // sdf_tor = Disturb(pts, sdf_tor);
 
     vector C_4 = {0,10,10};
-    res_SDF sdf_cylindre = SDF_cylindre(pts, C_4, 6, 1, c_bistre);
+    res_SDF sdf_tri = SDF_triangle(pts, (vector){-3,10,8},(vector){3,10,10},(vector){0,10,13},c_vert);
+    // res_SDF sdf_cylindre = SDF_cylindre(pts, C_4, 6, 1, c_bistre);
 
     vector C_5 = {0,10,0};
-    res_SDF sdf_cone = SDF_Cone(pts, C_5, 6, 2, c_noir);
+    res_SDF sdf_ell = SDF_Ellipsoid(pts, C_5, 3.2, 1.0, 1.6, c_orange);
+    // res_SDF sdf_cone = SDF_Cone(pts, C_5, 6, 2, c_noir);
 
 
     all_sdf[0] = sdf_plan;
     all_sdf[1] = sdf_tor;
     all_sdf[2] = sdf_box;
-    all_sdf[3] = sdf_cylindre;
-    all_sdf[4] = sdf_cone;
+    all_sdf[3] = sdf_tri;
+    all_sdf[4] = sdf_ell;
     all_sdf[5] = sdf_sphere;
 
     return min_lst_sdf(all_sdf, nb);
 }
 
 
+
+res_SDF scene_effets(vector pts){
+    int nb = 1;
+    res_SDF all_sdf[nb];
+
+    vector C_1 = {15,-2,12};
+    res_SDF sphere_1 = SDF_sphere(pts, C_1, 4.0, c_orange);
+    sphere_1 = Disturb(pts, sphere_1);
+
+    all_sdf[0] = sphere_1;
+
+    return min_lst_sdf(all_sdf, nb);
+}
+
+res_SDF banquise(vector pts){
+    
+    return SDF_pingouin(rotation_y(rotation_x(pts, 90), 35), pts);
+}
 
 
 // float scene_2(vector pts){
@@ -199,12 +217,12 @@ res_SDF scene_pingoo(vector pts){
 
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
-res_SDF SCENE_PRINCIPAL(vector pts){
+// res_SDF SCENE_PRINCIPAL(vector pts){
 
-    return scene_sphere(pts);
+//     return scene_sphere(pts);
 
-    // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
-}
+//     // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
+// }
 
 
 
