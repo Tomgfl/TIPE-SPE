@@ -2,6 +2,8 @@
     "files.associations": {
         "dessin_fct.h": "c",
         "utiles.h": "c",
-        "vector.h": "c"
+        "vector.h": "c",
+        "signed_distance_function.h": "c",
+        "light.h": "c"
     }
 }

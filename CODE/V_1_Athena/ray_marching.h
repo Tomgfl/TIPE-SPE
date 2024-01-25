@@ -1,6 +1,7 @@
 #ifndef RAY_MARCHING_H 
 #define RAY_MARCHING_H
 
+#include <time.h>
 #include "options.h"
 #include "light.h"
 // #include "signed_distance_function.h"

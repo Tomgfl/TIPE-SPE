@@ -15,6 +15,7 @@
 res_SDF scene_1(vector pts);
 res_SDF scene_effets(vector pts);
 res_SDF banquise(vector pts);
+res_SDF paysage(vector pts);
 
 // res_SDF SCENE_PRINCIPAL(vector pts);
 res_SDF scene_sphere(vector pts);

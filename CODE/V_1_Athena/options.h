@@ -55,10 +55,32 @@ struct res_systeme_2_s{
 };
 typedef struct res_systeme_2_s res_systeme_2;
 
+struct stats_opti_s{
+    // pour le raymarching principal
+    long long int nb_rayons_tot;            // fait
+    long long int nb_rayons_etapes;         // fait
+
+    // pour le calcule des ombres
+    long long int nb_shadow_rayons_tot;     // fait
+    long long int nb_shadow_rayons_etapes;  // fait
+    
+    int nb_images;                          // fait m
+
+    double temps_tot;                       // fait m
+    double temps_raymarch;                  // fait
+    double temps_light;                     // fait
+    double temps_shadow;                    // fait
+    
+    double temps_scene;                     
+
+};
+typedef struct stats_opti_s stats_opti;
+
+
 
 // taille de l'ecran
-#define WIDTH 64
-#define HEIGHT 48
+#define WIDTH 640
+#define HEIGHT 480
 
 // Parametres du ray marching
 #define MAX_RAY_STEPS 1024 // nombre max d'étape

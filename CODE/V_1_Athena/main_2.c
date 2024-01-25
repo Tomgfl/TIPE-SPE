@@ -14,6 +14,8 @@
 #include "ray_marching.h"
 
 float time_scene = 0;
+stats_opti STATS = {0,0,0,0,0,
+0.0,0.0,0.0,0.0,0.0};
 
 
 res_SDF (*My_scene_p)(vector); // pointeur vers la scene

@@ -4,7 +4,7 @@
 CC = gcc
 OPTIONS = -lm -O3 -g -lglfw -lGL
 
-all : test_ecran main_1 main_2 main_3
+all : test_ecran main_1 main_2 main_3 main_4
 
 vector.o : vector.c vector.h options.h
 	$(CC) -c vector.c $(OPTIONS) -o vector.o
@@ -58,6 +58,9 @@ main_2 : main_2.c options.h vector.o utiles.o signed_distance_function.o scene.o
 
 main_3 : main_3.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o
 	$(CC) main_3.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o $(OPTIONS) -o main_3
+
+main_4 : main_4.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o
+	$(CC) main_4.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o $(OPTIONS) -o main_4
 
 clean : 
 	rm -f ./test_ecran

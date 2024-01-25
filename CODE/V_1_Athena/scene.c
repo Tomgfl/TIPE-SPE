@@ -73,6 +73,60 @@ res_SDF banquise(vector pts){
 }
 
 
+
+// video paysage
+
+
+float coeff_i_j(int i,int j){
+    double k;
+    float u = 50*modf(i/3.1415, &k);
+    float v = 50*modf(j/3.1415, &k);
+
+    float a_i_j = modf(u*v*(u+v),&k)-1;
+
+    return a_i_j;
+}
+
+
+
+float smoothstep(float a, float b, float x){
+    // a < b
+    float l = fmin(1,fmax(0,(x-a)/(b-a)));
+    return l*l*(3-2*l);
+}
+
+
+float nurbs_paysage(float x, float z){
+    int i = floorf(x);
+    int j = floorf(z);
+
+    float a = coeff_i_j(i,j);
+    float b = coeff_i_j(i+1,j);
+    float c = coeff_i_j(i,j+1);
+    float d = coeff_i_j(i+1, j+1);
+
+    float res = 
+        a + 
+        (b-a)*smoothstep(0,1,x-i) +
+        (c-a)*smoothstep(0,1,z-j) + 
+        (a-b-c+d)*smoothstep(0,1,x-i)*smoothstep(0,1,z-j);
+    
+    return res;
+
+}
+
+res_SDF paysage(vector pts){
+    res_SDF res;
+    res.c = c_orange;
+    res.dist = nurbs_paysage(pts.x, pts.z);
+    return res;
+}
+
+
+
+
+
+
 // float scene_2(vector pts){
 //     int nb = 3;
 //     float all_sdf[nb];
