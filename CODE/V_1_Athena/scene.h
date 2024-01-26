@@ -11,6 +11,7 @@
 // #include <stdio.h>
 // #include "3d_obj/pingouin_1_sdf.h"
 
+// res_SDF SDF_pingouin(vector pts, vector c);
 
 res_SDF scene_1(vector pts);
 res_SDF scene_effets(vector pts);

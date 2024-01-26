@@ -2,7 +2,7 @@
 # 	gcc main_test.c dessin_fct.c vector.c utiles.c ray_marching.c signed_distance_function.c light.c scene.c 3d_obj/*.c -O3 -lm -lglfw -lGL -o test_ecran
 
 CC = gcc
-OPTIONS = -lm -O3 -g -lglfw -lGL
+OPTIONS = -lm -O3 -ffast-math -g -lglfw -lGL
 
 all : test_ecran main_1 main_2 main_3 main_4
 

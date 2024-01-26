@@ -31,7 +31,7 @@ res_SDF scene_1(vector pts){
 
     vector C_3 = {10,10,0};
     res_SDF sdf_tor = SDF_Tor(pts, C_3, 2, 1, c_bleu_berlin);
-    // sdf_tor = Disturb(pts, sdf_tor);
+    sdf_tor = Disturb(pts, sdf_tor);
 
     vector C_4 = {0,10,10};
     res_SDF sdf_tri = SDF_triangle(pts, (vector){-3,10,8},(vector){3,10,10},(vector){0,10,13},c_vert);
