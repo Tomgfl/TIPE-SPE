@@ -69,9 +69,7 @@ struct stats_opti_s{
     double temps_tot;                       // fait m
     double temps_raymarch;                  // fait
     double temps_light;                     // fait
-    double temps_shadow;                    // fait
-    
-    double temps_scene;                     
+    double temps_shadow;                    // fait                   
 
 };
 typedef struct stats_opti_s stats_opti;
@@ -84,7 +82,7 @@ typedef struct stats_opti_s stats_opti;
 
 // Parametres du ray marching
 #define MAX_RAY_STEPS 1024 // nombre max d'étape
-#define DIST_MIN 0.001 // diatance a partir de laquel on a atteint un objet
+#define DIST_MIN 0.01 // diatance a partir de laquel on a atteint un objet
 #define MAX_TOTAL_LENGHT 500 // distance max que peut parcourir un rayon
 #define EPSILON 0.00001 // pour le calcule des gradients
 

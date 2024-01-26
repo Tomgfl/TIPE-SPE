@@ -6,6 +6,7 @@
 #include "utiles.h"
 #include "vector.h"
 #include "scene.h"
+#include <time.h>
 
 
 

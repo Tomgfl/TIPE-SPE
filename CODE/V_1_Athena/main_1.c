@@ -15,7 +15,7 @@
 
 float time_scene = 0;
 stats_opti STATS = {0,0,0,0,0,
-0.0,0.0,0.0,0.0,0.0};
+0.0,0.0,0.0,0.0};
 
 
 res_SDF (*My_scene_p)(vector); // pointeur vers la scene
@@ -119,7 +119,7 @@ int main(){
     printf("Temps calcul lumière : %f sec\n", STATS.temps_light);
     printf("Temps calcul ombres : %f sec\n", STATS.temps_shadow);
     printf("Temps calcul ray_marching seul : %f sec\n", STATS.temps_raymarch);
-    printf("Temps pris pour le calcul du min d'une scene (compris dans ray et ombre) : %f sec\n", STATS.temps_scene);
+    // printf("Temps pris pour le calcul du min d'une scene (compris dans ray et ombre) : %f sec\n", STATS.temps_scene);
     printf("Nombre total de rayons lancé pour le ray-marching : %lld\n",STATS.nb_rayons_tot);
     printf("Nombre total d'étapes pour les rayons du ray-marching : %lld\n", STATS.nb_rayons_etapes);
     printf("Nombre moyen d'étapes ray-marching : %.2f\n", (double)STATS.nb_rayons_etapes / STATS.nb_rayons_tot);
@@ -129,7 +129,7 @@ int main(){
     printf("Poucentage temps pris pour ray-march | lumière | ombre | autre : %.2f | %.2f | %.2f | %.2f\n",
         STATS.temps_raymarch/STATS.temps_tot*100, STATS.temps_light/STATS.temps_tot*100, STATS.temps_shadow/STATS.temps_tot*100, (STATS.temps_tot - STATS.temps_light - STATS.temps_shadow - STATS.temps_raymarch)/STATS.temps_tot*100);
     printf("\n");
-    printf("Pourcentage temps pris par le calcul de la scene : %f\n", STATS.temps_tot/STATS.temps_scene *100);
+    // printf("Pourcentage temps pris par le calcul de la scene : %f\n", STATS.temps_tot/STATS.temps_scene *100);
 
     return 0;
 }

@@ -18,6 +18,7 @@ color c_jaune = {255,255,0,1.0};
 // renvoie la lumiere avec le prod vect et la normale
 float light_diffuse(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
     vector v_n = normalise_vecteur(vect_normal(pts, scene_actuelle));
+
     float res = fmax(prod_scal(v_n, normalise_vecteur(get_vec_2_pts(pts,source))),0);
     return res;
 }
@@ -77,6 +78,7 @@ float shadow_1(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
     for (int i = 0; i < MAX_RAY_STEPS; i++){
         
         float dist = scene_actuelle(position_actuelle).dist;
+        
         dist_tot += dist;
 
         if (dist < DIST_MIN*0.01){
@@ -104,11 +106,14 @@ float shadow_1(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
 
 float shadow_2(vector pts, vector source, int k, res_SDF(*scene_act)(vector)){
     float res = 1.0;
-    float t = 10*DIST_MIN;
+    float t = DIST_MIN*100;
+
 
     vector rd = normalise_vecteur(get_vec_2_pts(pts, source));
+
     for (int i = 0; i < MAX_RAY_STEPS && t < MAX_TOTAL_LENGHT; i++){
         float h = scene_act(v_add(pts, v_mult_scal(rd,t))).dist;
+
         if (h < DIST_MIN){
             STATS.nb_shadow_rayons_tot += 1;
             STATS.nb_shadow_rayons_etapes += i+1;
@@ -120,5 +125,4 @@ float shadow_2(vector pts, vector source, int k, res_SDF(*scene_act)(vector)){
     STATS.nb_shadow_rayons_tot += 1;
     STATS.nb_shadow_rayons_etapes += MAX_RAY_STEPS;
     return res;
-
 }

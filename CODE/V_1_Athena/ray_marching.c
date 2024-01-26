@@ -13,7 +13,7 @@ color ray_marching(ray r, res_SDF (*scene_actuelle)(vector)){
     for (int i = 0; i < MAX_RAY_STEPS; i++){
 
         res_SDF result_scene = scene_actuelle(position_actuelle);
-        
+
         float dist = result_scene.dist;
 
         dist_tot += dist;
