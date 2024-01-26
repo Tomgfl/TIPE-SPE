@@ -22,6 +22,7 @@ res_SDF (*My_scene_p)(vector); // pointeur vers la scene
 
 
 int main(){
+
     srand(time(NULL));
     My_scene_p = scene_sphere;
 
@@ -128,6 +129,7 @@ int main(){
             // glfwPollEvents();
         }
         // printf("ok\n");
+        
 
         //printf("%f \n",SDF_triangle((vector){-8.0,-0.63,0.72},(vector){-9.0,0,0},(vector){-6,0,0},(vector){-8.3,-1.86,2.13}));
         //printf("%f \n",SDF_triangle((vector){-8.65,-1.3,1.7},(vector){-9.0,0,0},(vector){-6,0,0},(vector){-8.3,-1.86,2.13}));
@@ -141,6 +143,7 @@ int main(){
         /* Poll for and process events */
         glfwPollEvents();
     }
+    
 
     glfwTerminate();
     return 0;

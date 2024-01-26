@@ -81,7 +81,7 @@ typedef struct stats_opti_s stats_opti;
 #define HEIGHT 480
 
 // Parametres du ray marching
-#define MAX_RAY_STEPS 1024 // nombre max d'étape
+#define MAX_RAY_STEPS 512 // nombre max d'étape
 #define DIST_MIN 0.01 // diatance a partir de laquel on a atteint un objet
 #define MAX_TOTAL_LENGHT 500 // distance max que peut parcourir un rayon
 #define EPSILON 0.00001 // pour le calcule des gradients

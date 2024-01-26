@@ -22,6 +22,8 @@ res_SDF (*My_scene_p)(vector); // pointeur vers la scene
 
 
 int main(){
+    clock_t begin_all = clock();
+
     srand(time(NULL));
     My_scene_p = scene_effets;
 
@@ -97,9 +99,12 @@ int main(){
             // glfwPollEvents();
         }
         // printf("ok\n");
+        STATS.nb_images += 1;
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
+    clock_t end_all = clock();
+    STATS.temps_tot = (double)(end_all-begin_all)/CLOCKS_PER_SEC;
 
     glfwTerminate();
 
@@ -107,6 +112,24 @@ int main(){
         free(ecran_ray_directions[i]);
     }
     free(ecran_ray_directions);
+
+    printf("Nombre d'image rendu : %d\n", STATS.nb_images);
+    printf("Temps d'execution total : %f sec\n", STATS.temps_tot);
+    printf("FPS : %f\n", STATS.nb_images / STATS.temps_tot);
+    printf("Temps moyen d'une image : %f sec\n", STATS.temps_tot / STATS.nb_images);
+    printf("Temps calcul lumière : %f sec\n", STATS.temps_light);
+    printf("Temps calcul ombres : %f sec\n", STATS.temps_shadow);
+    printf("Temps calcul ray_marching seul : %f sec\n", STATS.temps_raymarch);
+    // printf("Temps pris pour le calcul du min d'une scene (compris dans ray et ombre) : %f sec\n", STATS.temps_scene);
+    printf("Nombre total de rayons lancé pour le ray-marching : %lld\n",STATS.nb_rayons_tot);
+    printf("Nombre total d'étapes pour les rayons du ray-marching : %lld\n", STATS.nb_rayons_etapes);
+    printf("Nombre moyen d'étapes ray-marching : %.2f\n", (double)STATS.nb_rayons_etapes / STATS.nb_rayons_tot);
+    printf("Nombre total de rayon lancé pour les ombres : %lld\n", STATS.nb_shadow_rayons_tot);
+    printf("Nombre total d'étapes pour les ombres : %lld\n", STATS.nb_shadow_rayons_etapes);
+    printf("Nombre moyen d'étapes ombres : %.2f\n", (double)STATS.nb_shadow_rayons_etapes / STATS.nb_shadow_rayons_tot);
+    printf("Poucentage temps pris pour ray-march | lumière | ombre | autre : %.2f | %.2f | %.2f | %.2f\n",
+        STATS.temps_raymarch/STATS.temps_tot*100, STATS.temps_light/STATS.temps_tot*100, STATS.temps_shadow/STATS.temps_tot*100, (STATS.temps_tot - STATS.temps_light - STATS.temps_shadow - STATS.temps_raymarch)/STATS.temps_tot*100);
+    printf("\n");
 
     return 0;
 }
