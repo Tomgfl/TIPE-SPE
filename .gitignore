@@ -1,6 +1,5 @@
-CODE/*.o
-CODE/.vscode
-CODE/3d_obj/*.o
+**.vscode
+**.o
 Latex/*.aux
 Latex/*.fdb_latexmk
 Latex/*.fls
