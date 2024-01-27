@@ -77,7 +77,7 @@ typedef struct stats_opti_s stats_opti;
 
 
 // taille de l'ecran
-#define WIDTH 640
+#define WIDTH 600
 #define HEIGHT 480
 
 // Parametres du ray marching

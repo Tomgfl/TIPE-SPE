@@ -39,7 +39,7 @@ int main(){
     CAMERA.dir_ecran_c = (vector){1,0,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (vector){-10,0,0};
+    CAMERA.position_c = (vector){-5,0,1};
     CAMERA.dist_screen = 2.0;
 
 
@@ -75,8 +75,8 @@ int main(){
     }    
 
     /* Boucle principale */
-    while (!glfwWindowShouldClose(window)){
-    // for (int i = 0; i < 50; i++){
+    // while (!glfwWindowShouldClose(window)){
+    for (int i = 0; i < 10; i++){
     
         glClear(GL_COLOR_BUFFER_BIT);
 

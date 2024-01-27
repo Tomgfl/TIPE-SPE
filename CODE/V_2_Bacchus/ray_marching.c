@@ -69,4 +69,12 @@ color ray_marching(ray r, res_SDF (*scene_actuelle)(vector)){
 }
 
 
-
+void* ray_marching_thread(void* ptr_args){
+    arg* a = (arg*) ptr_args;
+    for (int i = a->id*WIDTH/NB_THREADS; i < (a->id+1)*WIDTH/NB_THREADS; i++){
+        for (int j = 0; j < HEIGHT; j++){
+            a->t_out[i][j] = ray_marching(a->t_in[i][j], a->fct_scene);
+        }
+    }
+    return NULL;
+}

@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <pthread.h>
 
 #include "dessin_fct.h"
 #include "options.h"
@@ -59,20 +60,39 @@ int main(){
                            -CAMERA.de*CAMERA.orthcam.z};
 
 
-    // les directions dans lesquels doivent poartir les rayons 
-    vector** ecran_ray_directions = malloc(WIDTH*sizeof(vector*));
+    // les directions dans lesquels doivent poartir les rayons
+    ray** ecran_ray = malloc(WIDTH*sizeof(ray*));
     for (int i = 0; i < WIDTH; i++){
-        ecran_ray_directions[i] = malloc(HEIGHT*sizeof(vector));
+        ecran_ray[i] = malloc(HEIGHT*sizeof(ray));
     }
+
+    color** ecran_res = malloc(WIDTH*sizeof(color*));
+    for (int i = 0; i < WIDTH; i++){
+        ecran_res[i] = malloc(HEIGHT*sizeof(color));
+    }
+     
     
     for (int i = 0; i < WIDTH; i++){
         for (int j = 0; j < HEIGHT; j++){
-            ecran_ray_directions[i][j] = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
+            ecran_ray[i][j].origine = CAMERA.position_c;
+            ecran_ray[i][j].direction = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
                     (vector){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
                             CAMERA.A.y + i*CAMERA.vLde.y + j*CAMERA.vlde.y,
                             CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
         }
     }    
+
+    // Preparation des threads
+    pthread_t* threads = (pthread_t*) malloc(NB_THREADS*sizeof(pthread_t));
+    arg* args = (arg*) malloc(NB_THREADS*sizeof(arg));
+
+
+    for (int i = 0; i < NB_THREADS; i++){
+        args[i] = (arg){My_scene_p,i,ecran_ray,ecran_res};
+    }
+    
+
+
 
     /* Boucle principale */
     // while (!glfwWindowShouldClose(window)){
@@ -84,19 +104,34 @@ int main(){
 
 
         // pour chaque pixel de l'ecran
+        // for (int i = 0; i < WIDTH; i++){
+        //     for (int j = 0; j < HEIGHT; j++){
+        //         // chaque rayon part de la camera en direction de chaque pixel (vect normaliser)
+        //         ray R;
+        //         R.origine = CAMERA.position_c;
+        //         R.direction = ecran_ray_directions[i][j];
+        //         // clock_t begin_r = clock();
+        //         color C = ray_marching(R, My_scene_p);
+        //         // clock_t end_r = clock();
+        //         // STATS.temps_raymarch += (double)(end_r - begin_r)/CLOCKS_PER_SEC;
+        //         draw_pixel(i, j, C, 1); // affiche le pixel                
+        //     }
+        // }
+        for (int i = 0; i < NB_THREADS; i++){
+            pthread_create(threads+i, NULL, ray_marching_thread, args+i);
+        }
+        for (int i = 0; i < NB_THREADS; i++){
+            pthread_join(threads[i], NULL);
+        }
         for (int i = 0; i < WIDTH; i++){
             for (int j = 0; j < HEIGHT; j++){
-                // chaque rayon part de la camera en direction de chaque pixel (vect normaliser)
-                ray R;
-                R.origine = CAMERA.position_c;
-                R.direction = ecran_ray_directions[i][j];
-                // clock_t begin_r = clock();
-                color C = ray_marching(R, My_scene_p);
-                // clock_t end_r = clock();
-                // STATS.temps_raymarch += (double)(end_r - begin_r)/CLOCKS_PER_SEC;
-                draw_pixel(i, j, C, 1); // affiche le pixel                
+                draw_pixel(i,j,ecran_res[i][j],1);
             }
         }
+        
+
+        
+        
         STATS.nb_images += 1;
         // printf("ok\n");
         glfwSwapBuffers(window);
@@ -108,9 +143,9 @@ int main(){
     glfwTerminate();
 
     for (int i = 0; i < WIDTH; i++){
-        free(ecran_ray_directions[i]);
+        free(ecran_ray[i]);
     }
-    free(ecran_ray_directions);
+    free(ecran_ray);
 
     printf("Nombre d'image rendu : %d\n", STATS.nb_images);
     printf("Temps d'execution total : %f sec\n", STATS.temps_tot);

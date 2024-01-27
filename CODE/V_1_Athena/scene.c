@@ -68,8 +68,8 @@ res_SDF scene_effets(vector pts){
 }
 
 res_SDF banquise(vector pts){
-    
-    return SDF_pingouin(rotation_y(rotation_x(pts, 90), 35), pts);
+    res_SDF res = SDF_pingouin(rotation_y(rotation_x(pts, 270),-60), pts);
+    return res;
 }
 
 
