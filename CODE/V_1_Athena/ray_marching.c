@@ -20,14 +20,9 @@ color ray_marching(ray r, res_SDF (*scene_actuelle)(vector)){
 
         if (dist < DIST_MIN){ // Si on touche un objet
             clock_t begin_l = clock();
-            float val_light = all_light(position_actuelle, Lumiere, scene_actuelle);
-            // test surface
-            
-
+            float val_light = all_light(position_actuelle, Lumiere, scene_actuelle);       
             clock_t end_l = clock();
             STATS.temps_light += (double)(end_l - begin_l)/CLOCKS_PER_SEC;
-            // float val_light = 1;
-            // float val_shadow = 1;
             // float val_shadow = shadow_1(position_actuelle, Lumiere, scene_actuelle);
             clock_t begin_s = clock();
             float val_shadow = shadow_2(position_actuelle, Lumiere, 32, scene_actuelle);
@@ -40,8 +35,7 @@ color ray_marching(ray r, res_SDF (*scene_actuelle)(vector)){
             res.b = brouillard(dist_tot)*res.b + (1-brouillard(dist_tot))*127;
 
 
-            // res.opp = val_light*val_shadow*0.8 + 0.2;
-            res.opp = 1;
+            res.opp = val_light*val_shadow*0.8 + 0.2;
             // res.opp = fmin(val_light, val_shadow)*0.8 + 0.2;
             clock_t end_r = clock();
             STATS.temps_raymarch += (double)(end_r - begin_r)/CLOCKS_PER_SEC - (double)(end_s - begin_s)/CLOCKS_PER_SEC - (double)(end_l - begin_l)/CLOCKS_PER_SEC;
