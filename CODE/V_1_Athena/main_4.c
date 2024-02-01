@@ -92,11 +92,11 @@ int main(){
                 color C = ray_marching(R, My_scene_p);
                 draw_pixel(i, j, C, 1); // affiche le pixel                
             }
-            // printf("\033[H \n");
-            // printf("%.2f %%\n",(float)(i)/WIDTH*100.0);
-            // fflush(stdout);
-            // glfwSwapBuffers(window);                                             //Répétition ?
-            // glfwPollEvents();
+            printf("\033[H \n");
+            printf("%.2f %%\n",(float)(i)/WIDTH*100.0);
+            fflush(stdout);
+            glfwSwapBuffers(window);                                             //Répétition ?
+            glfwPollEvents();
         }
         // printf("ok\n");
         STATS.nb_images += 1;

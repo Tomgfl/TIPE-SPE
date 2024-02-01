@@ -117,8 +117,14 @@ float nurbs_paysage(float x, float z){
 
 res_SDF paysage(vector pts){
     res_SDF res;
+    res.c = (color){10*pts.x/MAX_TOTAL_LENGHT,10*pts.y/MAX_TOTAL_LENGHT,10*pts.z/MAX_TOTAL_LENGHT,1.0};
     res.c = c_orange;
-    res.dist = nurbs_paysage(pts.x, pts.z);
+    
+    if (pts.z < nurbs_paysage(pts.x, pts.y)){
+        res.dist = 0.0;
+        return res;
+    }
+    res.dist = 10*DIST_MIN;
     return res;
 }
 

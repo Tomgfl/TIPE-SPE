@@ -33,6 +33,8 @@ float all_light(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
 }
 
 
+
+
 //notion de distance
 float brouillard(float t){
     return exp(-0.0005*t);
