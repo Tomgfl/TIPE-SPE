@@ -25,12 +25,12 @@ int main(){
     clock_t begin_all = clock();
 
     srand(time(NULL));
-    My_scene_p = paysage;
+    My_scene_p = banquise;
 
     // --- GESTION DE LA FENETRE --- //
     GLFWwindow* window;
     if (!glfwInit()){return -1;}
-    window = glfwCreateWindow(WIDTH, HEIGHT, "Main 4 - Paysage", NULL, NULL);
+    window = glfwCreateWindow(WIDTH, HEIGHT, "Main 3 - Pingouin triangles", NULL, NULL);
     if (!window){glfwTerminate();return -1;}
     glfwMakeContextCurrent(window);
 

@@ -68,8 +68,8 @@ res_SDF scene_effets(vector pts){
 }
 
 res_SDF banquise(vector pts){
-    res_SDF res = SDF_pingouin(rotation_y(rotation_x(pts, 270),-60), pts);
-    return res;
+    
+    return SDF_pingouin(rotation_y(rotation_x(pts, 90), 35), pts);
 }
 
 
@@ -118,13 +118,7 @@ float nurbs_paysage(float x, float z){
 res_SDF paysage(vector pts){
     res_SDF res;
     res.c = c_orange;
-    res.c = (color){floor(10*pts.x/MAX_TOTAL_LENGHT),floor(10*pts.y/MAX_TOTAL_LENGHT),floor(10*pts.z/MAX_TOTAL_LENGHT),1.0};
-    
-    if (pts.z < nurbs_paysage(pts.x, pts.y)){
-        res.dist = 0.0;
-        return res;
-    }
-    res.dist = 10*DIST_MIN;
+    res.dist = nurbs_paysage(pts.x, pts.z);
     return res;
 }
 

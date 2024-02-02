@@ -33,8 +33,6 @@ float all_light(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
 }
 
 
-
-
 //notion de distance
 float brouillard(float t){
     return exp(-0.0005*t);
@@ -84,14 +82,14 @@ float shadow_1(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
         dist_tot += dist;
 
         if (dist < DIST_MIN*0.01){
-            STATS.nb_shadow_rayons_tot += 1;
-            STATS.nb_shadow_rayons_etapes += i+1;
+            // STATS.nb_shadow_rayons_tot += 1;
+            // STATS.nb_shadow_rayons_etapes += i+1;
             return 0.1;
         }
 
         if (dist_tot > MAX_TOTAL_LENGHT){ // Si on va trop loin
-            STATS.nb_shadow_rayons_tot += 1;
-            STATS.nb_shadow_rayons_etapes += i+1;
+            // STATS.nb_shadow_rayons_tot += 1;
+            // STATS.nb_shadow_rayons_etapes += i+1;
             return 1.0;
         }
 
@@ -100,8 +98,8 @@ float shadow_1(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
         position_actuelle.z = pts.z + direction.z * dist_tot;
         
     }
-    STATS.nb_shadow_rayons_tot += 1;
-    STATS.nb_shadow_rayons_etapes += MAX_RAY_STEPS;
+    // STATS.nb_shadow_rayons_tot += 1;
+    // STATS.nb_shadow_rayons_etapes += MAX_RAY_STEPS;
 
     return 1.0;
 }
@@ -117,14 +115,14 @@ float shadow_2(vector pts, vector source, int k, res_SDF(*scene_act)(vector)){
         float h = scene_act(v_add(pts, v_mult_scal(rd,t))).dist;
 
         if (h < DIST_MIN){
-            STATS.nb_shadow_rayons_tot += 1;
-            STATS.nb_shadow_rayons_etapes += i+1;
+            // STATS.nb_shadow_rayons_tot += 1;
+            // STATS.nb_shadow_rayons_etapes += i+1;
             return 0.0;
         }
         res = fmin(res, k*h/t);
         t += h;
     }
-    STATS.nb_shadow_rayons_tot += 1;
-    STATS.nb_shadow_rayons_etapes += MAX_RAY_STEPS;
+    // STATS.nb_shadow_rayons_tot += 1;
+    // STATS.nb_shadow_rayons_etapes += MAX_RAY_STEPS;
     return res;
 }

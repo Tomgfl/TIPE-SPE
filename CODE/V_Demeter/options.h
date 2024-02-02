@@ -75,6 +75,15 @@ struct stats_opti_s{
 typedef struct stats_opti_s stats_opti;
 
 
+// Pour pthread
+struct arg_s{
+    res_SDF (*fct_scene)(vector);
+    int id;             // id du thread
+    ray** t_in;         // les rayons de l'ecran
+    color** t_out;      // tab du resultat
+};
+typedef struct arg_s arg;
+
 
 // taille de l'ecran
 #define WIDTH 600
@@ -86,7 +95,7 @@ typedef struct stats_opti_s stats_opti;
 #define MAX_TOTAL_LENGHT 500 // distance max que peut parcourir un rayon
 #define EPSILON 0.00001 // pour le calcule des gradients
 
-
+#define NB_THREADS 12
 
 
 
