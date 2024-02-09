@@ -39,7 +39,7 @@ int main(){
     CAMERA.dir_ecran_c = (vector){1,0,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (vector){-10,0,0};
+    CAMERA.position_c = (vector){0,10,5};
     CAMERA.dist_screen = 2.0;
 
 
@@ -89,7 +89,7 @@ int main(){
                 ray R;
                 R.origine = CAMERA.position_c;
                 R.direction = ecran_ray_directions[i][j];
-                color C = ray_marching(R, My_scene_p);
+                color C = ray_marching_paysage(R, My_scene_p);
                 draw_pixel(i, j, C, 1); // affiche le pixel                
             }
             printf("\033[H \n");

@@ -11,5 +11,8 @@
 
 
 color ray_marching(ray r, res_SDF (*scene_actuelle)(vector));
+color ray_marching_paysage(ray r, res_SDF (*scene_actuelle)(vector));
+
+
 
 #endif 

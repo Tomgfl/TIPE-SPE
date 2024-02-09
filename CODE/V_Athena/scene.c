@@ -116,16 +116,32 @@ float nurbs_paysage(float x, float z){
 }
 
 res_SDF paysage(vector pts){
-    res_SDF res;
-    res.c = c_orange;
-    res.c = (color){floor(10*pts.x/MAX_TOTAL_LENGHT),floor(10*pts.y/MAX_TOTAL_LENGHT),floor(10*pts.z/MAX_TOTAL_LENGHT),1.0};
     
+    // res.dist = 2*DIST_MIN;
+
+    res_SDF res;
+    res.c = (color){228,172,155,1.0};
     if (pts.z < nurbs_paysage(pts.x, pts.y)){
         res.dist = 0.0;
         return res;
     }
-    res.dist = 10*DIST_MIN;
-    return res;
+
+    res.dist = 0.7*(pts.z - nurbs_paysage(pts.x, pts.y));
+
+    // int p1 = dist_2_pts(pts,(vector){floor(pts.x), floor(pts.y), nurbs_paysage(floor(pts.x), floor(pts.y))});
+    // int p2 = dist_2_pts(pts,(vector){floor(pts.x) +1, floor(pts.y), nurbs_paysage(floor(pts.x) + 1, floor(pts.y))});
+    // int p3 = dist_2_pts(pts,(vector){floor(pts.x), floor(pts.y) +1, nurbs_paysage(floor(pts.x), floor(pts.y) +1 )});
+    // int p4 = dist_2_pts(pts,(vector){floor(pts.x) +1, floor(pts.y) +1, nurbs_paysage(floor(pts.x) +1, floor(pts.y) +1 )});
+    // int p1 = pts.z - nurbs_paysage(floor(pts.x), floor(pts.y));
+    // int p2 = pts.z - nurbs_paysage(floor(pts.x) + 1, floor(pts.y));
+    // int p3 = pts.z - nurbs_paysage(floor(pts.x), floor(pts.y) + 1);
+    // int p4 = pts.z - nurbs_paysage(floor(pts.x) + 1, floor(pts.y) + 1);
+
+    // res.dist = fmin(fmin(fmin(p1,p2),fmin(p1,p2)),p0);
+
+    // res = min_sdf(res, SDF_plan(pts, (vector){0,0,1}, (vector){0,0,2}, c_bleu));
+
+    return min_sdf(res, SDF_sphere(pts, (vector){10,10,5},1,c_vert));
 }
 
 
