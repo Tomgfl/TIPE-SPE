@@ -67,9 +67,9 @@ res_SDF max_sdf(res_SDF d1, res_SDF d2){
 // }
 
 
-// float MAX(float x, float y){
-//     if (x > y){
-//         return x;
-//     }
-//     return y;
-// }
+float MAX(float x, float y){
+    if (x > y){
+        return x;
+    }
+    return y;
+}
