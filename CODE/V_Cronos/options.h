@@ -44,6 +44,8 @@ typedef struct camera_s camera;
 struct res_SDF_s{
     float dist;
     color c;
+    vector centre;
+    float rayon;    // Distance la plus grande
 }; 
 typedef struct res_SDF_s res_SDF;
 

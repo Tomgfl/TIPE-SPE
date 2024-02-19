@@ -5,7 +5,7 @@ CC = clang
 OPTIONS = -O3 -ffast-math -g
 ADD = -lglfw -lGL -pthread -lm
 
-all : test_ecran main_1 main_2 main_3 main_4
+all : test_ecran main_2 main_3 main_4
 
 vector.o : vector.c vector.h options.h
 	$(CC) -c vector.c $(OPTIONS) -o vector.o
@@ -18,6 +18,9 @@ signed_distance_function.o : signed_distance_function.c signed_distance_function
 
 scene.o : scene.h scene.c vector.h signed_distance_function.h utiles.h pingouin_sdf.h options.h
 	$(CC) -c scene.c $(OPTIONS) -o scene.o
+
+bvh.o : bvh.h bvh.c vector.h signed_distance_function.h utiles.h pingouin_sdf.h options.h
+	$(CC) -c bvh.c $(OPTIONS) -o bvh.o
 
 ray_marching.o : ray_marching.c ray_marching.h light.h vector.h options.h scene.h
 	$(CC) -c ray_marching.c $(OPTIONS) -o ray_marching.o
@@ -47,8 +50,8 @@ pingouin_sdf.o : pingouin_sdf.h pingouin_sdf.c options.h vector.h utiles.h signe
 #test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o
 #	$(CC) main_test.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o -lm -lglfw -lGL -O3 -o test_ecran
 
-test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o
-	$(CC) main_test.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o $(OPTIONS) $(ADD) -o test_ecran
+test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o bvh.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o
+	$(CC) main_test.c vector.o utiles.o signed_distance_function.o bvh.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o $(OPTIONS) $(ADD) -o test_ecran
 
 
 main_1 : main_1.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o

@@ -1,4 +1,5 @@
 #include "signed_distance_function.h"
+#include "utiles.h"
 #include <stdio.h>
 
 
@@ -13,6 +14,8 @@ res_SDF SDF_sphere(vector p, vector centre, float rayon, color couleur){
     res_SDF res;
     res.dist = distance - rayon;
     res.c = couleur;
+    res.centre = centre ;
+    res.rayon = rayon;
     return res;
 }
 
@@ -22,6 +25,8 @@ res_SDF SDF_Tor(vector p, vector centre, float R, float r, color couleur) {
     float distance_xy = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - R;
     float dist = sqrt(distance_xy*distance_xy + (p.z - centre.z)*(p.z - centre.z)) - r;
     res_SDF res = {dist, couleur};
+    res.centre = centre ;
+    res.rayon = (R+r);
     return res;
 }
 
@@ -30,6 +35,8 @@ res_SDF SDF_Tor(vector p, vector centre, float R, float r, color couleur) {
 res_SDF SDF_cylindre(vector p, vector centre, float H, float r, color couleur){
     res_SDF res;
     res.c = couleur;
+    res.centre = centre ;
+    res.rayon = H/2;
 
     float baseCenterZ = centre.z - H / 2.0;
     float distToBase = fabs(p.z - baseCenterZ) - H/2.0;                         // Distance face haute/basse
@@ -53,6 +60,8 @@ res_SDF SDF_cylindre(vector p, vector centre, float H, float r, color couleur){
 res_SDF SDF_Cone(vector p, vector centre, float H, float r, color couleur){    // Centre du cylindre, rayon r de la base, hauteur H du cylindre
     res_SDF res;
     res.c = couleur;
+    res.centre = centre ;
+    res.rayon = H;
 
     float baseCenterZ = centre.z - H / 2.0;
     float distToBase = fabs(p.z - baseCenterZ) - H/2.0;                         // Distance face haute/basse
@@ -77,6 +86,8 @@ res_SDF SDF_Cone(vector p, vector centre, float H, float r, color couleur){    /
 res_SDF SDF_Pyramide(vector p, vector centre, float H, float c, color couleur){
     res_SDF res;
     res.c = couleur;
+    res.centre = centre ;
+    res.rayon = H;
 
     float distToBase;
     if (p.z > centre.z + H){
@@ -97,6 +108,8 @@ res_SDF SDF_Pyramide(vector p, vector centre, float H, float c, color couleur){
 res_SDF SDF_box(vector p, vector centre, float L, float l, float h, color couleur){
     res_SDF res;
     res.c = couleur;
+    res.centre = centre ;
+    res.rayon = MAX(h, MAX(L,l))/2;
 
     float dist;
     float d[3];
@@ -121,6 +134,8 @@ res_SDF SDF_box(vector p, vector centre, float L, float l, float h, color couleu
 res_SDF SDF_triangle(vector p, vector a, vector b, vector c, color couleur){
     res_SDF res;
     res.c = couleur;
+    res.centre = (vector){(a.x + b.x + c.x)/3, (a.y + b.y + c.y)/3, (a.z + b.z + c.z)/3} ;
+    res.rayon = MAX(dist_2_pts(res.centre, a), MAX(dist_2_pts(res.centre, b), dist_2_pts(res.centre, c)));
 
     vector ab = v_sub(b,a);
     vector bc = v_sub(c,b);
@@ -172,7 +187,9 @@ res_SDF SDF_triangle(vector p, vector a, vector b, vector c, color couleur){
 res_SDF SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c, color couleur){
     res_SDF res;
     res.c = couleur;
-
+    res.centre = (vector){(a.x + b.x + c.x)/3, (a.y + b.y + c.y)/3, (a.z + b.z + c.z)/3} ;
+    res.rayon = MAX(dist_2_pts(res.centre, a), MAX(dist_2_pts(res.centre, b), dist_2_pts(res.centre, c)));
+    
     vector ab = v_sub(b,a);
     vector bc = v_sub(c,b);
     vector ac = v_sub(c,a);
@@ -259,6 +276,8 @@ res_SDF SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c,
 res_SDF SDF_plan(vector p, vector n, vector m, color couleur){
     res_SDF res;
     res.c = couleur;
+    res.centre = (vector){0,0,0} ;
+    res.rayon = 0;
 
     vector v = v_sub(p,m);
 
@@ -271,6 +290,8 @@ res_SDF SDF_plan(vector p, vector n, vector m, color couleur){
 res_SDF SDF_Ellipsoid(vector p, vector centre, float a, float b, float c, color couleur){
     res_SDF res;
     res.c = couleur;
+    res.centre = centre;
+    res.rayon = MAX(a,MAX(b,c))/2;
 
     float distx = p.x - centre.x;
     float disty = p.y - centre.y;
@@ -340,6 +361,8 @@ res_SDF SDF_corps(vector p, vector centre, float rayon){
 
     res_SDF Corps = SubstractSDF(Contour, Bas);
 
+    Corps.centre = centre ;
+    Corps.rayon = rayon ;
     return Corps;
 }
 
@@ -354,6 +377,8 @@ res_SDF SDF_Pingoo(vector p, vector centre, float rayon){
 
     // res_SDF Pingoo = SmoothUnionSDF(Tete, Corps, 0.05);
     res_SDF Pingoo = UnionSDF(Tete, Corps);
+    Pingoo.centre = centre ;
+    Pingoo.rayon = rayon ;
     return Pingoo;
 }
 
@@ -497,6 +522,8 @@ res_SDF Disturb(vector p, res_SDF d) {
     // float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
     res_SDF res;
     res.c = d.c;
+    res.centre = d.centre;
+    res.rayon = d.rayon;
     res.dist = displacement + d.dist;
 
     return res;

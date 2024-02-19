@@ -59,12 +59,12 @@ res_SDF max_sdf(res_SDF d1, res_SDF d2){
 // #define CLAMP(d, min, max) (((d) < (min)) ? (min) : (((d) > (max)) ? (max) : (d)))
 
 
-// float MIN(float x, float y){
-//     if (x < y){
-//         return x; 
-//     }
-//     return y;
-// }
+float MIN(float x, float y){
+    if (x < y){
+        return x; 
+    }
+    return y;
+}
 
 
 float MAX(float x, float y){

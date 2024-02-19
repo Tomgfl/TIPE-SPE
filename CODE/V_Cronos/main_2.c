@@ -12,6 +12,7 @@
 #include "light.h"
 #include "scene.h"
 #include "ray_marching.h"
+#include "bvh.h"
 
 float time_scene = 0;
 stats_opti STATS = {0,0,0,0,0,
