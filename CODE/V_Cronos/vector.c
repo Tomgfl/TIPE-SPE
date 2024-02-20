@@ -2,11 +2,6 @@
 
 
 
-// Fonction pour calculer la distance entre deux points
-float distance(vector p1, vector p2) {
-    return sqrtf(powf(p2.x - p1.x, 2) + powf(p2.y - p1.y, 2) + powf(p2.z - p1.z, 2));
-}
-
 
 // renvoie le vecteur normal a une surface (en un point proche d'une surface) a l'aide du gradient
 vector vect_normal(vector pts, res_SDF(*scene_actuelle)(vector)){

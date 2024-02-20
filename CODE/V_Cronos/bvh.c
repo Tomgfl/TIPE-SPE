@@ -5,12 +5,12 @@
 
 
 
-BVHNode* buildBVH(res_SDF* sdf_list, int sdf_count) {
+BVHNode* buildBVH(objet* obj_list, int obj_count) {
     BVHNode* root = (BVHNode*)malloc(sizeof(BVHNode));
-    root->sdf = sdf_list;
-    root->sdf_count = sdf_count;
-    // Calculer la boîte englobante pour la racine en fonction des SDF contenus
-    root->box = calculateBoundingBox(sdf_list, sdf_count);
+    root->obj = obj_list;
+    root->obj_count = obj_count;
+    // Calculer la boîte englobante pour la racine en fonction des objets contenus
+    root->box = calculateBoundingBox(obj_list, obj_count);
 
     // Appel récursif pour construire le BVH
     buildBVHRecursive(root, 0);
@@ -50,25 +50,25 @@ float distBoite(vector p, AABB box) {
 
 
 
-AABB calculateBoundingBox(res_SDF* sdf_list, int sdf_count) {
+AABB calculateBoundingBox(objet* obj_list, int obj_count) {
     // Initialiser les coordonnées min et max avec des valeurs extrêmes
     float minX = INFINITY, minY = INFINITY, minZ = INFINITY;
     float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
 
-    // Parcourir tous les SDF pour trouver les coordonnées min et max
-    for (int i = 0; i < sdf_count; ++i) {
-        float x = sdf_list[i].centre.x;
-        float y = sdf_list[i].centre.y;
-        float z = sdf_list[i].centre.z;
+    // Parcourir tous les objets pour trouver les coordonnées min et max
+    for (int i = 0; i < obj_count; ++i) {
+        float x = obj_list[i].centre.x;
+        float y = obj_list[i].centre.y;
+        float z = obj_list[i].centre.z;
 
         // Mettre à jour les coordonnées min et max
-        minX = fmin(minX, x - sdf_list[i].rayon);
-        minY = fmin(minY, y - sdf_list[i].rayon);
-        minZ = fmin(minZ, z - sdf_list[i].rayon);
+        minX = fmin(minX, x - obj_list[i].rayon);
+        minY = fmin(minY, y - obj_list[i].rayon);
+        minZ = fmin(minZ, z - obj_list[i].rayon);
 
-        maxX = fmax(maxX, x + sdf_list[i].rayon);
-        maxY = fmax(maxY, y + sdf_list[i].rayon);
-        maxZ = fmax(maxZ, z + sdf_list[i].rayon);
+        maxX = fmax(maxX, x + obj_list[i].rayon);
+        maxY = fmax(maxY, y + obj_list[i].rayon);
+        maxZ = fmax(maxZ, z + obj_list[i].rayon);
     }
 
     // Créer et retourner la boîte englobante
@@ -84,62 +84,88 @@ AABB calculateBoundingBox(res_SDF* sdf_list, int sdf_count) {
 }
 
 
-void splitSDFs(res_SDF* sdf_list, int sdf_count, res_SDF** left_sdfs, int* left_count, res_SDF** right_sdfs, int* right_count) {
-    // Trier les SDF en fonction de leur position sur l'axe x
-    qsort(sdf_list, sdf_count, sizeof(res_SDF), compareByXPosition);
+void splitOBJs(objet* obj_list, int obj_count, objet** left_objs, int* left_count, objet** right_objs, int* right_count, int dep) {
+    // Trier les objets en fonction de leur position sur l'axe x
+    if (dep % 3 == 0){
+        qsort(obj_list, obj_count, sizeof(objet), compareByXPosition);
+    }   else if (dep % 3 == 1){
+        qsort(obj_list, obj_count, sizeof(objet), compareByYPosition);
+    }   else {
+        qsort(obj_list, obj_count, sizeof(objet), compareByXPosition);
+    }
 
-    // Trouver l'indice de séparation pour diviser les SDF en deux groupes
-    int midpoint = sdf_count / 2;
+    // Trouver l'indice de séparation pour diviser les objets en deux groupes
+    int midpoint = obj_count / 2;
 
-    // Assigner les SDF aux groupes gauche et droit
-    *left_sdfs = sdf_list;
+    // Assigner les objets aux groupes gauche et droit
+    *left_objs = obj_list;
     *left_count = midpoint;
 
-    *right_sdfs = sdf_list + midpoint;
-    *right_count = sdf_count - midpoint;
+    *right_objs = obj_list + midpoint;
+    *right_count = obj_count - midpoint;
 }
 
 
 
-// Fonction de comparaison pour qsort : compare les SDF en fonction de leur position sur l'axe x
+// Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe x
 int compareByXPosition(const void* a, const void* b) {
-    res_SDF sdf_a = *((res_SDF*)a);
-    res_SDF sdf_b = *((res_SDF*)b);
+    objet obj_a = *((objet*)a);
+    objet obj_b = *((objet*)b);
 
-    if (sdf_a.centre.x < sdf_b.centre.x) return -1;
-    if (sdf_a.centre.x > sdf_b.centre.x) return 1;
+    if (obj_a.centre.x < obj_b.centre.x) return -1;
+    if (obj_a.centre.x > obj_b.centre.x) return 1;
+    return 0;
+}
+
+// Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe y
+int compareByYPosition(const void* a, const void* b) {
+    objet obj_a = *((objet*)a);
+    objet obj_b = *((objet*)b);
+
+    if (obj_a.centre.y < obj_b.centre.y) return -1;
+    if (obj_a.centre.y > obj_b.centre.y) return 1;
+    return 0;
+}
+
+// Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe z
+int compareByZPosition(const void* a, const void* b) {
+    objet obj_a = *((objet*)a);
+    objet obj_b = *((objet*)b);
+
+    if (obj_a.centre.z < obj_b.centre.z) return -1;
+    if (obj_a.centre.z > obj_b.centre.z) return 1;
     return 0;
 }
 
 
 
 void buildBVHRecursive(BVHNode* node, int currentDepth) {
-    if (node->sdf_count <= MAX_SDF_PER_LEAF) {
-        // Si le nombre de SDF est inférieur ou égal à un certain seuil ou si la profondeur maximale est atteinte,
+    if (node->obj_count <= MAX_OBJ_PER_LEAF) {
+        // Si le nombre d'objets est inférieur ou égal à un certain seuil ou si la profondeur maximale est atteinte,
         // considérez ce nœud comme une feuille et arrêtez la récursion
         node->left = NULL;
         node->right = NULL;
         return;
     }
 
-    // Divisez les SDF en deux groupes et créez les sous-arbres gauche et droit
-    res_SDF* left_sdfs;
-    res_SDF* right_sdfs;
+    // Divisez les objets en deux groupes et créez les sous-arbres gauche et droit
+    objet* left_objs;
+    objet* right_objs;
     int left_count, right_count;
 
-    splitSDFs(node->sdf, node->sdf_count, &left_sdfs, &left_count, &right_sdfs, &right_count);
+    splitOBJs(node->obj, node->obj_count, &left_objs, &left_count, &right_objs, &right_count, currentDepth);
 
     // Créer les sous-arbres gauche et droit
     node->left = (BVHNode*)malloc(sizeof(BVHNode));
-    node->left->sdf = left_sdfs;
-    node->left->sdf_count = left_count;
-    node->left->box = calculateBoundingBox(left_sdfs, left_count);
+    node->left->obj = left_objs;
+    node->left->obj_count = left_count;
+    node->left->box = calculateBoundingBox(left_objs, left_count);
     buildBVHRecursive(node->left, currentDepth + 1);
 
     node->right = (BVHNode*)malloc(sizeof(BVHNode));
-    node->right->sdf = right_sdfs;
-    node->right->sdf_count = right_count;
-    node->right->box = calculateBoundingBox(right_sdfs, right_count);
+    node->right->obj = right_objs;
+    node->right->obj_count = right_count;
+    node->right->box = calculateBoundingBox(right_objs, right_count);
     buildBVHRecursive(node->right, currentDepth + 1);
 }
 
@@ -147,10 +173,10 @@ void buildBVHRecursive(BVHNode* node, int currentDepth) {
 
 float traverseBVH(BVHNode* root, vector p, float dist) {
     float res = dist;
-    if (root->left == NULL && root->right == NULL) {                    // Si c'est une feuille on retourne la sdf minimale
-        res = MIN(res, min_lst_sdf(root->sdf, root->sdf_count).dist);
+    if (root->left == NULL && root->right == NULL) {                    // Si c'est une feuille on retourne l'objet minimale
+        res = MIN(res, SDF_Objet(p, min_lst_obj(root->obj, root->obj_count, p)).dist);
     }   else {
-        // Si ce n'est pas une feuille, il a un arbre gauche ET droit (il faut mettre MAX_SDF_PER_LEAF >= 2)
+        // Si ce n'est pas une feuille, il a un arbre gauche ET droit (il faut mettre MAX_OBJ_PER_LEAF >= 2)
         float d1 = distBoite(p, root->left->box);   // Distance Boite de gauche
         float d2 = distBoite(p, root->right->box);  // Distance Boite de droite
         if (d1<d2 && d1<res) {

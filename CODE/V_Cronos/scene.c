@@ -1,126 +1,152 @@
 #include "scene.h"
+#include <stdlib.h>
+
 
 extern float time_scene;
 
 // --- SCENE --- //
-res_SDF scene_sphere(vector pts){
-    int nb = 1;
-    res_SDF all_sdf[nb];
+// res_SDF scene_sphere(vector pts){
+//     int nb = 1;
+//     res_SDF all_sdf[nb];
 
-    vector C = {0,0,7};
-    res_SDF sdf_sphere = SDF_sphere(pts, C, 2, c_orange);
-    sdf_sphere = Disturb(pts, sdf_sphere);
+//     param_sphere* param2 = malloc(sizeof(param_sphere));
+//     vector C = {0,0,7};
+//     param2->centre = C;
+//     param2->rayon = 2;
+//     res_SDF sdf_sphere = SDF_sphere(pts, param2, c_orange);
+//     // sdf_sphere = Disturb(pts, sdf_sphere);
 
-    return sdf_sphere;
+//     return sdf_sphere;
 
-}
+// }
 
 // --- SCENE #1 --- // Tous les objets
 res_SDF scene_1(vector pts){
     int nb = 6;
-    res_SDF all_sdf[nb];
+    res_SDF all_sdf[2];
 
     vector n_plan = {0, 0, 1};
     res_SDF sdf_plan = SDF_plan(pts, n_plan, (vector){0,0,-4}, c_gris);
 
-    vector C_1 = {-10,10,0};
-    res_SDF sdf_box = SDF_box(pts, C_1, 4,4,4, c_bleu);
+    objet obj1;
+    obj1.type = 5; // Type "5" pour une boîte
+    obj1.param = malloc(sizeof(param_box)); // Allouer de la mémoire pour les paramètres de la boîte
+    ((param_box*)obj1.param)->L = 4.0;  // Longueur de la boîte
+    ((param_box*)obj1.param)->l = 4.0;  // Largeur de la boîte
+    ((param_box*)obj1.param)->h = 4.0;  // Hauteur de la boîte
+    obj1.couleur = c_bleu;
+    obj1.rayon = 2.0; 
+    obj1.centre = (vector){-10,10,0};
+    res_SDF sdf_box = SDF_Objet(pts, obj1);
 
-    vector C_2 = {-10,10,10};
-    res_SDF sdf_sphere = SDF_sphere(pts, C_2, 2, c_blanc);
+    // param_sphere* param2 = malloc(sizeof(param_sphere));
+    // param2->centre = (vector){-10,10,10};
+    // param2->rayon = 2;
+    // res_SDF sdf_sphere = SDF_sphere(pts, param2, c_blanc);
 
-    vector C_3 = {10,10,0};
-    res_SDF sdf_tor = SDF_Tor(pts, C_3, 2, 1, c_bleu_berlin);
-    sdf_tor = Disturb(pts, sdf_tor);
+    // param_tor* param3 = malloc(sizeof(param_tor));
+    // param3->centre = (vector){10,10,0};
+    // param3->R = 2;
+    // param3->r = 1;
+    // res_SDF sdf_tor = SDF_Tor(pts, param3, c_bleu_berlin);
+    // // sdf_tor = Disturb(pts, sdf_tor);
 
-    vector C_4 = {0,10,10};
-    res_SDF sdf_tri = SDF_triangle(pts, (vector){-3,10,8},(vector){3,10,10},(vector){0,10,13},c_vert);
-    // res_SDF sdf_cylindre = SDF_cylindre(pts, C_4, 6, 1, c_bistre);
+    // param_triangle* param4 = malloc(sizeof(param_triangle));
+    // param4->a = (vector){-3,10,8};
+    // param4->b = (vector){3,10,10};
+    // param4->c = (vector){0,10,13};
+    // res_SDF sdf_tri = SDF_triangle(pts, param4,c_vert);
+    // // res_SDF sdf_cylindre = SDF_cylindre(pts, C_4, 6, 1, c_bistre);
 
-    vector C_5 = {0,10,0};
-    res_SDF sdf_ell = SDF_Ellipsoid(pts, C_5, 3.2, 1.0, 1.6, c_orange);
-    // res_SDF sdf_cone = SDF_Cone(pts, C_5, 6, 2, c_noir);
+
+    // param_ellipsoid* param5 = malloc(sizeof(param_ellipsoid));
+    // param5->centre = (vector){0,10,0};
+    // param5->a = 3.2;
+    // param5->b = 1.0;
+    // param5->c = 1.6;    
+    // res_SDF sdf_ell = SDF_Ellipsoid(pts, param5, c_orange);
+    // // res_SDF sdf_cone = SDF_Cone(pts, C_5, 6, 2, c_noir);
 
 
     all_sdf[0] = sdf_plan;
-    all_sdf[1] = sdf_tor;
-    all_sdf[2] = sdf_box;
-    all_sdf[3] = sdf_tri;
-    all_sdf[4] = sdf_ell;
-    all_sdf[5] = sdf_sphere;
+    all_sdf[1] = sdf_box;
+    // all_sdf[2] = sdf_tor;
+    // all_sdf[3] = sdf_tri;
+    // all_sdf[4] = sdf_ell;
+    // all_sdf[5] = sdf_sphere;
 
-    return min_lst_sdf(all_sdf, nb);
+    return min_lst_sdf(all_sdf, 2);
 }
 
 
 
-res_SDF scene_effets(vector pts){
-    int nb = 1;
-    res_SDF all_sdf[nb];
+// res_SDF scene_effets(vector pts){
+//     int nb = 1;
+//     res_SDF all_sdf[nb];
 
-    vector C_1 = {15,-2,12};
-    res_SDF sphere_1 = SDF_sphere(pts, C_1, 4.0, c_orange);
-    sphere_1 = Disturb(pts, sphere_1);
+//     vector C_1 = {15,-2,12};
+//     res_SDF sphere_1 = SDF_sphere(pts, C_1, 4.0, c_orange);
+//     sphere_1 = Disturb(pts, sphere_1);
 
-    all_sdf[0] = sphere_1;
+//     all_sdf[0] = sphere_1;
 
-    return min_lst_sdf(all_sdf, nb);
-}
+//     return min_lst_sdf(all_sdf, nb);
+// }
 
-res_SDF banquise(vector pts){
+// res_SDF banquise(vector pts){
     
-    return SDF_pingouin(rotation_y(rotation_x(pts, 90), 35), pts);
-}
+//     return SDF_pingouin(rotation_y(rotation_x(pts, 90), 35), pts);
+// }
 
 
 
 // video paysage
 
 
-float coeff_i_j(int i,int j){
-    double k;
-    float u = 50*modf(i/3.1415, &k);
-    float v = 50*modf(j/3.1415, &k);
+// float coeff_i_j(int i,int j){
+//     double k;
+//     float u = 50*modf(i/3.1415, &k);
+//     float v = 50*modf(j/3.1415, &k);
 
-    float a_i_j = modf(u*v*(u+v),&k)-1;
+//     float a_i_j = modf(u*v*(u+v),&k)-1;
 
-    return a_i_j;
-}
-
-
-
-float smoothstep(float a, float b, float x){
-    // a < b
-    float l = fmin(1,fmax(0,(x-a)/(b-a)));
-    return l*l*(3-2*l);
-}
+//     return a_i_j;
+// }
 
 
-float nurbs_paysage(float x, float z){
-    int i = floorf(x);
-    int j = floorf(z);
 
-    float a = coeff_i_j(i,j);
-    float b = coeff_i_j(i+1,j);
-    float c = coeff_i_j(i,j+1);
-    float d = coeff_i_j(i+1, j+1);
+// float smoothstep(float a, float b, float x){
+//     // a < b
+//     float l = fmin(1,fmax(0,(x-a)/(b-a)));
+//     return l*l*(3-2*l);
+// }
 
-    float res = 
-        a + 
-        (b-a)*smoothstep(0,1,x-i) +
-        (c-a)*smoothstep(0,1,z-j) + 
-        (a-b-c+d)*smoothstep(0,1,x-i)*smoothstep(0,1,z-j);
+
+// float nurbs_paysage(float x, float z){
+//     int i = floorf(x);
+//     int j = floorf(z);
+
+//     float a = coeff_i_j(i,j);
+//     float b = coeff_i_j(i+1,j);
+//     float c = coeff_i_j(i,j+1);
+//     float d = coeff_i_j(i+1, j+1);
+
+//     float res = 
+//         a + 
+//         (b-a)*smoothstep(0,1,x-i) +
+//         (c-a)*smoothstep(0,1,z-j) + 
+//         (a-b-c+d)*smoothstep(0,1,x-i)*smoothstep(0,1,z-j);
     
-    return res;
+//     return res;
 
-}
+// }
 
-res_SDF paysage(vector pts){
-    res_SDF res;
-    res.c = c_orange;
-    res.dist = nurbs_paysage(pts.x, pts.z);
-    return res;
-}
+// res_SDF paysage(vector pts){
+//     res_SDF res;
+//     res.c = c_orange;
+//     res.dist = nurbs_paysage(pts.x, pts.z);
+//     return res;
+// }
 
 
 
@@ -216,17 +242,17 @@ res_SDF paysage(vector pts){
 
 
 
-res_SDF scene_pingoo(vector pts){
-    int nb = 1;
-    res_SDF all_sdf[nb];
+// res_SDF scene_pingoo(vector pts){
+//     int nb = 1;
+//     res_SDF all_sdf[nb];
 
-    vector C_1 = {10,10,10};
-    res_SDF tete = SDF_Pingoo(pts, C_1, 3); 
+//     vector C_1 = {10,10,10};
+//     res_SDF tete = SDF_Pingoo(pts, C_1, 3); 
 
-    all_sdf[0] = tete;
+//     all_sdf[0] = tete;
 
-    return min_lst_sdf(all_sdf, nb);
-}
+//     return min_lst_sdf(all_sdf, nb);
+// }
 
 
 
@@ -271,12 +297,12 @@ res_SDF scene_pingoo(vector pts){
 
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
-// res_SDF SCENE_PRINCIPAL(vector pts){
+res_SDF SCENE_PRINCIPAL(vector pts){
 
-//     return scene_sphere(pts);
+    return scene_1(pts);
 
-//     // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
-// }
+    // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
+}
 
 
 

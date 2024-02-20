@@ -1,42 +1,80 @@
 #include "signed_distance_function.h"
 #include "utiles.h"
 #include <stdio.h>
+#include <stdlib.h>
+
 
 
 extern float time_scene;
 
 
 // --- FONCTIONS DE SDF --- //
+res_SDF SDF_Objet(vector p, objet obj) {
+    if (obj.type == 0) {
+        SDF_sphere(p, obj.param, obj.couleur);
+    }   else if (obj.type == 1) {
+        SDF_Tor(p, obj.param, obj.couleur);
+    }   else if (obj.type == 2) {
+        SDF_cylindre(p, obj.param, obj.couleur);
+    }   else if (obj.type == 3) {
+        SDF_Cone(p, obj.param, obj.couleur);
+    }   else if (obj.type == 4) {
+        SDF_Pyramide(p, obj.param, obj.couleur);
+    }   else if (obj.type == 5) {
+        SDF_box(p, obj.param, obj.couleur);
+    }   else if (obj.type == 6) {
+        SDF_triangle(p, obj.param, obj.couleur);
+    }   else if (obj.type == 7) {
+        SDF_Ellipsoid(p, obj.param, obj.couleur);
+    }   
+}
+
+// SDF du plan (n le vecteur normal et m un pts du plan)
+res_SDF SDF_plan(vector p, vector n, vector m, color couleur){
+    res_SDF res;
+    res.c = couleur;
+
+    vector v = v_sub(p,m);
+
+    res.dist = fabs(prod_scal(n,v))/norm_vector(n);
+    return res;
+}
+
 
 // Fonction de SDF d'une sphère
-res_SDF SDF_sphere(vector p, vector centre, float rayon, color couleur){
-    float distance = sqrt( (p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y) + (p.z - centre.z)*(p.z - centre.z) );
+res_SDF SDF_sphere(vector p, void* param, color couleur){
+    param_sphere* args = (param_sphere*) param;
+    vector centre = args->centre;
+    float rayon = args->rayon;
+    float distance = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y) + (p.z - centre.z)*(p.z - centre.z));
     res_SDF res;
     res.dist = distance - rayon;
     res.c = couleur;
-    res.centre = centre ;
-    res.rayon = rayon;
     return res;
 }
 
 
 // Fonction de SDF d'un Tor
-res_SDF SDF_Tor(vector p, vector centre, float R, float r, color couleur) {
+res_SDF SDF_Tor(vector p, void* param, color couleur) {
+    param_tor* args = (param_tor*) param;
+    vector centre = args->centre;
+    float R = args->R;
+    float r = args->r;
     float distance_xy = sqrt((p.x - centre.x)*(p.x - centre.x) + (p.y - centre.y)*(p.y - centre.y)) - R;
     float dist = sqrt(distance_xy*distance_xy + (p.z - centre.z)*(p.z - centre.z)) - r;
     res_SDF res = {dist, couleur};
-    res.centre = centre ;
-    res.rayon = (R+r);
     return res;
 }
 
 
 // SDF d'un cylindre
-res_SDF SDF_cylindre(vector p, vector centre, float H, float r, color couleur){
+res_SDF SDF_cylindre(vector p, void* param, color couleur){
+    param_cylindre* args = (param_cylindre*) param;
+    vector centre = args->centre;
+    float H = args->H;
+    float r = args->r;
     res_SDF res;
     res.c = couleur;
-    res.centre = centre ;
-    res.rayon = H/2;
 
     float baseCenterZ = centre.z - H / 2.0;
     float distToBase = fabs(p.z - baseCenterZ) - H/2.0;                         // Distance face haute/basse
@@ -57,11 +95,13 @@ res_SDF SDF_cylindre(vector p, vector centre, float H, float r, color couleur){
 
 
 // SDF d'un cône
-res_SDF SDF_Cone(vector p, vector centre, float H, float r, color couleur){    // Centre du cylindre, rayon r de la base, hauteur H du cylindre
+res_SDF SDF_Cone(vector p, void* param, color couleur){    // Centre du cylindre, rayon r de la base, hauteur H du cylindre
+    param_cone* args = (param_cone*) param;
+    vector centre = args->centre;
+    float H = args->H;
+    float r = args->r;
     res_SDF res;
     res.c = couleur;
-    res.centre = centre ;
-    res.rayon = H;
 
     float baseCenterZ = centre.z - H / 2.0;
     float distToBase = fabs(p.z - baseCenterZ) - H/2.0;                         // Distance face haute/basse
@@ -83,11 +123,13 @@ res_SDF SDF_Cone(vector p, vector centre, float H, float r, color couleur){    /
 
 
 // SDF d'une pyramide (base carrée) selon le centre de sa base // marche pas
-res_SDF SDF_Pyramide(vector p, vector centre, float H, float c, color couleur){
+res_SDF SDF_Pyramide(vector p, void* param, color couleur){
+    param_pyramide* args = (param_pyramide*) param;
+    vector centre = args->centre;
+    float H = args->H;
+    float c = args->c;
     res_SDF res;
     res.c = couleur;
-    res.centre = centre ;
-    res.rayon = H;
 
     float distToBase;
     if (p.z > centre.z + H){
@@ -105,12 +147,15 @@ res_SDF SDF_Pyramide(vector p, vector centre, float H, float c, color couleur){
 
 
 // Fonction de SDF d'une boite (parralépipède rectangle)
-res_SDF SDF_box(vector p, vector centre, float L, float l, float h, color couleur){
+res_SDF SDF_box(vector p,void* param, color couleur){
+    param_box* args = (param_box*) param;
+    vector centre = args->centre;
+    float L = args->L;
+    float l = args->l;
+    float h = args->h;
     res_SDF res;
     res.c = couleur;
-    res.centre = centre ;
-    res.rayon = MAX(h, MAX(L,l))/2;
-
+   
     float dist;
     float d[3];
     d[0] = fabs(p.x - centre.x) - L/2.0;
@@ -131,12 +176,14 @@ res_SDF SDF_box(vector p, vector centre, float L, float l, float h, color couleu
 
 
 
-res_SDF SDF_triangle(vector p, vector a, vector b, vector c, color couleur){
+res_SDF SDF_triangle(vector p, void* param, color couleur){
+    param_triangle* args = (param_triangle*) param;
+    vector a = args->a;
+    vector b = args->b;
+    vector c = args->c;
     res_SDF res;
     res.c = couleur;
-    res.centre = (vector){(a.x + b.x + c.x)/3, (a.y + b.y + c.y)/3, (a.z + b.z + c.z)/3} ;
-    res.rayon = MAX(dist_2_pts(res.centre, a), MAX(dist_2_pts(res.centre, b), dist_2_pts(res.centre, c)));
-
+    
     vector ab = v_sub(b,a);
     vector bc = v_sub(c,b);
     vector ca = v_sub(a,c);
@@ -177,18 +224,24 @@ res_SDF SDF_triangle(vector p, vector a, vector b, vector c, color couleur){
     // return SDF_sphere_circonscrite_triangle(p,a,b,c);
 
     // correction du triangle
-    float dist_sphere = SDF_sphere_circonscrite_triangle(p,a,b,c, couleur).dist;
+    param_triangle* param2 = malloc(sizeof(param_triangle));
+    param2->a = a;
+    param2->b = b;
+    param2->c = c;
+    float dist_sphere = SDF_sphere_circonscrite_triangle(p,param2, couleur).dist;
     res.dist = fmax(d_trig,dist_sphere);
 
     return res;
 }
 
 
-res_SDF SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c, color couleur){
+res_SDF SDF_sphere_circonscrite_triangle(vector p, void* param, color couleur){
+    param_triangle* args = (param_triangle*) param;
+    vector a = args->a;
+    vector b = args->b;
+    vector c = args->c;
     res_SDF res;
     res.c = couleur;
-    res.centre = (vector){(a.x + b.x + c.x)/3, (a.y + b.y + c.y)/3, (a.z + b.z + c.z)/3} ;
-    res.rayon = MAX(dist_2_pts(res.centre, a), MAX(dist_2_pts(res.centre, b), dist_2_pts(res.centre, c)));
     
     vector ab = v_sub(b,a);
     vector bc = v_sub(c,b);
@@ -258,7 +311,11 @@ res_SDF SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c,
 
     float r_c = norm_vector(v_sub(a,C_s_1));
 
-    float S_c = SDF_sphere(p,C_s_1,r_c, couleur).dist;
+    param_sphere* param2 = malloc(sizeof(param_sphere));
+    param2->centre = C_s_1;
+    param2->rayon = r_c;
+
+    float S_c = SDF_sphere(p, param2, couleur).dist;
 
     res.dist = S_c;
 
@@ -272,26 +329,17 @@ res_SDF SDF_sphere_circonscrite_triangle(vector p, vector a, vector b, vector c,
 
 
 
-// SDF du plan (n le vecteur normal et m un pts du plan)
-res_SDF SDF_plan(vector p, vector n, vector m, color couleur){
-    res_SDF res;
-    res.c = couleur;
-    res.centre = (vector){0,0,0} ;
-    res.rayon = 0;
-
-    vector v = v_sub(p,m);
-
-    res.dist = fabs(prod_scal(n,v))/norm_vector(n);
-    return res;
-}
-
 
 // SDF d'une elliposïde
-res_SDF SDF_Ellipsoid(vector p, vector centre, float a, float b, float c, color couleur){
+res_SDF SDF_Ellipsoid(vector p, void* param, color couleur){
+    param_ellipsoid* args = (param_ellipsoid*) param;
+    vector centre = args->centre;
+    float a = args->a;
+    float b = args->b;
+    float c = args->c;
     res_SDF res;
     res.c = couleur;
-    res.centre = centre;
-    res.rayon = MAX(a,MAX(b,c))/2;
+    
 
     float distx = p.x - centre.x;
     float disty = p.y - centre.y;
@@ -306,228 +354,228 @@ res_SDF SDF_Ellipsoid(vector p, vector centre, float a, float b, float c, color 
 // --- NUUUUT NUUUUT --- //
 
 // Tête 
-res_SDF SDF_head(vector p, vector centre, float rayon){
+// res_SDF SDF_head(vector p, vector centre, float rayon){
     
-    res_SDF Contour = SDF_sphere(p, centre, rayon, c_bleu_berlin);		//Centre (0,0,3), rayon 1
+//     res_SDF Contour = SDF_sphere(p, centre, rayon, c_bleu_berlin);		//Centre (0,0,3), rayon 1
 
-    vector C_oeG = {centre.x - 0.83*rayon, centre.y - 0.4*rayon, centre.z + 0.4*rayon};	//Centre (-0.83, 0.4, 0.34)
-    res_SDF oeilGa = SDF_sphere(p, C_oeG, 0.16*rayon, c_blanc);
-    res_SDF oeilGauche = UnionSDF(Contour, oeilGa);
+//     vector C_oeG = {centre.x - 0.83*rayon, centre.y - 0.4*rayon, centre.z + 0.4*rayon};	//Centre (-0.83, 0.4, 0.34)
+//     res_SDF oeilGa = SDF_sphere(p, C_oeG, 0.16*rayon, c_blanc);
+//     res_SDF oeilGauche = UnionSDF(Contour, oeilGa);
 
 
-    vector C_oeD = {centre.x - 0.83*rayon, centre.y + 0.4*rayon, centre.z + 0.4*rayon};
-    res_SDF oeilDr = SDF_sphere(p, C_oeD, 0.16*rayon, c_blanc);
-    res_SDF Oeils = UnionSDF(oeilGauche, oeilDr);
+//     vector C_oeD = {centre.x - 0.83*rayon, centre.y + 0.4*rayon, centre.z + 0.4*rayon};
+//     res_SDF oeilDr = SDF_sphere(p, C_oeD, 0.16*rayon, c_blanc);
+//     res_SDF Oeils = UnionSDF(oeilGauche, oeilDr);
 
-    vector A = {centre.x - 0.98*rayon, centre.y, centre.z+0.2*rayon};	//Point (-0.98, 0, 3.2)
-    vector B = {centre.x - 1.37*rayon, centre.y, centre.z+0.13*rayon};	//Point (-1.37, 0, 3.13)
-    vector C1 = {centre.x - 0.97*rayon, centre.y + 0.24*rayon, centre.z + 0.05*rayon};	//Point (-0.97, 0.24, 3.05)
-    vector C2 = {centre.x - 0.97*rayon, centre.y - 0.24*rayon, centre.z + 0.05*rayon};	//Point (-0.97, -0.24, 3.05)
-    vector D = {centre.x - 1.28*rayon, centre.y, centre.z+0.11*rayon};	//Point (-1.28, 0, 3.11)
-    vector E1 = {centre.x - 0.99*rayon, centre.y + 0.13*rayon, centre.z - 0.05*rayon};	//Point (-0.99, 0.23, 2.95)
-    vector E2 = {centre.x - 0.99*rayon, centre.y - 0.13*rayon, centre.z - 0.05*rayon};	//Point (-0.99, -0.13, 2.95)
+//     vector A = {centre.x - 0.98*rayon, centre.y, centre.z+0.2*rayon};	//Point (-0.98, 0, 3.2)
+//     vector B = {centre.x - 1.37*rayon, centre.y, centre.z+0.13*rayon};	//Point (-1.37, 0, 3.13)
+//     vector C1 = {centre.x - 0.97*rayon, centre.y + 0.24*rayon, centre.z + 0.05*rayon};	//Point (-0.97, 0.24, 3.05)
+//     vector C2 = {centre.x - 0.97*rayon, centre.y - 0.24*rayon, centre.z + 0.05*rayon};	//Point (-0.97, -0.24, 3.05)
+//     vector D = {centre.x - 1.28*rayon, centre.y, centre.z+0.11*rayon};	//Point (-1.28, 0, 3.11)
+//     vector E1 = {centre.x - 0.99*rayon, centre.y + 0.13*rayon, centre.z - 0.05*rayon};	//Point (-0.99, 0.23, 2.95)
+//     vector E2 = {centre.x - 0.99*rayon, centre.y - 0.13*rayon, centre.z - 0.05*rayon};	//Point (-0.99, -0.13, 2.95)
     
-    res_SDF bec1 = SDF_triangle(p, A, B, C1, c_orange);
-    res_SDF bec2 = SDF_triangle(p, A, B, C2, c_orange);
-    res_SDF bec3 = SDF_triangle(p, C1, D, E1, c_orange);
-    res_SDF bec4 = SDF_triangle(p, E1, D, E2, c_orange);
-    res_SDF bec5 = SDF_triangle(p, E2, D, C2, c_orange);
+//     res_SDF bec1 = SDF_triangle(p, A, B, C1, c_orange);
+//     res_SDF bec2 = SDF_triangle(p, A, B, C2, c_orange);
+//     res_SDF bec3 = SDF_triangle(p, C1, D, E1, c_orange);
+//     res_SDF bec4 = SDF_triangle(p, E1, D, E2, c_orange);
+//     res_SDF bec5 = SDF_triangle(p, E2, D, C2, c_orange);
     
-    res_SDF Bec1_1 = UnionSDF(Oeils, bec1);
-    res_SDF Bec1_2 = UnionSDF(Bec1_1, bec2);
-    res_SDF Bec1_3 = UnionSDF(Bec1_2, bec3);
-    res_SDF Bec1_4 = UnionSDF(Bec1_3, bec4);
-    res_SDF Bec1_5 = UnionSDF(Bec1_4, bec5);
+//     res_SDF Bec1_1 = UnionSDF(Oeils, bec1);
+//     res_SDF Bec1_2 = UnionSDF(Bec1_1, bec2);
+//     res_SDF Bec1_3 = UnionSDF(Bec1_2, bec3);
+//     res_SDF Bec1_4 = UnionSDF(Bec1_3, bec4);
+//     res_SDF Bec1_5 = UnionSDF(Bec1_4, bec5);
    
-    vector C_Chap1 = {centre.x, centre.y, centre.z + 1.3*rayon};
-    vector C_Chap2 = {centre.x, centre.y, centre.z + 1.025*rayon};
+//     vector C_Chap1 = {centre.x, centre.y, centre.z + 1.3*rayon};
+//     vector C_Chap2 = {centre.x, centre.y, centre.z + 1.025*rayon};
 
-    res_SDF Chap1 = SDF_cylindre(p, C_Chap1, 0.6*rayon, 0.2*rayon, c_bistre);
-    res_SDF Chap2 = SDF_cylindre(p, C_Chap2, 0.05*rayon, 0.3*rayon, c_bistre);
+//     res_SDF Chap1 = SDF_cylindre(p, C_Chap1, 0.6*rayon, 0.2*rayon, c_bistre);
+//     res_SDF Chap2 = SDF_cylindre(p, C_Chap2, 0.05*rayon, 0.3*rayon, c_bistre);
     
-    res_SDF Chap1_1 = UnionSDF(Bec1_5, Chap1);
-    res_SDF Chap1_2 = UnionSDF(Chap1_1, Chap2);   
+//     res_SDF Chap1_1 = UnionSDF(Bec1_5, Chap1);
+//     res_SDF Chap1_2 = UnionSDF(Chap1_1, Chap2);   
     
-    return Chap1_2;
-}
+//     return Chap1_2;
+// }
 
 
-// Corps
-res_SDF SDF_corps(vector p, vector centre, float rayon){
-    res_SDF Contour = SDF_sphere(p, centre, rayon, c_bleu_berlin);
+// // Corps
+// res_SDF SDF_corps(vector p, vector centre, float rayon){
+//     res_SDF Contour = SDF_sphere(p, centre, rayon, c_bleu_berlin);
 
-    vector C_Bas = {centre.x, centre.y, centre.z - rayon};
-    res_SDF Bas = SDF_box(p, C_Bas, rayon, rayon, rayon/4, c_bleu_berlin);
+//     vector C_Bas = {centre.x, centre.y, centre.z - rayon};
+//     res_SDF Bas = SDF_box(p, C_Bas, rayon, rayon, rayon/4, c_bleu_berlin);
 
-    res_SDF Corps = SubstractSDF(Contour, Bas);
+//     res_SDF Corps = SubstractSDF(Contour, Bas);
 
-    Corps.centre = centre ;
-    Corps.rayon = rayon ;
-    return Corps;
-}
+//     Corps.centre = centre ;
+//     Corps.rayon = rayon ;
+//     return Corps;
+// }
 
 
-// Total 
-res_SDF SDF_Pingoo(vector p, vector centre, float rayon){
-    vector C_Tete = {centre.x, centre.y, centre.z + rayon/2};
-    res_SDF Tete = SDF_head(p, C_Tete, 1.1*rayon/2);
+// // Total 
+// res_SDF SDF_Pingoo(vector p, vector centre, float rayon){
+//     vector C_Tete = {centre.x, centre.y, centre.z + rayon/2};
+//     res_SDF Tete = SDF_head(p, C_Tete, 1.1*rayon/2);
 
-    vector C_Corps = {centre.x, centre.y, centre.z - 0.8*rayon/3};
-    res_SDF Corps = SDF_corps(p, C_Corps, 2.1*rayon/3);
+//     vector C_Corps = {centre.x, centre.y, centre.z - 0.8*rayon/3};
+//     res_SDF Corps = SDF_corps(p, C_Corps, 2.1*rayon/3);
 
-    // res_SDF Pingoo = SmoothUnionSDF(Tete, Corps, 0.05);
-    res_SDF Pingoo = UnionSDF(Tete, Corps);
-    Pingoo.centre = centre ;
-    Pingoo.rayon = rayon ;
-    return Pingoo;
-}
+//     // res_SDF Pingoo = SmoothUnionSDF(Tete, Corps, 0.05);
+//     res_SDF Pingoo = UnionSDF(Tete, Corps);
+//     Pingoo.centre = centre ;
+//     Pingoo.rayon = rayon ;
+//     return Pingoo;
+// }
 
 
 
 
 // --- TESTS --- //
-res_SDF mult_objects(vector pos, color couleur){
-    res_SDF res;
-    res.c = couleur;
+// res_SDF mult_objects(vector pos, color couleur){
+//     res_SDF res;
+//     res.c = couleur;
     
-    // translate
-    // float iTime = 1.0;
+//     // translate
+//     // float iTime = 1.0;
     
-    // pos.x += 0.0;
-    // pos.y += 0.0;
-    // pos.z += 0.0;
+//     // pos.x += 0.0;
+//     // pos.y += 0.0;
+//     // pos.z += 0.0;
 
-    vector modResult;
-    // modResult.x = fmodf(pos.x, 2.0);
-    modResult.y = fmodf(pos.y, 2.0);
-    modResult.x = fmodf(pos.x, 2.0);
-    // modResult.y = pos.y;
-    // modResult.z = fmodf(pos.z, 2.0);
-    modResult.z = pos.z;
+//     vector modResult;
+//     // modResult.x = fmodf(pos.x, 2.0);
+//     modResult.y = fmodf(pos.y, 2.0);
+//     modResult.x = fmodf(pos.x, 2.0);
+//     // modResult.y = pos.y;
+//     // modResult.z = fmodf(pos.z, 2.0);
+//     modResult.z = pos.z;
 
-    //float d1 = sqrt((modResult.x - 1.0) * (modResult.x - 1.0) + (modResult.y - 1.0) * (modResult.y - 1.0) + (modResult.z - 1.0) * (modResult.z - 1.0)) - 0.54321;
-    // float d1 = SDF_box(modResult, (vector){1.0,1.0,1.0}, 0.5,0.5,0.5);
-    float d1 = SDF_Tor(modResult, (vector){1.0,1.0,-1}, 0.5, 0.3, couleur).dist;
-    res.dist = d1;
-    return res;
-}
+//     //float d1 = sqrt((modResult.x - 1.0) * (modResult.x - 1.0) + (modResult.y - 1.0) * (modResult.y - 1.0) + (modResult.z - 1.0) * (modResult.z - 1.0)) - 0.54321;
+//     // float d1 = SDF_box(modResult, (vector){1.0,1.0,1.0}, 0.5,0.5,0.5);
+//     float d1 = SDF_Tor(modResult, (vector){1.0,1.0,-1}, 0.5, 0.3, couleur).dist;
+//     res.dist = d1;
+//     return res;
+// }
 
-float fractal_1_test(vector z) {
-    vector a1 = {1.0, 1.0, 1.0};
-    vector a2 = {-1.0, -1.0, 1.0};
-    vector a3 = {1.0, -1.0, -1.0};
-    vector a4 = {-1.0, 1.0, -1.0};
-    vector c;
-    int n = 0;
-    float dist, d;
-    int Iterations = 15;
-    float Scale = 2.0;
+// float fractal_1_test(vector z) {
+//     vector a1 = {1.0, 1.0, 1.0};
+//     vector a2 = {-1.0, -1.0, 1.0};
+//     vector a3 = {1.0, -1.0, -1.0};
+//     vector a4 = {-1.0, 1.0, -1.0};
+//     vector c;
+//     int n = 0;
+//     float dist, d;
+//     int Iterations = 15;
+//     float Scale = 2.0;
 
-    while (n < Iterations) {
-        c = a1;
-        dist = sqrt(pow(z.x - a1.x, 2) + pow(z.y - a1.y, 2) + pow(z.z - a1.z, 2));
-        d = sqrt(pow(z.x - a2.x, 2) + pow(z.y - a2.y, 2) + pow(z.z - a2.z, 2));
-        if (d < dist) {
-            c = a2;
-            dist = d;
-        }
-        d = sqrt(pow(z.x - a3.x, 2) + pow(z.y - a3.y, 2) + pow(z.z - a3.z, 2));
-        if (d < dist) {
-            c = a3;
-            dist = d;
-        }
-        d = sqrt(pow(z.x - a4.x, 2) + pow(z.y - a4.y, 2) + pow(z.z - a4.z, 2));
-        if (d < dist) {
-            c = a4;
-            dist = d;
-        }
+//     while (n < Iterations) {
+//         c = a1;
+//         dist = sqrt(pow(z.x - a1.x, 2) + pow(z.y - a1.y, 2) + pow(z.z - a1.z, 2));
+//         d = sqrt(pow(z.x - a2.x, 2) + pow(z.y - a2.y, 2) + pow(z.z - a2.z, 2));
+//         if (d < dist) {
+//             c = a2;
+//             dist = d;
+//         }
+//         d = sqrt(pow(z.x - a3.x, 2) + pow(z.y - a3.y, 2) + pow(z.z - a3.z, 2));
+//         if (d < dist) {
+//             c = a3;
+//             dist = d;
+//         }
+//         d = sqrt(pow(z.x - a4.x, 2) + pow(z.y - a4.y, 2) + pow(z.z - a4.z, 2));
+//         if (d < dist) {
+//             c = a4;
+//             dist = d;
+//         }
 
-        z.x = Scale * z.x - c.x * (Scale - 1.0);
-        z.y = Scale * z.y - c.y * (Scale - 1.0);
-        z.z = Scale * z.z - c.z * (Scale - 1.0);
-        n++;
-    }
+//         z.x = Scale * z.x - c.x * (Scale - 1.0);
+//         z.y = Scale * z.y - c.y * (Scale - 1.0);
+//         z.z = Scale * z.z - c.z * (Scale - 1.0);
+//         n++;
+//     }
 
-    return sqrt(pow(z.x, 2) + pow(z.y, 2) + pow(z.z, 2)) * pow(Scale, -n);
-}
-
-
-
-
-
-// --- ROTATIONS --- //
-// renvoie le produit entre la matrice de rotation Rx et le vec v
-vector rotation_x (vector v, float angle){// angle en degres
-    return (vector){v.x, v.y*cos(angle*3.14/180) - v.z*sin(angle*3.14/180), v.y*sin(angle*3.14/180) + v.z*cos(angle*3.14/180)};
-}
-
-// renvoie le produit entre la matrice de rotation Rx et le vec v
-vector rotation_y (vector v, float angle){// angle en degres
-    return (vector){v.x*cos(angle*3.14/180) + v.z*sin(angle*3.14/180), v.y, v.z*cos(angle*3.14/180) - v.x*sin(angle*3.14/180)};
-}
-
-// renvoie le produit entre la matrice de rotation Rx et le vec v
-vector rotation_z (vector v, float angle){// angle en degres
-    return (vector){v.x*cos(angle*3.14/180) - v.y*sin(angle*3.14/180), v.x*sin(angle*3.14/180) + v.y*cos(angle*3.14/180), v.z};
-}
-
-
-
-
-// --- OPERATIONS --- //
-// Union de 2 formes
-res_SDF UnionSDF (res_SDF d1, res_SDF d2){
-    return min_sdf(d1,d2);
-    // return fmin(d1, d2);
-}
-
-// Intersection de 2 formes
-res_SDF IntersectSDF (res_SDF d1, res_SDF d2){
-    return max_sdf(d1,d2);
-    // return fmax(d1, d2);
-}
-
-// Soustraction : On enlève le forme 2 de la forme 1
-res_SDF SubstractSDF (res_SDF d1, res_SDF d2){
-    return max_sdf(d1,(res_SDF){-d2.dist, d2.c});
-    // return fmax(d1, -d2); 
-}
-
-// -- SMOOTH -- //
-// Union Smooth
-// float SmoothUnionSDF(float d1, float d2, float k){
-//     float h = max(k-abs(d1-d2),0.0);
-//     return (min(d1, d2) - h*h*0.25/k);
+//     return sqrt(pow(z.x, 2) + pow(z.y, 2) + pow(z.z, 2)) * pow(Scale, -n);
 // }
 
 
-// res_SDF SmoothUnionSDF(res_SDF d1, res_SDF d2, float k){
-//     float h = d1-d2;
-//     return 0.5*((d1+d2) - sqrt(h*h+k));
+
+
+
+// // --- ROTATIONS --- //
+// // renvoie le produit entre la matrice de rotation Rx et le vec v
+// vector rotation_x (vector v, float angle){// angle en degres
+//     return (vector){v.x, v.y*cos(angle*3.14/180) - v.z*sin(angle*3.14/180), v.y*sin(angle*3.14/180) + v.z*cos(angle*3.14/180)};
 // }
 
-// // Intersection Smooth 
-// res_SDF SmoothIntersectSDF(res_SDF d1, res_SDF d2, float k){
-//     return -SmoothUnionSDF(-d1,-d2,k);
+// // renvoie le produit entre la matrice de rotation Rx et le vec v
+// vector rotation_y (vector v, float angle){// angle en degres
+//     return (vector){v.x*cos(angle*3.14/180) + v.z*sin(angle*3.14/180), v.y, v.z*cos(angle*3.14/180) - v.x*sin(angle*3.14/180)};
 // }
 
-// // Soustraction Smooth
-// res_SDF SmoothSubstractSDF(res_SDF d1, res_SDF d2, float k){
-//     return -SmoothUnionSDF(-d1,d2,k);
+// // renvoie le produit entre la matrice de rotation Rx et le vec v
+// vector rotation_z (vector v, float angle){// angle en degres
+//     return (vector){v.x*cos(angle*3.14/180) - v.y*sin(angle*3.14/180), v.x*sin(angle*3.14/180) + v.y*cos(angle*3.14/180), v.z};
 // }
 
 
-res_SDF Disturb(vector p, res_SDF d) {
-    float displacement = sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.x) * sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.y) * sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.z) * 0.25;
-    // float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
-    res_SDF res;
-    res.c = d.c;
-    res.centre = d.centre;
-    res.rayon = d.rayon;
-    res.dist = displacement + d.dist;
 
-    return res;
-}
+
+// // --- OPERATIONS --- //
+// // Union de 2 formes
+// res_SDF UnionSDF (res_SDF d1, res_SDF d2){
+//     return min_sdf(d1,d2);
+//     // return fmin(d1, d2);
+// }
+
+// // Intersection de 2 formes
+// res_SDF IntersectSDF (res_SDF d1, res_SDF d2){
+//     return max_sdf(d1,d2);
+//     // return fmax(d1, d2);
+// }
+
+// // Soustraction : On enlève le forme 2 de la forme 1
+// res_SDF SubstractSDF (res_SDF d1, res_SDF d2){
+//     return max_sdf(d1,(res_SDF){-d2.dist, d2.c});
+//     // return fmax(d1, -d2); 
+// }
+
+// // -- SMOOTH -- //
+// // Union Smooth
+// // float SmoothUnionSDF(float d1, float d2, float k){
+// //     float h = max(k-abs(d1-d2),0.0);
+// //     return (min(d1, d2) - h*h*0.25/k);
+// // }
+
+
+// // res_SDF SmoothUnionSDF(res_SDF d1, res_SDF d2, float k){
+// //     float h = d1-d2;
+// //     return 0.5*((d1+d2) - sqrt(h*h+k));
+// // }
+
+// // // Intersection Smooth 
+// // res_SDF SmoothIntersectSDF(res_SDF d1, res_SDF d2, float k){
+// //     return -SmoothUnionSDF(-d1,-d2,k);
+// // }
+
+// // // Soustraction Smooth
+// // res_SDF SmoothSubstractSDF(res_SDF d1, res_SDF d2, float k){
+// //     return -SmoothUnionSDF(-d1,d2,k);
+// // }
+
+
+// res_SDF Disturb(vector p, res_SDF d) {
+//     float displacement = sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.x) * sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.y) * sin((sin(time_scene)*sin(time_scene)*3 + 2) * p.z) * 0.25;
+//     // float sphere_0 = distance_from_sphere(p, vec3(0.0), 1.0);
+//     res_SDF res;
+//     res.c = d.c;
+//     res.centre = d.centre;
+//     res.rayon = d.rayon;
+//     res.dist = displacement + d.dist;
+
+//     return res;
+// }
 
 
 

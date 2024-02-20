@@ -25,7 +25,7 @@ int main(){
     clock_t begin_all = clock();
 
     srand(time(NULL));
-    My_scene_p = paysage;
+    My_scene_p = scene_1;
 
     // --- GESTION DE LA FENETRE --- //
     GLFWwindow* window;

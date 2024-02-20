@@ -1,4 +1,6 @@
 #include "pingouin_sdf.h"
+#include "bvh.h"
+
 
 res_SDF SDF_pingouin(vector pts, vector c) { 
    vector C_1 = { 0.000000,-0.697296,1.037411 };

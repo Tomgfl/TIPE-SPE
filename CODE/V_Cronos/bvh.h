@@ -10,8 +10,7 @@
 #include "signed_distance_function.h"
 #include "options.h"
 
-#define MAX_SDF_PER_LEAF 10
-#define MAX_DEPTH 15 // Définissez ici la profondeur maximale souhaitée
+#define MAX_OBJ_PER_LEAF 2  // Nombre de sdf max par feuille
 
 
 typedef struct {
@@ -23,15 +22,17 @@ typedef struct BVHNode {
     AABB box; // Axis-Aligned Bounding Box (Boîte englobante alignée sur les axes)
     struct BVHNode* left;
     struct BVHNode* right;
-    res_SDF* sdf; // Pointeur vers le SDF (ou un tableau de SDF) contenu dans ce nœud
-    int sdf_count; // Nombre de SDF contenu dans ce nœud
+    objet* obj; // Pointeur vers l'objet (ou un tableau d'objets) contenu dans ce nœud
+    int obj_count; // Nombre d'objets contenu dans ce nœud
 } BVHNode;
 
-BVHNode* buildBVH(res_SDF* sdf_list, int sdf_count) ;
-void splitSDFs(res_SDF* sdf_list, int sdf_count, res_SDF** left_sdfs, int* left_count, res_SDF** right_sdfs, int* right_count) ;
+BVHNode* buildBVH(objet* sdf_list, int sdf_count) ;
+void splitOBJs(objet* sdf_list, int sdf_count, objet** left_sdfs, int* left_count, objet** right_sdfs, int* right_count, int depth) ;
 float distBoite(vector p, AABB box);
 int compareByXPosition(const void* a, const void* b) ;
-AABB calculateBoundingBox(res_SDF* sdf_list, int sdf_count) ;
+int compareByYPosition(const void* a, const void* b) ;
+int compareByZPosition(const void* a, const void* b) ;
+AABB calculateBoundingBox(objet* sdf_list, int sdf_count) ;
 void buildBVHRecursive(BVHNode* node, int currentDepth) ;
 float traverseBVH(BVHNode* root, vector p, float dist) ;
 

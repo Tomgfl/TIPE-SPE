@@ -40,12 +40,11 @@ struct camera_s{
 };
 typedef struct camera_s camera;
 
+
 // https://timcoster.com/2020/03/05/raymarching-shader-pt5-colors/
 struct res_SDF_s{
     float dist;
     color c;
-    vector centre;
-    float rayon;    // Distance la plus grande
 }; 
 typedef struct res_SDF_s res_SDF;
 
@@ -85,6 +84,79 @@ struct arg_s{
     color** t_out;      // tab du resultat
 };
 typedef struct arg_s arg;
+
+
+// Objets 
+
+struct objet_s{
+    int type;         // Type d'objet : "0 = sphere", "1=tor", "2=cylindre", "3=cone", "4=pyramide", "5=box", "6=triangle", "7=ellipsoid"
+    void* param;        // Paramètres de l'objet (h, l, L ...)
+    float rayon;          // Rayon pour la boite englobante
+    vector centre;      // Centre pour la boite englobante
+    color couleur;
+};
+typedef struct objet_s objet;
+
+
+struct param_sphere_s{
+    vector centre;
+    float rayon;
+};
+typedef struct param_sphere_s param_sphere;
+
+struct param_tor_s{
+    vector centre;
+    float R;
+    float r;
+};
+typedef struct param_tor_s param_tor;
+
+struct param_cylindre_s{
+    vector centre;
+    float H;
+    float r;
+};
+typedef struct param_cylindre_s param_cylindre;
+
+struct param_cone_s{
+    vector centre;
+    float H;
+    float r;
+};
+typedef struct param_cone_s param_cone;
+
+struct param_pyramide_s{
+    vector centre;
+    float H;
+    float c;
+};
+typedef struct param_pyramide_s param_pyramide;
+
+struct param_box_s{
+    vector centre;
+    float L;
+    float l;
+    float h;
+};
+typedef struct param_box_s param_box;
+
+struct param_triangle_s{
+    vector a;
+    vector b;
+    vector c;
+};
+typedef struct param_triangle_s param_triangle;
+
+
+struct param_ellipsoid_s{
+    vector centre;
+    float a;
+    float b;
+    float c;
+};
+typedef struct param_ellipsoid_s param_ellipsoid;
+
+
 
 
 // taille de l'ecran

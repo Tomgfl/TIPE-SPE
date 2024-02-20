@@ -24,7 +24,7 @@ res_SDF (*My_scene_p)(vector); // pointeur vers la scene
 int main(){
 
     srand(time(NULL));
-    My_scene_p = scene_sphere;
+    My_scene_p = scene_1;
 
     // --- GESTION DE LA FENETRE --- //
     GLFWwindow* window;
