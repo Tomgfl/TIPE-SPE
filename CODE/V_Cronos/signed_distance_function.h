@@ -6,6 +6,7 @@
 #include "vector.h"
 #include "utiles.h"
 #include "light.h"
+#include "objets.h"
 // #include <stdio.h>
 // #include <stdlib.h>
 
@@ -18,7 +19,7 @@
 
 
 // SDF
-res_SDF SDF_Objet(vector p, objet obj);
+res_SDF SDF_Objet(vector p, OBJET obj);
 res_SDF SDF_plan(vector p, vector n, vector m, color couleur);
 res_SDF SDF_sphere(vector p, void* param, color couleur);
 res_SDF SDF_box(vector p, void* param, color couleur);

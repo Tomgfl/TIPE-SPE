@@ -8,18 +8,19 @@
 #include "utiles.h"
 #include "vector.h"
 #include "signed_distance_function.h"
+#include "objets.h"
 // #include <stdio.h>
 // #include "3d_obj/pingouin_1_sdf.h"
 
 // res_SDF SDF_pingouin(vector pts, vector c);
 
 res_SDF scene_1(vector pts);
-res_SDF scene_effets(vector pts);
-res_SDF banquise(vector pts);
-res_SDF paysage(vector pts);
+// res_SDF scene_effets(vector pts);
+// res_SDF banquise(vector pts);
+// res_SDF paysage(vector pts);
 
 // res_SDF SCENE_PRINCIPAL(vector pts);
-res_SDF scene_sphere(vector pts);
+// res_SDF scene_sphere(vector pts);
 
 
 

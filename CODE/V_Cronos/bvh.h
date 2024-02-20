@@ -9,6 +9,8 @@
 #include "vector.h"
 #include "signed_distance_function.h"
 #include "options.h"
+#include "objets.h"
+
 
 #define MAX_OBJ_PER_LEAF 2  // Nombre de sdf max par feuille
 
@@ -22,17 +24,17 @@ typedef struct BVHNode {
     AABB box; // Axis-Aligned Bounding Box (Boîte englobante alignée sur les axes)
     struct BVHNode* left;
     struct BVHNode* right;
-    objet* obj; // Pointeur vers l'objet (ou un tableau d'objets) contenu dans ce nœud
+    OBJET* obj; // Pointeur vers l'objet (ou un tableau d'objets) contenu dans ce nœud
     int obj_count; // Nombre d'objets contenu dans ce nœud
 } BVHNode;
 
-BVHNode* buildBVH(objet* sdf_list, int sdf_count) ;
-void splitOBJs(objet* sdf_list, int sdf_count, objet** left_sdfs, int* left_count, objet** right_sdfs, int* right_count, int depth) ;
+BVHNode* buildBVH(OBJET* sdf_list, int sdf_count) ;
+void splitOBJs(OBJET* sdf_list, int sdf_count, OBJET** left_sdfs, int* left_count, OBJET** right_sdfs, int* right_count, int depth) ;
 float distBoite(vector p, AABB box);
 int compareByXPosition(const void* a, const void* b) ;
 int compareByYPosition(const void* a, const void* b) ;
 int compareByZPosition(const void* a, const void* b) ;
-AABB calculateBoundingBox(objet* sdf_list, int sdf_count) ;
+AABB calculateBoundingBox(OBJET* sdf_list, int sdf_count) ;
 void buildBVHRecursive(BVHNode* node, int currentDepth) ;
 float traverseBVH(BVHNode* root, vector p, float dist) ;
 

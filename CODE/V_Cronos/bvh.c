@@ -5,7 +5,7 @@
 
 
 
-BVHNode* buildBVH(objet* obj_list, int obj_count) {
+BVHNode* buildBVH(OBJET* obj_list, int obj_count) {
     BVHNode* root = (BVHNode*)malloc(sizeof(BVHNode));
     root->obj = obj_list;
     root->obj_count = obj_count;
@@ -50,7 +50,7 @@ float distBoite(vector p, AABB box) {
 
 
 
-AABB calculateBoundingBox(objet* obj_list, int obj_count) {
+AABB calculateBoundingBox(OBJET* obj_list, int obj_count) {
     // Initialiser les coordonnées min et max avec des valeurs extrêmes
     float minX = INFINITY, minY = INFINITY, minZ = INFINITY;
     float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
@@ -84,14 +84,14 @@ AABB calculateBoundingBox(objet* obj_list, int obj_count) {
 }
 
 
-void splitOBJs(objet* obj_list, int obj_count, objet** left_objs, int* left_count, objet** right_objs, int* right_count, int dep) {
+void splitOBJs(OBJET* obj_list, int obj_count, OBJET** left_objs, int* left_count, OBJET** right_objs, int* right_count, int dep) {
     // Trier les objets en fonction de leur position sur l'axe x
     if (dep % 3 == 0){
-        qsort(obj_list, obj_count, sizeof(objet), compareByXPosition);
+        qsort(obj_list, obj_count, sizeof(OBJET), compareByXPosition);
     }   else if (dep % 3 == 1){
-        qsort(obj_list, obj_count, sizeof(objet), compareByYPosition);
+        qsort(obj_list, obj_count, sizeof(OBJET), compareByYPosition);
     }   else {
-        qsort(obj_list, obj_count, sizeof(objet), compareByXPosition);
+        qsort(obj_list, obj_count, sizeof(OBJET), compareByXPosition);
     }
 
     // Trouver l'indice de séparation pour diviser les objets en deux groupes
@@ -109,8 +109,8 @@ void splitOBJs(objet* obj_list, int obj_count, objet** left_objs, int* left_coun
 
 // Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe x
 int compareByXPosition(const void* a, const void* b) {
-    objet obj_a = *((objet*)a);
-    objet obj_b = *((objet*)b);
+    OBJET obj_a = *((OBJET*)a);
+    OBJET obj_b = *((OBJET*)b);
 
     if (obj_a.centre.x < obj_b.centre.x) return -1;
     if (obj_a.centre.x > obj_b.centre.x) return 1;
@@ -119,8 +119,8 @@ int compareByXPosition(const void* a, const void* b) {
 
 // Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe y
 int compareByYPosition(const void* a, const void* b) {
-    objet obj_a = *((objet*)a);
-    objet obj_b = *((objet*)b);
+    OBJET obj_a = *((OBJET*)a);
+    OBJET obj_b = *((OBJET*)b);
 
     if (obj_a.centre.y < obj_b.centre.y) return -1;
     if (obj_a.centre.y > obj_b.centre.y) return 1;
@@ -129,8 +129,8 @@ int compareByYPosition(const void* a, const void* b) {
 
 // Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe z
 int compareByZPosition(const void* a, const void* b) {
-    objet obj_a = *((objet*)a);
-    objet obj_b = *((objet*)b);
+    OBJET obj_a = *((OBJET*)a);
+    OBJET obj_b = *((OBJET*)b);
 
     if (obj_a.centre.z < obj_b.centre.z) return -1;
     if (obj_a.centre.z > obj_b.centre.z) return 1;
@@ -149,8 +149,8 @@ void buildBVHRecursive(BVHNode* node, int currentDepth) {
     }
 
     // Divisez les objets en deux groupes et créez les sous-arbres gauche et droit
-    objet* left_objs;
-    objet* right_objs;
+    OBJET* left_objs;
+    OBJET* right_objs;
     int left_count, right_count;
 
     splitOBJs(node->obj, node->obj_count, &left_objs, &left_count, &right_objs, &right_count, currentDepth);

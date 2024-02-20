@@ -22,33 +22,29 @@ extern float time_scene;
 
 // --- SCENE #1 --- // Tous les objets
 res_SDF scene_1(vector pts){
-    int nb = 6;
-    res_SDF all_sdf[2];
+    int nb = 7;
+    res_SDF all_sdf[nb];
 
     vector n_plan = {0, 0, 1};
     res_SDF sdf_plan = SDF_plan(pts, n_plan, (vector){0,0,-4}, c_gris);
 
-    objet obj1;
-    obj1.type = 5; // Type "5" pour une boîte
-    obj1.param = malloc(sizeof(param_box)); // Allouer de la mémoire pour les paramètres de la boîte
-    ((param_box*)obj1.param)->L = 4.0;  // Longueur de la boîte
-    ((param_box*)obj1.param)->l = 4.0;  // Largeur de la boîte
-    ((param_box*)obj1.param)->h = 4.0;  // Hauteur de la boîte
-    obj1.couleur = c_bleu;
-    obj1.rayon = 2.0; 
-    obj1.centre = (vector){-10,10,0};
+    OBJET obj1 = BuildBox((vector){-10,10,0}, 4, 4, 4, c_bleu);
     res_SDF sdf_box = SDF_Objet(pts, obj1);
 
-    // param_sphere* param2 = malloc(sizeof(param_sphere));
-    // param2->centre = (vector){-10,10,10};
-    // param2->rayon = 2;
-    // res_SDF sdf_sphere = SDF_sphere(pts, param2, c_blanc);
+    OBJET obj2 = BuildSphere((vector){-10, 10, 10}, 2, c_blanc);
+    res_SDF sdf_sphere = SDF_Objet(pts, obj2);
 
-    // param_tor* param3 = malloc(sizeof(param_tor));
-    // param3->centre = (vector){10,10,0};
-    // param3->R = 2;
-    // param3->r = 1;
-    // res_SDF sdf_tor = SDF_Tor(pts, param3, c_bleu_berlin);
+    OBJET obj3 = BuildTor((vector){10, 10, 0}, 2, 1, c_bleu_berlin);
+    res_SDF sdf_tor = SDF_Objet(pts, obj3);
+
+    OBJET obj4 = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
+    res_SDF sdf_cyl = SDF_Objet(pts, obj4);
+
+    OBJET obj5 = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
+    res_SDF sdf_tri = SDF_Objet(pts, obj5);
+
+    OBJET obj6 = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
+    res_SDF sdf_ell = SDF_Objet(pts, obj6);
     // // sdf_tor = Disturb(pts, sdf_tor);
 
     // param_triangle* param4 = malloc(sizeof(param_triangle));
@@ -70,12 +66,14 @@ res_SDF scene_1(vector pts){
 
     all_sdf[0] = sdf_plan;
     all_sdf[1] = sdf_box;
-    // all_sdf[2] = sdf_tor;
-    // all_sdf[3] = sdf_tri;
-    // all_sdf[4] = sdf_ell;
-    // all_sdf[5] = sdf_sphere;
+    all_sdf[2] = sdf_sphere;
+    all_sdf[3] = sdf_tor;
+    all_sdf[4] = sdf_cyl;
+    all_sdf[5] = sdf_tri;
+    all_sdf[6] = sdf_ell;
 
-    return min_lst_sdf(all_sdf, 2);
+
+    return min_lst_sdf(all_sdf, nb);
 }
 
 

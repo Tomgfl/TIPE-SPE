@@ -21,9 +21,9 @@ res_SDF min_lst_sdf(res_SDF* lst, int n){
 }
 
 
-objet min_lst_obj(objet* lst, int n, vector p){
+OBJET min_lst_obj(OBJET* lst, int n, vector p){
     res_SDF res = SDF_Objet(p, lst[0]);
-    objet resO = lst[0];
+    OBJET resO = lst[0];
     res_SDF resi ;
 
     for (int i = 1; i < n; i++){

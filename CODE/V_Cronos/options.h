@@ -86,8 +86,8 @@ struct arg_s{
 typedef struct arg_s arg;
 
 
-// Objets 
 
+// Objets 
 struct objet_s{
     int type;         // Type d'objet : "0 = sphere", "1=tor", "2=cylindre", "3=cone", "4=pyramide", "5=box", "6=triangle", "7=ellipsoid"
     void* param;        // Paramètres de l'objet (h, l, L ...)
@@ -95,8 +95,7 @@ struct objet_s{
     vector centre;      // Centre pour la boite englobante
     color couleur;
 };
-typedef struct objet_s objet;
-
+typedef struct objet_s OBJET;
 
 struct param_sphere_s{
     vector centre;

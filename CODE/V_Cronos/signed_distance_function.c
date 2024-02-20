@@ -9,24 +9,26 @@ extern float time_scene;
 
 
 // --- FONCTIONS DE SDF --- //
-res_SDF SDF_Objet(vector p, objet obj) {
+res_SDF SDF_Objet(vector p, OBJET obj) {
+    res_SDF res;
     if (obj.type == 0) {
-        SDF_sphere(p, obj.param, obj.couleur);
+        res =SDF_sphere(p, obj.param, obj.couleur);
     }   else if (obj.type == 1) {
-        SDF_Tor(p, obj.param, obj.couleur);
+        res = SDF_Tor(p, obj.param, obj.couleur);
     }   else if (obj.type == 2) {
-        SDF_cylindre(p, obj.param, obj.couleur);
+        res = SDF_cylindre(p, obj.param, obj.couleur);
     }   else if (obj.type == 3) {
-        SDF_Cone(p, obj.param, obj.couleur);
+        res = SDF_Cone(p, obj.param, obj.couleur);
     }   else if (obj.type == 4) {
-        SDF_Pyramide(p, obj.param, obj.couleur);
+        res = SDF_Pyramide(p, obj.param, obj.couleur);
     }   else if (obj.type == 5) {
-        SDF_box(p, obj.param, obj.couleur);
+        res = SDF_box(p, obj.param, obj.couleur);
     }   else if (obj.type == 6) {
-        SDF_triangle(p, obj.param, obj.couleur);
+        res = SDF_triangle(p, obj.param, obj.couleur);
     }   else if (obj.type == 7) {
-        SDF_Ellipsoid(p, obj.param, obj.couleur);
+        res = SDF_Ellipsoid(p, obj.param, obj.couleur);
     }   
+    return res;
 }
 
 // SDF du plan (n le vecteur normal et m un pts du plan)
