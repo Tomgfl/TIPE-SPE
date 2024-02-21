@@ -171,22 +171,23 @@ void buildBVHRecursive(BVHNode* node, int currentDepth) {
 
 
 
-float traverseBVH(BVHNode* root, vector p, float dist) {
-    float res = dist;
+res_SDF traverseBVH(BVHNode* root, vector p, res_SDF dist) {
+    res_SDF res;
+    res = dist;
     if (root->left == NULL && root->right == NULL) {                    // Si c'est une feuille on retourne l'objet minimale
-        res = MIN(res, SDF_Objet(p, min_lst_obj(root->obj, root->obj_count, p)).dist);
+        res = min_sdf(res, SDF_Objet(p, min_lst_obj(root->obj, root->obj_count, p)));
     }   else {
         // Si ce n'est pas une feuille, il a un arbre gauche ET droit (il faut mettre MAX_OBJ_PER_LEAF >= 2)
         float d1 = distBoite(p, root->left->box);   // Distance Boite de gauche
         float d2 = distBoite(p, root->right->box);  // Distance Boite de droite
-        if (d1<d2 && d1<res) {
+        if (d1<d2 && d1<res.dist) {
             res = traverseBVH(root->left, p, res);
-            if (d2 < res){
+            if (d2 < res.dist){
                 res = traverseBVH(root->right, p, res);
             }
-        }   else if (d2<d1 && d2<res) {
+        }   else if (d2<d1 && d2<res.dist) {
             res = traverseBVH(root->right, p, res);
-            if (d1 < res){
+            if (d1 < res.dist){
                 res = traverseBVH(root->left, p, res);
             }
         }

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 
+
 extern float time_scene;
 
 // --- SCENE --- //
@@ -22,7 +23,7 @@ extern float time_scene;
 
 // --- SCENE #1 --- // Tous les objets
 res_SDF scene_1(vector pts){
-    int nb = 7;
+    int nb = 6;
     res_SDF all_sdf[nb];
 
     vector n_plan = {0, 0, 1};
@@ -63,7 +64,6 @@ res_SDF scene_1(vector pts){
     // res_SDF sdf_ell = SDF_Ellipsoid(pts, param5, c_orange);
     // // res_SDF sdf_cone = SDF_Cone(pts, C_5, 6, 2, c_noir);
 
-
     all_sdf[0] = sdf_plan;
     all_sdf[1] = sdf_box;
     all_sdf[2] = sdf_sphere;
@@ -71,10 +71,26 @@ res_SDF scene_1(vector pts){
     all_sdf[4] = sdf_cyl;
     all_sdf[5] = sdf_tri;
     all_sdf[6] = sdf_ell;
-
-
     return min_lst_sdf(all_sdf, nb);
 }
+
+
+BVHNode* scene1_bvh () {
+
+    int nb = 6;
+    OBJET all_obj[nb];
+    all_obj[0] = BuildBox((vector){-10,10,0}, 4, 4, 4, c_bleu);
+    all_obj[1] = BuildSphere((vector){-10, 10, 10}, 2, c_blanc);
+    all_obj[2] = BuildTor((vector){10, 10, 0}, 2, 1, c_bleu_berlin);
+    all_obj[3] = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
+    all_obj[4] = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
+    all_obj[5] = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
+
+    BVHNode* root = buildBVH(all_obj, nb);
+    return root;
+}
+
+
 
 
 
@@ -295,13 +311,15 @@ res_SDF scene_1(vector pts){
 
 
 // renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
-res_SDF SCENE_PRINCIPAL(vector pts){
-
+// renvoie la surface la plus proche (ie c'est toutes les SDF de la scene)
+res_SDF SCENE_PRINCIPALE(vector pts){
     return scene_1(pts);
-
     // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
 }
 
 
-
+res_SDF SCENE_BVH(BVHNode* scene, vector pts, res_SDF Plan){
+    res_SDF res = traverseBVH(scene, pts, Plan);
+    return res;
+}
 

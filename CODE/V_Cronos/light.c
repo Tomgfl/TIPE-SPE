@@ -33,6 +33,26 @@ float all_light(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
 }
 
 
+
+
+float light_diffuse_bvh(vector pts, BVHNode* scene, vector source, res_SDF(*scene_actuelle)(BVHNode*, vector, res_SDF)){
+    vector v_n = normalise_vecteur(vect_normal(pts, scene_actuelle));
+
+    float res = fmax(prod_scal(v_n, normalise_vecteur(get_vec_2_pts(pts,source))),0);
+    return res;
+}
+float all_light_bvh(vector pts, BVHNode* scene, vector source, res_SDF(*scene_actuelle)(BVHNode*, vector, res_SDF)){
+    float res = 0;
+    res += light_diffuse_bvh(pts, scene, source, scene_actuelle);
+    // res += 0.4; // lumiere ambiante
+
+    return res;
+}
+
+
+
+
+
 //notion de distance
 float brouillard(float t){
     return exp(-0.0005*t);

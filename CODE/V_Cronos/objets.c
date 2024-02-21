@@ -108,3 +108,7 @@ OBJET BuildEllipsoid (vector centre, float a, float b, float c, color couleur) {
     obj.centre = centre;
     return obj;
 }
+
+void FreeObj (OBJET obj) {
+    free(obj.param);
+}

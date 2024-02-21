@@ -40,7 +40,6 @@ struct camera_s{
 };
 typedef struct camera_s camera;
 
-
 // https://timcoster.com/2020/03/05/raymarching-shader-pt5-colors/
 struct res_SDF_s{
     float dist;
@@ -75,7 +74,6 @@ struct stats_opti_s{
 };
 typedef struct stats_opti_s stats_opti;
 
-
 // Pour pthread
 struct arg_s{
     res_SDF (*fct_scene)(vector);
@@ -84,8 +82,6 @@ struct arg_s{
     color** t_out;      // tab du resultat
 };
 typedef struct arg_s arg;
-
-
 
 // Objets 
 struct objet_s{
@@ -155,7 +151,19 @@ struct param_ellipsoid_s{
 };
 typedef struct param_ellipsoid_s param_ellipsoid;
 
+// BVH
+typedef struct {
+    float minX, minY, minZ; // Coin inférieur de la boîte
+    float maxX, maxY, maxZ; // Coin supérieur de la boîte
+} AABB;
 
+typedef struct BVHNode {
+    AABB box; // Axis-Aligned Bounding Box (Boîte englobante alignée sur les axes)
+    struct BVHNode* left;
+    struct BVHNode* right;
+    OBJET* obj; // Pointeur vers l'objet (ou un tableau d'objets) contenu dans ce nœud
+    int obj_count; // Nombre d'objets contenu dans ce nœud
+} BVHNode;
 
 
 // taille de l'ecran

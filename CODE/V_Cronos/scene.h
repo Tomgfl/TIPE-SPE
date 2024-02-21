@@ -15,11 +15,13 @@
 // res_SDF SDF_pingouin(vector pts, vector c);
 
 res_SDF scene_1(vector pts);
+BVHNode* scene1_bvh () ;
 // res_SDF scene_effets(vector pts);
 // res_SDF banquise(vector pts);
 // res_SDF paysage(vector pts);
 
-// res_SDF SCENE_PRINCIPAL(vector pts);
+res_SDF SCENE_PRINCIPALE(vector pts);
+res_SDF SCENE_BVH(BVHNode* scene, vector pts, res_SDF Plan);
 // res_SDF scene_sphere(vector pts);
 
 

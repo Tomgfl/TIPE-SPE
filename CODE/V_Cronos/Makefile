@@ -65,8 +65,8 @@ main_2 : main_2.c options.h vector.o utiles.o signed_distance_function.o scene.o
 main_3 : main_3.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o
 	$(CC) main_3.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o  $(OPTIONS) $(ADD) -o main_3
 
-main_4 : main_4.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o
-	$(CC) main_4.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o $(OPTIONS) $(ADD) -o main_4
+main_4 : main_4.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o
+	$(CC) main_4.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o $(OPTIONS) $(ADD) -o main_4
 
 clean : 
 	rm -f ./test_ecran

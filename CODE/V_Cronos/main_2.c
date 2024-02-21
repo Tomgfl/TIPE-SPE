@@ -26,7 +26,7 @@ int main(){
     clock_t begin_all = clock();
 
     srand(time(NULL));
-    My_scene_p = scene_1;
+    My_scene_p = SCENE_PRINCIPALE;
 
     // --- GESTION DE LA FENETRE --- //
     GLFWwindow* window;

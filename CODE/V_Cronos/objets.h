@@ -17,6 +17,7 @@ OBJET BuildCone (vector centre, float H, float r, color couleur);
 OBJET BuildPyramide (vector centre, float H, float c, color couleur);
 OBJET BuildTriangle (vector a, vector b, vector c, color couleur);
 OBJET BuildEllipsoid (vector centre, float a, float b, float c, color couleur);
+void FreeObj (OBJET obj);
 
 
 #endif

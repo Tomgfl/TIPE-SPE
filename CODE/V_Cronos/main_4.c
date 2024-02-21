@@ -25,7 +25,10 @@ int main(){
     clock_t begin_all = clock();
 
     srand(time(NULL));
-    My_scene_p = scene_1;
+    BVHNode* MyBvhScene = scene1_bvh();
+    My_scene_p = SCENE_BVH;
+
+    vector n_plan = {0, 0, 1}; vector m_plan = {0, 0, -4}; color c_plan = c_gris;
 
     // --- GESTION DE LA FENETRE --- //
     GLFWwindow* window;
@@ -89,7 +92,7 @@ int main(){
                 ray R;
                 R.origine = CAMERA.position_c;
                 R.direction = ecran_ray_directions[i][j];
-                color C = ray_marching(R, My_scene_p);
+                color C = ray_marching_bvh(R, MyBvhScene, My_scene_p, n_plan, m_plan, c_plan);
                 draw_pixel(i, j, C, 1); // affiche le pixel                
             }
             // printf("\033[H \n");
