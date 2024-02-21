@@ -11,8 +11,8 @@ float min_lst (float* lst, int n){
     return val_min;
 }
 
-res_SDF min_lst_sdf(res_SDF* lst, int n){
-    res_SDF res = lst[0];
+RES_SDF min_lst_sdf(RES_SDF* lst, int n){
+    RES_SDF res = lst[0];
 
     for (int i = 1; i < n; i++){
         res = min_sdf(res, lst[i]);
@@ -23,8 +23,8 @@ res_SDF min_lst_sdf(res_SDF* lst, int n){
 // ax + by = alpha
 // cx + dy = beta
 // Renvoie une solution seulement si le determinant est non nul
-res_systeme_2 solve_systeme_2(float a, float b, float c, float d, float alpha, float beta){
-    res_systeme_2 res;
+RES_SYS_2 solve_systeme_2(float a, float b, float c, float d, float alpha, float beta){
+    RES_SYS_2 res;
 
     res.det = a*d - b*c;
 
@@ -38,14 +38,14 @@ res_systeme_2 solve_systeme_2(float a, float b, float c, float d, float alpha, f
     return res;
 }
 
-res_SDF min_sdf(res_SDF d1, res_SDF d2){
+RES_SDF min_sdf(RES_SDF d1, RES_SDF d2){
     if (d1.dist < d2.dist){
         return d1;
     }
     return d2;
 }
 
-res_SDF max_sdf(res_SDF d1, res_SDF d2){
+RES_SDF max_sdf(RES_SDF d1, RES_SDF d2){
     if (d1.dist > d2.dist){
         return d1;
     }

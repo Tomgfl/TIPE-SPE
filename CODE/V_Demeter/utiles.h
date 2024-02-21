@@ -12,13 +12,13 @@ float min_lst (float* lst, int n);
 // struct res_SDF;
 
 
-res_SDF min_lst_sdf(res_SDF* lst, int n);
-res_SDF min_sdf(res_SDF d1, res_SDF d2);
-res_SDF max_sdf(res_SDF d1, res_SDF d2);
+RES_SDF min_lst_sdf(RES_SDF* lst, int n);
+RES_SDF min_sdf(RES_SDF d1, RES_SDF d2);
+RES_SDF max_sdf(RES_SDF d1, RES_SDF d2);
 
 
 
 
-res_systeme_2 solve_systeme_2(float a, float b, float c, float d, float alpha, float beta);
+RES_SYS_2 solve_systeme_2(float a, float b, float c, float d, float alpha, float beta);
 
 #endif 

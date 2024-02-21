@@ -1,22 +1,22 @@
 #include "light.h"
-extern stats_opti STATS;
+extern STATS_OPTI Stats;
 
-color c_rouge = {255,0,0,1.0};
-color c_bleu = {0,0,255,1.0};
-color c_vert = {0,255,0,1.0};
-color c_noir = {0,0,0,1.0};
-color c_blanc = {255,255,255,1.0};
-color c_gris = {63, 63, 63,1.0};
-color c_fond = {3,27,73,1.0};
-color c_orange = {255,165,0,1.0};
-color c_bistre = {61,43,31,1.0};
-color c_bleu_berlin = {36,68,92,1.0};
-color c_jaune = {255,255,0,1.0};
+COLOR c_rouge = {255,0,0,1.0};
+COLOR c_bleu = {0,0,255,1.0};
+COLOR c_vert = {0,255,0,1.0};
+COLOR c_noir = {0,0,0,1.0};
+COLOR c_blanc = {255,255,255,1.0};
+COLOR c_gris = {63, 63, 63,1.0};
+COLOR c_fond = {3,27,73,1.0};
+COLOR c_orange = {255,165,0,1.0};
+COLOR c_bistre = {61,43,31,1.0};
+COLOR c_bleu_berlin = {36,68,92,1.0};
+COLOR c_jaune = {255,255,0,1.0};
 
 // --- LUMIERES --- //
 
 // renvoie la lumiere avec le prod vect et la normale
-float light_diffuse(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR)){
+float light_diffuse(VECTOR pts, VECTOR source, RES_SDF(*scene_actuelle)(VECTOR)){
     VECTOR v_n = normalise_vecteur(vect_normal(pts, scene_actuelle));
 
     float res = fmax(prod_scal(v_n, normalise_vecteur(get_vec_2_pts(pts,source))),0);
@@ -24,7 +24,7 @@ float light_diffuse(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR))
 }
 
 
-float all_light(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR)){
+float all_light(VECTOR pts, VECTOR source, RES_SDF(*scene_actuelle)(VECTOR)){
     float res = 0;
     res += light_diffuse(pts, source, scene_actuelle);
     // res += 0.4; // lumiere ambiante
@@ -44,7 +44,7 @@ float brouillard(float t){
 // --- OMBRES --- //
 
 // fait un ray marching entre le point et la source de lumiere (pas le plus opti je pense)
-float shadow_1(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR)){
+float shadow_1(VECTOR pts, VECTOR source, RES_SDF(*scene_actuelle)(VECTOR)){
     VECTOR direction = normalise_vecteur(get_vec_2_pts(pts, source));
     VECTOR position_actuelle = pts;
 
@@ -104,7 +104,7 @@ float shadow_1(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR)){
     return 1.0;
 }
 
-float shadow_2(VECTOR pts, VECTOR source, int k, res_SDF(*scene_act)(VECTOR)){
+float shadow_2(VECTOR pts, VECTOR source, int k, RES_SDF(*scene_act)(VECTOR)){
     float res = 1.0;
     float t = DIST_MIN*100;
 

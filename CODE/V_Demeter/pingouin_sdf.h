@@ -6,5 +6,6 @@
 #include "utiles.h" 
 #include "signed_distance_function.h" 
 
-res_SDF SDF_pingouin(VECTOR pts, VECTOR c);
+RES_SDF SDF_pingouin(VECTOR pts, VECTOR c);
+
 #endif

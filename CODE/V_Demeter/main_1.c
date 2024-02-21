@@ -18,7 +18,7 @@ float time_scene = 0;
 // stats_opti STATS = {0,0,0,0,0,0.0,0.0,0.0,0.0};
 
 
-res_SDF (*My_scene_p)(VECTOR); // pointeur vers la scene
+RES_SDF (*My_scene_p)(VECTOR); // pointeur vers la scene
 
 
 int main(){
@@ -34,50 +34,50 @@ int main(){
     if (!window){glfwTerminate();return -1;}
     glfwMakeContextCurrent(window);
 
-    camera CAMERA;
-    CAMERA.size_L_e = 2.0;
-    CAMERA.dir_ecran_c = (VECTOR){0,1,0};
+    CAMERA cam;
+    cam.size_L_e = 2.0;
+    cam.dir_ecran_c = (VECTOR){0,1,0};
 
-    CAMERA.up_c = normalise_vecteur((VECTOR){0,0,1});
-    CAMERA.position_c = (VECTOR){0,-20,5};
-    CAMERA.dist_screen = 2.0;
+    cam.up_c = normalise_vecteur((VECTOR){0,0,1});
+    cam.position_c = (VECTOR){0,-20,5};
+    cam.dist_screen = 2.0;
 
 
-    CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
-    CAMERA.de = CAMERA.size_L_e / WIDTH;
-    CAMERA.size_l_e = HEIGHT*CAMERA.de;
-    CAMERA.A = (VECTOR){CAMERA.position_c.x + CAMERA.dist_screen*CAMERA.dir_ecran_c.x + CAMERA.size_l_e/2.0*CAMERA.up_c.x + CAMERA.size_L_e/2.0*CAMERA.orthcam.x,
-               CAMERA.position_c.y + CAMERA.dist_screen*CAMERA.dir_ecran_c.y + CAMERA.size_l_e/2.0*CAMERA.up_c.y + CAMERA.size_L_e/2.0*CAMERA.orthcam.y,
-               CAMERA.position_c.z + CAMERA.dist_screen*CAMERA.dir_ecran_c.z + CAMERA.size_l_e/2.0*CAMERA.up_c.z + CAMERA.size_L_e/2.0*CAMERA.orthcam.z};
+    cam.orthcam = normalise_vecteur(prod_vect(cam.up_c, cam.dir_ecran_c));
+    cam.de = cam.size_L_e / WIDTH;
+    cam.size_l_e = HEIGHT*cam.de;
+    cam.A = (VECTOR){cam.position_c.x + cam.dist_screen*cam.dir_ecran_c.x + cam.size_l_e/2.0*cam.up_c.x + cam.size_L_e/2.0*cam.orthcam.x,
+               cam.position_c.y + cam.dist_screen*cam.dir_ecran_c.y + cam.size_l_e/2.0*cam.up_c.y + cam.size_L_e/2.0*cam.orthcam.y,
+               cam.position_c.z + cam.dist_screen*cam.dir_ecran_c.z + cam.size_l_e/2.0*cam.up_c.z + cam.size_L_e/2.0*cam.orthcam.z};
 
-    CAMERA.vlde = (VECTOR){-CAMERA.de*CAMERA.up_c.x,
-                           -CAMERA.de*CAMERA.up_c.y,
-                           -CAMERA.de*CAMERA.up_c.z};
+    cam.vlde = (VECTOR){-cam.de*cam.up_c.x,
+                           -cam.de*cam.up_c.y,
+                           -cam.de*cam.up_c.z};
 
-    CAMERA.vLde = (VECTOR){-CAMERA.de*CAMERA.orthcam.x,
-                           -CAMERA.de*CAMERA.orthcam.y,
-                           -CAMERA.de*CAMERA.orthcam.z};
+    cam.vLde = (VECTOR){-cam.de*cam.orthcam.x,
+                           -cam.de*cam.orthcam.y,
+                           -cam.de*cam.orthcam.z};
 
 
     // les directions dans lesquels doivent poartir les rayons
-    ray** ecran_ray = malloc(WIDTH*sizeof(ray*));
+    RAY** ecran_ray = malloc(WIDTH*sizeof(RAY*));
     for (int i = 0; i < WIDTH; i++){
-        ecran_ray[i] = malloc(HEIGHT*sizeof(ray));
+        ecran_ray[i] = malloc(HEIGHT*sizeof(RAY));
     }
 
-    color** ecran_res = malloc(WIDTH*sizeof(color*));
+    COLOR** ecran_res = malloc(WIDTH*sizeof(COLOR*));
     for (int i = 0; i < WIDTH; i++){
-        ecran_res[i] = malloc(HEIGHT*sizeof(color));
+        ecran_res[i] = malloc(HEIGHT*sizeof(COLOR));
     }
      
     
     for (int i = 0; i < WIDTH; i++){
         for (int j = 0; j < HEIGHT; j++){
-            ecran_ray[i][j].origine = CAMERA.position_c;
-            ecran_ray[i][j].direction = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
-                    (VECTOR){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
-                            CAMERA.A.y + i*CAMERA.vLde.y + j*CAMERA.vlde.y,
-                            CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
+            ecran_ray[i][j].origine = cam.position_c;
+            ecran_ray[i][j].direction = normalise_vecteur(get_vec_2_pts(cam.position_c,
+                    (VECTOR){cam.A.x + i*cam.vLde.x + j*cam.vlde.x,
+                            cam.A.y + i*cam.vLde.y + j*cam.vlde.y,
+                            cam.A.z + i*cam.vLde.z + j*cam.vlde.z}));
         }
     }    
 

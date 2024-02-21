@@ -4,7 +4,7 @@
 
 
 // renvoie le vecteur normal a une surface (en un point proche d'une surface) a l'aide du gradient
-VECTOR vect_normal(VECTOR pts, res_SDF(*scene_actuelle)(VECTOR)){
+VECTOR vect_normal(VECTOR pts, RES_SDF(*scene_actuelle)(VECTOR)){
     float dist = scene_actuelle(pts).dist;
 
     // float grad_x = SCENE_PRINCIPAL((vector){pts.x + EPSILON, pts.y, pts.z}) - dist;

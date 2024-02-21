@@ -8,7 +8,7 @@
 #include "vector.h"
 #include "scene.h"
 
-color ray_marching(ray r, res_SDF (*scene_actuelle)(VECTOR));
+COLOR ray_marching(RAY r, RES_SDF (*scene_actuelle)(VECTOR));
 void* ray_marching_thread(void* ptr_args);
 
 #endif 

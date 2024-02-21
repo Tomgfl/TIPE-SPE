@@ -14,11 +14,11 @@
 #include "ray_marching.h"
 
 float time_scene = 0;
-stats_opti STATS = {0,0,0,0,0,
+STATS_OPTI Stats = {0,0,0,0,0,
 0.0,0.0,0.0,0.0};
 
 
-res_SDF (*My_scene_p)(VECTOR); // pointeur vers la scene
+RES_SDF (*My_scene_p)(VECTOR); // pointeur vers la scene
 
 
 int main(){
@@ -34,29 +34,29 @@ int main(){
     if (!window){glfwTerminate();return -1;}
     glfwMakeContextCurrent(window);
 
-    camera CAMERA;
-    CAMERA.size_L_e = 2.0;
-    CAMERA.dir_ecran_c = (VECTOR){1,0,0};
+    CAMERA cam;
+    cam.size_L_e = 2.0;
+    cam.dir_ecran_c = (VECTOR){1,0,0};
 
-    CAMERA.up_c = normalise_vecteur((VECTOR){0,0,1});
-    CAMERA.position_c = (VECTOR){-10,0,10};
-    CAMERA.dist_screen = 2.0;
+    cam.up_c = normalise_vecteur((VECTOR){0,0,1});
+    cam.position_c = (VECTOR){-10,0,10};
+    cam.dist_screen = 2.0;
 
 
-    CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
-    CAMERA.de = CAMERA.size_L_e / WIDTH;
-    CAMERA.size_l_e = HEIGHT*CAMERA.de;
-    CAMERA.A = (VECTOR){CAMERA.position_c.x + CAMERA.dist_screen*CAMERA.dir_ecran_c.x + CAMERA.size_l_e/2.0*CAMERA.up_c.x + CAMERA.size_L_e/2.0*CAMERA.orthcam.x,
-               CAMERA.position_c.y + CAMERA.dist_screen*CAMERA.dir_ecran_c.y + CAMERA.size_l_e/2.0*CAMERA.up_c.y + CAMERA.size_L_e/2.0*CAMERA.orthcam.y,
-               CAMERA.position_c.z + CAMERA.dist_screen*CAMERA.dir_ecran_c.z + CAMERA.size_l_e/2.0*CAMERA.up_c.z + CAMERA.size_L_e/2.0*CAMERA.orthcam.z};
+    cam.orthcam = normalise_vecteur(prod_vect(cam.up_c, cam.dir_ecran_c));
+    cam.de = cam.size_L_e / WIDTH;
+    cam.size_l_e = HEIGHT*cam.de;
+    cam.A = (VECTOR){cam.position_c.x + cam.dist_screen*cam.dir_ecran_c.x + cam.size_l_e/2.0*cam.up_c.x + cam.size_L_e/2.0*cam.orthcam.x,
+               cam.position_c.y + cam.dist_screen*cam.dir_ecran_c.y + cam.size_l_e/2.0*cam.up_c.y + cam.size_L_e/2.0*cam.orthcam.y,
+               cam.position_c.z + cam.dist_screen*cam.dir_ecran_c.z + cam.size_l_e/2.0*cam.up_c.z + cam.size_L_e/2.0*cam.orthcam.z};
 
-    CAMERA.vlde = (VECTOR){-CAMERA.de*CAMERA.up_c.x,
-                           -CAMERA.de*CAMERA.up_c.y,
-                           -CAMERA.de*CAMERA.up_c.z};
+    cam.vlde = (VECTOR){-cam.de*cam.up_c.x,
+                           -cam.de*cam.up_c.y,
+                           -cam.de*cam.up_c.z};
 
-    CAMERA.vLde = (VECTOR){-CAMERA.de*CAMERA.orthcam.x,
-                           -CAMERA.de*CAMERA.orthcam.y,
-                           -CAMERA.de*CAMERA.orthcam.z};
+    cam.vLde = (VECTOR){-cam.de*cam.orthcam.x,
+                           -cam.de*cam.orthcam.y,
+                           -cam.de*cam.orthcam.z};
 
 
     // les directions dans lesquels doivent poartir les rayons 
@@ -67,10 +67,10 @@ int main(){
     
     for (int i = 0; i < WIDTH; i++){
         for (int j = 0; j < HEIGHT; j++){
-            ecran_ray_directions[i][j] = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
-                    (VECTOR){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
-                            CAMERA.A.y + i*CAMERA.vLde.y + j*CAMERA.vlde.y,
-                            CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
+            ecran_ray_directions[i][j] = normalise_vecteur(get_vec_2_pts(cam.position_c,
+                    (VECTOR){cam.A.x + i*cam.vLde.x + j*cam.vlde.x,
+                            cam.A.y + i*cam.vLde.y + j*cam.vlde.y,
+                            cam.A.z + i*cam.vLde.z + j*cam.vlde.z}));
         }
     }    
 
@@ -86,10 +86,10 @@ int main(){
         for (int i = 0; i < WIDTH; i++){
             for (int j = 0; j < HEIGHT; j++){
                 // chaque rayon part de la camera en direction de chaque pixel (vect normaliser)
-                ray R;
-                R.origine = CAMERA.position_c;
+                RAY R;
+                R.origine = cam.position_c;
                 R.direction = ecran_ray_directions[i][j];
-                color C = ray_marching(R, My_scene_p);
+                COLOR C = ray_marching(R, My_scene_p);
                 draw_pixel(i, j, C, 1); // affiche le pixel                
             }
             // printf("\033[H \n");
@@ -99,12 +99,12 @@ int main(){
             // glfwPollEvents();
         }
         // printf("ok\n");
-        STATS.nb_images += 1;
+        Stats.nb_images += 1;
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
     clock_t end_all = clock();
-    STATS.temps_tot = (double)(end_all-begin_all)/CLOCKS_PER_SEC;
+    Stats.temps_tot = (double)(end_all-begin_all)/CLOCKS_PER_SEC;
 
     glfwTerminate();
 
@@ -113,22 +113,22 @@ int main(){
     }
     free(ecran_ray_directions);
 
-    printf("Nombre d'image rendu : %d\n", STATS.nb_images);
-    printf("Temps d'execution total : %f sec\n", STATS.temps_tot);
-    printf("FPS : %f\n", STATS.nb_images / STATS.temps_tot);
-    printf("Temps moyen d'une image : %f sec\n", STATS.temps_tot / STATS.nb_images);
-    printf("Temps calcul lumière : %f sec\n", STATS.temps_light);
-    printf("Temps calcul ombres : %f sec\n", STATS.temps_shadow);
-    printf("Temps calcul ray_marching seul : %f sec\n", STATS.temps_raymarch);
-    // printf("Temps pris pour le calcul du min d'une scene (compris dans ray et ombre) : %f sec\n", STATS.temps_scene);
-    printf("Nombre total de rayons lancé pour le ray-marching : %lld\n",STATS.nb_rayons_tot);
-    printf("Nombre total d'étapes pour les rayons du ray-marching : %lld\n", STATS.nb_rayons_etapes);
-    printf("Nombre moyen d'étapes ray-marching : %.2f\n", (double)STATS.nb_rayons_etapes / STATS.nb_rayons_tot);
-    printf("Nombre total de rayon lancé pour les ombres : %lld\n", STATS.nb_shadow_rayons_tot);
-    printf("Nombre total d'étapes pour les ombres : %lld\n", STATS.nb_shadow_rayons_etapes);
-    printf("Nombre moyen d'étapes ombres : %.2f\n", (double)STATS.nb_shadow_rayons_etapes / STATS.nb_shadow_rayons_tot);
+    printf("Nombre d'image rendu : %d\n", Stats.nb_images);
+    printf("Temps d'execution total : %f sec\n", Stats.temps_tot);
+    printf("FPS : %f\n", Stats.nb_images / Stats.temps_tot);
+    printf("Temps moyen d'une image : %f sec\n", Stats.temps_tot / Stats.nb_images);
+    printf("Temps calcul lumière : %f sec\n", Stats.temps_light);
+    printf("Temps calcul ombres : %f sec\n", Stats.temps_shadow);
+    printf("Temps calcul ray_marching seul : %f sec\n", Stats.temps_raymarch);
+    // printf("Temps pris pour le calcul du min d'une scene (compris dans ray et ombre) : %f sec\n", Stats.temps_scene);
+    printf("Nombre total de rayons lancé pour le ray-marching : %lld\n",Stats.nb_rayons_tot);
+    printf("Nombre total d'étapes pour les rayons du ray-marching : %lld\n", Stats.nb_rayons_etapes);
+    printf("Nombre moyen d'étapes ray-marching : %.2f\n", (double)Stats.nb_rayons_etapes / Stats.nb_rayons_tot);
+    printf("Nombre total de rayon lancé pour les ombres : %lld\n", Stats.nb_shadow_rayons_tot);
+    printf("Nombre total d'étapes pour les ombres : %lld\n", Stats.nb_shadow_rayons_etapes);
+    printf("Nombre moyen d'étapes ombres : %.2f\n", (double)Stats.nb_shadow_rayons_etapes / Stats.nb_shadow_rayons_tot);
     printf("Poucentage temps pris pour ray-march | lumière | ombre | autre : %.2f | %.2f | %.2f | %.2f\n",
-        STATS.temps_raymarch/STATS.temps_tot*100, STATS.temps_light/STATS.temps_tot*100, STATS.temps_shadow/STATS.temps_tot*100, (STATS.temps_tot - STATS.temps_light - STATS.temps_shadow - STATS.temps_raymarch)/STATS.temps_tot*100);
+        Stats.temps_raymarch/Stats.temps_tot*100, Stats.temps_light/Stats.temps_tot*100, Stats.temps_shadow/Stats.temps_tot*100, (Stats.temps_tot - Stats.temps_light - Stats.temps_shadow - Stats.temps_raymarch)/Stats.temps_tot*100);
     printf("\n");
 
     return 0;

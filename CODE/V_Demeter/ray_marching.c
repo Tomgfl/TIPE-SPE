@@ -3,7 +3,7 @@
 // extern stats_opti STATS;
 
 // renvoie la couleur d'un rayon avec le ray marching
-color ray_marching(ray r, res_SDF (*scene_actuelle)(VECTOR)){
+COLOR ray_marching(RAY r, RES_SDF (*scene_actuelle)(VECTOR)){
     clock_t begin_r = clock();
     float dist_tot = 0.0;
     VECTOR position_actuelle = r.origine;
@@ -12,7 +12,7 @@ color ray_marching(ray r, res_SDF (*scene_actuelle)(VECTOR)){
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
 
-        res_SDF result_scene = scene_actuelle(position_actuelle);
+        RES_SDF result_scene = scene_actuelle(position_actuelle);
 
         float dist = result_scene.dist;
 
@@ -31,7 +31,7 @@ color ray_marching(ray r, res_SDF (*scene_actuelle)(VECTOR)){
             // clock_t end_s = clock();
             // STATS.temps_shadow += (double)(end_s - begin_s)/CLOCKS_PER_SEC;
             // color res = {150.0, 150.0, 15.0, val_light*val_shadow};
-            color res = result_scene.c;
+            COLOR res = result_scene.c;
             res.r = brouillard(dist_tot)*res.r + (1-brouillard(dist_tot))*127;
             res.g = brouillard(dist_tot)*res.g + (1-brouillard(dist_tot))*127;
             res.b = brouillard(dist_tot)*res.b + (1-brouillard(dist_tot))*127;

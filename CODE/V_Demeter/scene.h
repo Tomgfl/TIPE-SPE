@@ -12,16 +12,16 @@
 // #include <stdio.h>
 // #include "3d_obj/pingouin_1_sdf.h"
 
-// res_SDF SDF_pingouin(vector pts, vector c);
+// RES_SDF SDF_pingouin(vector pts, vector c);
 
-res_SDF scene_1(VECTOR pts);
-res_SDF scene_effets(VECTOR pts);
-res_SDF banquise(VECTOR pts);
-res_SDF nurbs_scene(VECTOR pts);
+RES_SDF scene_1(VECTOR pts);
+RES_SDF scene_effets(VECTOR pts);
+RES_SDF banquise(VECTOR pts);
+RES_SDF nurbs_scene(VECTOR pts);
 
 
-// res_SDF SCENE_PRINCIPAL(vector pts);
-res_SDF scene_sphere(VECTOR pts);
+// RES_SDF SCENE_PRINCIPAL(vector pts);
+RES_SDF scene_sphere(VECTOR pts);
 
 
 

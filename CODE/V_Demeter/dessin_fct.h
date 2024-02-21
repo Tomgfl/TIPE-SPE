@@ -6,6 +6,6 @@
 #include "options.h"
 #include "light.h"
 
-void draw_pixel(int x, int y, color C, float size);
+void draw_pixel(int x, int y, COLOR C, float size);
 
 #endif 

@@ -13,14 +13,14 @@ struct color_s{
     int r, g, b;
     float opp; // oppaciter de la couleur 
 };
-typedef struct color_s color;
+typedef struct color_s COLOR;
 
 // rayon
 struct ray_s{
     VECTOR origine;
     VECTOR direction;
 };
-typedef struct ray_s ray;
+typedef struct ray_s RAY;
 
 // Tout ce qui concerne la camera et l'ecran
 struct camera_s{
@@ -38,14 +38,14 @@ struct camera_s{
     VECTOR vlde;        // Vecteur AD de taille de (a calculer)
     VECTOR A;           // Coin haut gauche de l'ecran (a calculer)
 };
-typedef struct camera_s camera;
+typedef struct camera_s CAMERA;
 
 // https://timcoster.com/2020/03/05/raymarching-shader-pt5-colors/
 struct res_SDF_s{
     float dist;
-    color c;
+    COLOR c;
 }; 
-typedef struct res_SDF_s res_SDF;
+typedef struct res_SDF_s RES_SDF;
 
 // structure pour le resultat d'un systeme 2 2 
 struct res_systeme_2_s{
@@ -53,7 +53,7 @@ struct res_systeme_2_s{
     float x;
     float y; 
 };
-typedef struct res_systeme_2_s res_systeme_2;
+typedef struct res_systeme_2_s RES_SYS_2;
 
 struct stats_opti_s{
     // pour le raymarching principal
@@ -72,15 +72,15 @@ struct stats_opti_s{
     double temps_shadow;                    // fait                   
 
 };
-typedef struct stats_opti_s stats_opti;
+typedef struct stats_opti_s STATS_OPTI;
 
 
 // Pour pthread
 struct arg_thread_s{
-    res_SDF (*fct_scene)(VECTOR);
+    RES_SDF (*fct_scene)(VECTOR);
     int id;             // id du thread
-    ray** t_in;         // les rayons de l'ecran
-    color** t_out;      // tab du resultat
+    RAY** t_in;         // les rayons de l'ecran
+    COLOR** t_out;      // tab du resultat
 };
 typedef struct arg_thread_s ARG_THREAD;
 
