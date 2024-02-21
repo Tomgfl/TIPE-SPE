@@ -25,13 +25,13 @@ extern color c_bleu_berlin;
 
 // --- LUMIERES --- //
 
-float all_light(vector pts, vector source, res_SDF(*scene_actuelle)(vector));
-float light_diffuse(vector pts, vector source, res_SDF(*scene_actuelle)(vector));
+float all_light(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR));
+float light_diffuse(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR));
 
 // --- OMBRES --- //
 
-float shadow_1(vector pts, vector source, res_SDF(*scene_act)(vector));
-float shadow_2(vector pts, vector source, int k, res_SDF(*scene_act)(vector));
+float shadow_1(VECTOR pts, VECTOR source, res_SDF(*scene_act)(VECTOR));
+float shadow_2(VECTOR pts, VECTOR source, int k, res_SDF(*scene_act)(VECTOR));
 
 float brouillard(float t);
 #endif

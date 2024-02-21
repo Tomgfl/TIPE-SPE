@@ -11,17 +11,17 @@
 
 
 
-res_SDF SCENE_PRINCIPAL(vector p);
+res_SDF SCENE_PRINCIPAL(VECTOR p);
 
-vector vect_normal(vector pts, res_SDF(*scene_act)(vector)); // Renvoie le vecteur normale a une surface (en un point)
-vector prod_vect(vector v1, vector v2); // renvoie le produit vectoriel
-float prod_scal(vector v1, vector v2); // renvoie le produit scalaire
-vector get_vec_2_pts(vector p1, vector p2); // cree le vecteur entre 2 points
-vector normalise_vecteur (vector v); // normalise un vecteur
-vector reflect (vector vi, vector vn); // fait la "reflexion" du vecteur incident par rapport au vecteur normal
-float dist_2_pts(vector p1, vector p2); // renvoie la distance entre 2 points
-vector v_add(vector v1, vector v2);
-vector v_sub(vector v1, vector v2);
-vector v_mult_scal(vector v, float a);
-float norm_vector(vector v);
+VECTOR vect_normal(VECTOR pts, res_SDF(*scene_act)(VECTOR)); // Renvoie le vecteur normale a une surface (en un point)
+VECTOR prod_vect(VECTOR v1, VECTOR v2); // renvoie le produit vectoriel
+float prod_scal(VECTOR v1, VECTOR v2); // renvoie le produit scalaire
+VECTOR get_vec_2_pts(VECTOR p1, VECTOR p2); // cree le vecteur entre 2 points
+VECTOR normalise_vecteur (VECTOR v); // normalise un vecteur
+VECTOR reflect (VECTOR vi, VECTOR vn); // fait la "reflexion" du vecteur incident par rapport au vecteur normal
+float dist_2_pts(VECTOR p1, VECTOR p2); // renvoie la distance entre 2 points
+VECTOR v_add(VECTOR v1, VECTOR v2);
+VECTOR v_sub(VECTOR v1, VECTOR v2);
+VECTOR v_mult_scal(VECTOR v, float a);
+float norm_vector(VECTOR v);
 #endif 

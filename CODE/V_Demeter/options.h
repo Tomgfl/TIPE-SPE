@@ -6,7 +6,7 @@
 struct vector_s{
     float x, y, z;
 };
-typedef struct vector_s vector;
+typedef struct vector_s VECTOR;
 
 // --- COULEURS --- //
 struct color_s{
@@ -17,26 +17,26 @@ typedef struct color_s color;
 
 // rayon
 struct ray_s{
-    vector origine;
-    vector direction;
+    VECTOR origine;
+    VECTOR direction;
 };
 typedef struct ray_s ray;
 
 // Tout ce qui concerne la camera et l'ecran
 struct camera_s{
-    vector position_c;  // Position de la camera
-    vector dir_ecran_c; // Direction de la camera
-    vector up_c;        // Vecteur representent le haut de la camera
+    VECTOR position_c;  // Position de la camera
+    VECTOR dir_ecran_c; // Direction de la camera
+    VECTOR up_c;        // Vecteur representent le haut de la camera
 
     float size_L_e;     // Longueur de l'ecran
     float dist_screen;  // Distance de la camera a l'ecran
 
     float size_l_e;     // Largeur de l'ecran (a calculer)
-    vector orthcam;     // vecteur orthogonal a up et dir (a calculer)
+    VECTOR orthcam;     // vecteur orthogonal a up et dir (a calculer)
     float de;           // Taille d'un pixel de l'ecran (a calculer)
-    vector vLde;        // Vecteur AB de taille de (a calculer)
-    vector vlde;        // Vecteur AD de taille de (a calculer)
-    vector A;           // Coin haut gauche de l'ecran (a calculer)
+    VECTOR vLde;        // Vecteur AB de taille de (a calculer)
+    VECTOR vlde;        // Vecteur AD de taille de (a calculer)
+    VECTOR A;           // Coin haut gauche de l'ecran (a calculer)
 };
 typedef struct camera_s camera;
 
@@ -76,21 +76,64 @@ typedef struct stats_opti_s stats_opti;
 
 
 // Pour pthread
-struct arg_s{
-    res_SDF (*fct_scene)(vector);
+struct arg_thread_s{
+    res_SDF (*fct_scene)(VECTOR);
     int id;             // id du thread
     ray** t_in;         // les rayons de l'ecran
     color** t_out;      // tab du resultat
 };
-typedef struct arg_s arg;
+typedef struct arg_thread_s ARG_THREAD;
+
+
+// Pour les nurbs
+// Point de controle
+struct cpoint_s{
+    float x, y, z, w;
+};
+typedef struct cpoint_s CPOINT;
+
+// Controle net
+struct cnet_s{
+    int n;
+    int m;
+    CPOINT** Pw;
+};
+typedef struct cnet_s* CNET;
+
+// Vecteur nodal
+struct knotvector_s{
+    int m;
+    float* U;
+};
+typedef struct knotvector_s* KNOTVECTOR;
+
+// nurbs surface
+struct surface_s{
+    CNET net;
+    int p;
+    int q;
+    KNOTVECTOR knu;
+    KNOTVECTOR knv;
+};
+typedef struct surface_s* SURFACE;
+
+
+struct res_nurbs_s{
+    VECTOR pts;
+    float u;
+    float v;
+    float d;
+};
+typedef struct res_nurbs_s RES_NURBS;
+
 
 
 // taille de l'ecran
-#define WIDTH 600
-#define HEIGHT 480
+#define WIDTH 120
+#define HEIGHT 96
 
 // Parametres du ray marching
-#define MAX_RAY_STEPS 512 // nombre max d'étape
+#define MAX_RAY_STEPS 128 // nombre max d'étape
 #define DIST_MIN 0.01 // diatance a partir de laquel on a atteint un objet
 #define MAX_TOTAL_LENGHT 500 // distance max que peut parcourir un rayon
 #define EPSILON 0.00001 // pour le calcule des gradients

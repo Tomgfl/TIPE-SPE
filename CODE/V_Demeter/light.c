@@ -16,15 +16,15 @@ color c_jaune = {255,255,0,1.0};
 // --- LUMIERES --- //
 
 // renvoie la lumiere avec le prod vect et la normale
-float light_diffuse(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
-    vector v_n = normalise_vecteur(vect_normal(pts, scene_actuelle));
+float light_diffuse(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR)){
+    VECTOR v_n = normalise_vecteur(vect_normal(pts, scene_actuelle));
 
     float res = fmax(prod_scal(v_n, normalise_vecteur(get_vec_2_pts(pts,source))),0);
     return res;
 }
 
 
-float all_light(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
+float all_light(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR)){
     float res = 0;
     res += light_diffuse(pts, source, scene_actuelle);
     // res += 0.4; // lumiere ambiante
@@ -44,9 +44,9 @@ float brouillard(float t){
 // --- OMBRES --- //
 
 // fait un ray marching entre le point et la source de lumiere (pas le plus opti je pense)
-float shadow_1(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
-    vector direction = normalise_vecteur(get_vec_2_pts(pts, source));
-    vector position_actuelle = pts;
+float shadow_1(VECTOR pts, VECTOR source, res_SDF(*scene_actuelle)(VECTOR)){
+    VECTOR direction = normalise_vecteur(get_vec_2_pts(pts, source));
+    VECTOR position_actuelle = pts;
 
     float dist_tot = DIST_MIN;
     position_actuelle.x = pts.x ;
@@ -104,12 +104,12 @@ float shadow_1(vector pts, vector source, res_SDF(*scene_actuelle)(vector)){
     return 1.0;
 }
 
-float shadow_2(vector pts, vector source, int k, res_SDF(*scene_act)(vector)){
+float shadow_2(VECTOR pts, VECTOR source, int k, res_SDF(*scene_act)(VECTOR)){
     float res = 1.0;
     float t = DIST_MIN*100;
 
 
-    vector rd = normalise_vecteur(get_vec_2_pts(pts, source));
+    VECTOR rd = normalise_vecteur(get_vec_2_pts(pts, source));
 
     for (int i = 0; i < MAX_RAY_STEPS && t < MAX_TOTAL_LENGHT; i++){
         float h = scene_act(v_add(pts, v_mult_scal(rd,t))).dist;
