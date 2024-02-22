@@ -2,10 +2,10 @@
 # 	gcc main_test.c dessin_fct.c vector.c utiles.c ray_marching.c signed_distance_function.c light.c scene.c 3d_obj/*.c -O3 -lm -lglfw -lGL -o test_ecran
 
 CC = clang
-OPTIONS = -O3 -ffast-math -g
+OPTIONS = -O3 -ffast-math -g 
 ADD = -lglfw -lGL -pthread -lm
 
-all : test_ecran main_2 main_3 main_4
+all : test_ecran main_4 main_3
 
 vector.o : vector.c vector.h options.h
 	$(CC) -c vector.c $(OPTIONS) -o vector.o
@@ -13,7 +13,7 @@ vector.o : vector.c vector.h options.h
 utiles.o : utiles.c utiles.h options.h
 	$(CC) -c utiles.c $(OPTIONS) -o utiles.o
 
-signed_distance_function.o : signed_distance_function.c signed_distance_function.h vector.h utiles.h options.h
+signed_distance_function.o : signed_distance_function.c signed_distance_function.h vector.h utiles.h options.h bvh.h
 	$(CC) -c signed_distance_function.c $(OPTIONS) -o signed_distance_function.o
 
 scene.o : scene.h scene.c vector.h signed_distance_function.h utiles.h pingouin_sdf.h options.h bvh.h
@@ -55,18 +55,18 @@ objets.o : objets.h objets.c vector.h signed_distance_function.h utiles.h pingou
 test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o bvh.o scene.o ray_marching.o light.o dessin_fct.o objets.o
 	$(CC) main_test.c vector.o utiles.o signed_distance_function.o bvh.o scene.o ray_marching.o light.o dessin_fct.o objets.o  $(OPTIONS) $(ADD) -o test_ecran
 
+main_4 : main_4.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o
+	$(CC) main_4.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o $(OPTIONS) $(ADD) -o main_4
+
 
 # main_1 : main_1.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 
 # 	$(CC) main_1.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o  $(OPTIONS) $(ADD) -o main_1
 
-main_2 : main_2.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o
-	$(CC) main_2.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o $(OPTIONS) $(ADD) -o main_2
+# main_2 : main_2.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o
+# 	$(CC) main_2.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o $(OPTIONS) $(ADD) -o main_2
 
 main_3 : main_3.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o
-	$(CC) main_3.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o  $(OPTIONS) $(ADD) -o main_3
-
-main_4 : main_4.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o
-	$(CC) main_4.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o $(OPTIONS) $(ADD) -o main_4
+	$(CC) main_3.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o $(OPTIONS) $(ADD) -o main_3
 
 clean : 
 	rm -f ./test_ecran

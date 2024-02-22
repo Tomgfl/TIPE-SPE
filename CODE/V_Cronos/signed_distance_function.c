@@ -232,6 +232,7 @@ res_SDF SDF_triangle(vector p, void* param, color couleur){
     param2->c = c;
     float dist_sphere = SDF_sphere_circonscrite_triangle(p,param2, couleur).dist;
     res.dist = fmax(d_trig,dist_sphere);
+    free(param2);
 
     return res;
 }
@@ -313,12 +314,12 @@ res_SDF SDF_sphere_circonscrite_triangle(vector p, void* param, color couleur){
 
     float r_c = norm_vector(v_sub(a,C_s_1));
 
-    param_sphere* param2 = malloc(sizeof(param_sphere));
-    param2->centre = C_s_1;
-    param2->rayon = r_c;
+    param_sphere* param3 = malloc(sizeof(param_sphere));
+    param3->centre = C_s_1;
+    param3->rayon = r_c;
 
-    float S_c = SDF_sphere(p, param2, couleur).dist;
-
+    float S_c = SDF_sphere(p, param3, couleur).dist;
+    free(param3);
     res.dist = S_c;
 
     return res;

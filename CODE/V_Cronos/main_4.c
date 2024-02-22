@@ -12,6 +12,8 @@
 #include "light.h"
 #include "scene.h"
 #include "ray_marching.h"
+#include "bvh.h"
+#include "objets.h"
 
 float time_scene = 0;
 stats_opti STATS = {0,0,0,0,0,
@@ -19,14 +21,18 @@ stats_opti STATS = {0,0,0,0,0,
 
 
 res_SDF (*My_scene_p)(vector); // pointeur vers la scene
+res_SDF (*My_scene_bvh)(BVHNode*, vector, res_SDF); // pointeur vers la scene
+
 
 
 int main(){
     clock_t begin_all = clock();
 
     srand(time(NULL));
+    My_scene_p = SCENE_PRINCIPALE;
+
     BVHNode* MyBvhScene = scene1_bvh();
-    My_scene_p = SCENE_BVH;
+    My_scene_bvh = SCENE_BVH;
 
     vector n_plan = {0, 0, 1}; vector m_plan = {0, 0, -4}; color c_plan = c_gris;
 
@@ -39,10 +45,10 @@ int main(){
 
     camera CAMERA;
     CAMERA.size_L_e = 2.0;
-    CAMERA.dir_ecran_c = (vector){1,0,0};
+    CAMERA.dir_ecran_c = (vector){0,1,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (vector){-10,0,0};
+    CAMERA.position_c = (vector){0,-20,5};
     CAMERA.dist_screen = 2.0;
 
 
@@ -92,7 +98,7 @@ int main(){
                 ray R;
                 R.origine = CAMERA.position_c;
                 R.direction = ecran_ray_directions[i][j];
-                color C = ray_marching_bvh(R, MyBvhScene, My_scene_p, n_plan, m_plan, c_plan);
+                color C = ray_marching_bvh(R, MyBvhScene, My_scene_p, My_scene_bvh, n_plan, m_plan, c_plan);
                 draw_pixel(i, j, C, 1); // affiche le pixel                
             }
             // printf("\033[H \n");
@@ -136,3 +142,39 @@ int main(){
 
     return 0;
 }
+
+
+// int main () {
+
+//     int nb = 6;
+//     OBJET all_obj[nb];
+
+//     vector p = {0,0,-1};
+
+//     vector n_plan = {0, 0, 1}; vector m_plan = {0, 0, -4}; color c_plan = c_gris;
+//     res_SDF plan = SDF_plan(p, n_plan, m_plan, c_plan);
+
+//     all_obj[0] = BuildBox((vector){-10,10,0}, 4, 4, 4, c_bleu);
+//     all_obj[1] = BuildSphere((vector){-10, 10, 10}, 2, c_blanc);
+//     all_obj[2] = BuildTor((vector){10, 10, 0}, 2, 1, c_bleu_berlin);
+//     all_obj[3] = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
+//     all_obj[4] = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
+//     all_obj[5] = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
+
+//     BVHNode* root = buildBVH(all_obj, nb);
+
+//     res_SDF test = traverseBVH(root, p, plan);
+//     printf("la distance est de %f, et la distance par rapport au plan vaut %f\n", 
+//     test.dist, plan.dist);
+//     printf("la distance par rapport à la boite est de %f\n", SDF_Objet(p, all_obj[0]).dist);
+//     printf("la distance par rapport à la sphere est de %f\n", SDF_Objet(p, all_obj[1]).dist);
+//     printf("la distance par rapport au tor est de %f\n", SDF_Objet(p, all_obj[2]).dist);
+//     printf("la distance par rapport au cylindre est de %f\n", SDF_Objet(p, all_obj[3]).dist);
+//     printf("la distance par rapport au triangle est de %f\n", SDF_Objet(p, all_obj[4]).dist);
+//     printf("la distance par rapport à l'ellipsoid' est de %f\n", SDF_Objet(p, all_obj[5]).dist);
+
+//     for (int i = 0; i<nb; i++){
+//         free(all_obj[i].param);
+//     }
+//     freeBVH(root);
+// }

@@ -31,22 +31,27 @@ res_SDF scene_1(vector pts){
 
     OBJET obj1 = BuildBox((vector){-10,10,0}, 4, 4, 4, c_bleu);
     res_SDF sdf_box = SDF_Objet(pts, obj1);
+    FreeObj(obj1);
 
     OBJET obj2 = BuildSphere((vector){-10, 10, 10}, 2, c_blanc);
     res_SDF sdf_sphere = SDF_Objet(pts, obj2);
+    FreeObj(obj2);
 
     OBJET obj3 = BuildTor((vector){10, 10, 0}, 2, 1, c_bleu_berlin);
     res_SDF sdf_tor = SDF_Objet(pts, obj3);
+    FreeObj(obj3);
 
     OBJET obj4 = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
     res_SDF sdf_cyl = SDF_Objet(pts, obj4);
+    FreeObj(obj4);
 
     OBJET obj5 = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
     res_SDF sdf_tri = SDF_Objet(pts, obj5);
+    FreeObj(obj5);
 
-    OBJET obj6 = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
-    res_SDF sdf_ell = SDF_Objet(pts, obj6);
-    // // sdf_tor = Disturb(pts, sdf_tor);
+    // OBJET obj6 = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
+    // res_SDF sdf_ell = SDF_Objet(pts, obj6);
+    // sdf_tor = Disturb(pts, sdf_tor);
 
     // param_triangle* param4 = malloc(sizeof(param_triangle));
     // param4->a = (vector){-3,10,8};
@@ -70,23 +75,24 @@ res_SDF scene_1(vector pts){
     all_sdf[3] = sdf_tor;
     all_sdf[4] = sdf_cyl;
     all_sdf[5] = sdf_tri;
-    all_sdf[6] = sdf_ell;
+    // all_sdf[6] = sdf_ell;
     return min_lst_sdf(all_sdf, nb);
 }
 
 
 BVHNode* scene1_bvh () {
 
-    int nb = 6;
+    int nb = 5;
     OBJET all_obj[nb];
     all_obj[0] = BuildBox((vector){-10,10,0}, 4, 4, 4, c_bleu);
     all_obj[1] = BuildSphere((vector){-10, 10, 10}, 2, c_blanc);
     all_obj[2] = BuildTor((vector){10, 10, 0}, 2, 1, c_bleu_berlin);
     all_obj[3] = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
     all_obj[4] = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
-    all_obj[5] = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
+    // all_obj[5] = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
 
     BVHNode* root = buildBVH(all_obj, nb);
+
     return root;
 }
 

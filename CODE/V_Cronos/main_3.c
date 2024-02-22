@@ -36,10 +36,10 @@ int main(){
 
     camera CAMERA;
     CAMERA.size_L_e = 2.0;
-    CAMERA.dir_ecran_c = (vector){1,0,0};
+    CAMERA.dir_ecran_c = (vector){0,1,0};
 
     CAMERA.up_c = normalise_vecteur((vector){0,0,1});
-    CAMERA.position_c = (vector){-10,0,0};
+    CAMERA.position_c = (vector){0,-20,5};
     CAMERA.dist_screen = 2.0;
 
 
@@ -92,11 +92,11 @@ int main(){
                 color C = ray_marching(R, My_scene_p);
                 draw_pixel(i, j, C, 1); // affiche le pixel                
             }
-            printf("\033[H \n");
-            printf("%.2f %%\n",(float)(i)/WIDTH*100.0);
-            fflush(stdout);
-            glfwSwapBuffers(window);                                             //Répétition ?
-            glfwPollEvents();
+            // printf("\033[H \n");
+            // printf("%.2f %%\n",(float)(i)/WIDTH*100.0);
+            // fflush(stdout);
+            // glfwSwapBuffers(window);                                             //Répétition ?
+            // glfwPollEvents();
         }
         // printf("ok\n");
         STATS.nb_images += 1;

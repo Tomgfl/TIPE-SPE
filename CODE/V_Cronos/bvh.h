@@ -12,19 +12,20 @@
 #include "objets.h"
 
 
-#define MAX_OBJ_PER_LEAF 2  // Nombre de sdf max par feuille
+#define MAX_OBJ_PER_LEAF 3  // Nombre de sdf max par feuille
 
 
 
 
 BVHNode* buildBVH(OBJET* sdf_list, int sdf_count) ;
 void splitOBJs(OBJET* sdf_list, int sdf_count, OBJET** left_sdfs, int* left_count, OBJET** right_sdfs, int* right_count, int depth) ;
-float distBoite(vector p, AABB box);
+float distBoule(vector p, BOULE box);
 int compareByXPosition(const void* a, const void* b) ;
 int compareByYPosition(const void* a, const void* b) ;
 int compareByZPosition(const void* a, const void* b) ;
-AABB calculateBoundingBox(OBJET* sdf_list, int sdf_count) ;
+BOULE calculateBoundingBox(OBJET* sdf_list, int sdf_count) ;
 void buildBVHRecursive(BVHNode* node, int currentDepth) ;
 res_SDF traverseBVH(BVHNode* root, vector p, res_SDF dist) ;
+void freeBVH (BVHNode* root) ;
 
 #endif 

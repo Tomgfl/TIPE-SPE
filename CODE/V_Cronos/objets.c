@@ -84,7 +84,7 @@ OBJET BuildBox (vector centre, float L, float l, float h, color couleur) {
 
 OBJET BuildTriangle (vector a, vector b, vector c, color couleur) {
     OBJET obj;
-    obj.type = 6; // Type "5" pour une boîte
+    obj.type = 6; // Type "6" pour un triangle
     obj.param = malloc(sizeof(param_triangle)); // Allouer de la mémoire pour les paramètres de la boîte
     ((param_triangle*)obj.param)->a = a;  // Longueur de la boîte
     ((param_triangle*)obj.param)->b = b;  // Largeur de la boîte
@@ -104,7 +104,7 @@ OBJET BuildEllipsoid (vector centre, float a, float b, float c, color couleur) {
     ((param_ellipsoid*)obj.param)->b = b;  // Largeur de la boîte
     ((param_ellipsoid*)obj.param)->c = c;  // Hauteur de la boîte
     obj.couleur = couleur;
-    obj.rayon = MAX(a, MAX(b,c))/2; 
+    obj.rayon = MAX(a, MAX(b,c)); 
     obj.centre = centre;
     return obj;
 }

@@ -1,7 +1,9 @@
 #include "bvh.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <stdbool.h>
+#include <float.h>
 
 
 
@@ -19,68 +21,47 @@ BVHNode* buildBVH(OBJET* obj_list, int obj_count) {
 }
 
 
-float distBoite(vector p, AABB box) {
-    float x = MIN(fabs(box.minX-p.x), fabs(box.maxX-p.x));
-    float y = MIN(fabs(box.minY-p.y), fabs(box.maxY-p.y));
-    float z = MIN(fabs(box.minZ-p.z), fabs(box.maxZ-p.z));
-    if (p.x > box.minX && p.x < box.maxX && p.y > box.minY && p.y < box.maxY && p.z > box.minZ && p.z < box.maxZ) {
-        return -sqrt(x*x + y*y + z*z);
-    }   else {
-        if (p.x > box.minX && p.x < box.maxX) {
-            if (p.y > box.minY && p.y < box.maxY) {
-                return z;
-            }   else if (p.z > box.minZ && p.z < box.maxZ) {
-                return y;
-            }   else {
-                return sqrt(y*y + z*z);
-            }
-        }   else if (p.y > box.minY && p.y < box.maxY) {
-            if (p.z > box.minZ && p.z < box.maxZ) {
-                return x;
-            }   else {
-                return sqrt(x*x + z*z);
-            }
-        }   else if (p.z > box.minZ && p.z < box.maxZ){
-            return sqrt(x*x + y*y);
-        }   else {
-            return (x*x + y*y + z*z);
-        }
-    }
+float distBoule(vector p, BOULE box) {
+    float dist = dist_2_pts(p, box.centre);
+    return(dist - box.r);
 }
 
 
-
-AABB calculateBoundingBox(OBJET* obj_list, int obj_count) {
-    // Initialiser les coordonnées min et max avec des valeurs extrêmes
-    float minX = INFINITY, minY = INFINITY, minZ = INFINITY;
-    float maxX = -INFINITY, maxY = -INFINITY, maxZ = -INFINITY;
-
-    // Parcourir tous les objets pour trouver les coordonnées min et max
-    for (int i = 0; i < obj_count; ++i) {
-        float x = obj_list[i].centre.x;
-        float y = obj_list[i].centre.y;
-        float z = obj_list[i].centre.z;
-
-        // Mettre à jour les coordonnées min et max
-        minX = fmin(minX, x - obj_list[i].rayon);
-        minY = fmin(minY, y - obj_list[i].rayon);
-        minZ = fmin(minZ, z - obj_list[i].rayon);
-
-        maxX = fmax(maxX, x + obj_list[i].rayon);
-        maxY = fmax(maxY, y + obj_list[i].rayon);
-        maxZ = fmax(maxZ, z + obj_list[i].rayon);
+BOULE calculateBoundingBox(OBJET* list, int obj_count) {
+    // Si la liste d'objets est vide, retourner une sphère avec un rayon nul au centre de l'origine
+    if (obj_count == 0) {
+        BOULE bounding_sphere = {{0.0, 0.0, 0.0}, 0.0};
+        return bounding_sphere;
     }
 
-    // Créer et retourner la boîte englobante
-    AABB box;
-    box.minX = minX;
-    box.minY = minY;
-    box.minZ = minZ;
-    box.maxX = maxX;
-    box.maxY = maxY;
-    box.maxZ = maxZ;
+    // Initialiser les valeurs extrêmes pour le calcul des limites de la sphère englobante
+    float min_x = list[0].centre.x - list[0].rayon , min_y = list[0].centre.y - list[0].rayon, min_z = list[0].centre.z - list[0].rayon;
+    float max_x = list[0].centre.x + list[0].rayon , max_y = list[0].centre.y + list[0].rayon, max_z = list[0].centre.z + list[0].rayon;
 
-    return box;
+    // Trouver les coordonnées minimales et maximales de tous les objets
+    for (int i = 1; i < obj_count; ++i) {
+        OBJET obj = list[i];
+        // Mettre à jour les coordonnées minimales
+        if (obj.centre.x - obj.rayon < min_x) min_x = obj.centre.x - obj.rayon;
+        if (obj.centre.y - obj.rayon < min_y) min_y = obj.centre.y - obj.rayon;
+        if (obj.centre.z - obj.rayon < min_z) min_z = obj.centre.z - obj.rayon;
+        // Mettre à jour les coordonnées maximales
+        if (obj.centre.x + obj.rayon > max_x) max_x = obj.centre.x + obj.rayon;
+        if (obj.centre.y + obj.rayon > max_y) max_y = obj.centre.y + obj.rayon;
+        if (obj.centre.z + obj.rayon > max_z) max_z = obj.centre.z + obj.rayon;
+    }
+
+    // Calculer le centre de la sphère englobante
+    float center_x = (min_x + max_x) / 2.0f;
+    float center_y = (min_y + max_y) / 2.0f;
+    float center_z = (min_z + max_z) / 2.0f;
+
+    // Calculer le rayon de la sphère englobante
+    float radius = fmaxf(fmaxf(max_x - center_x, max_y - center_y), max_z - center_z);
+
+    // Créer et retourner la sphère englobante calculée
+    BOULE bounding_sphere = {{center_x, center_y, center_z}, radius};
+    return bounding_sphere;
 }
 
 
@@ -91,20 +72,25 @@ void splitOBJs(OBJET* obj_list, int obj_count, OBJET** left_objs, int* left_coun
     }   else if (dep % 3 == 1){
         qsort(obj_list, obj_count, sizeof(OBJET), compareByYPosition);
     }   else {
-        qsort(obj_list, obj_count, sizeof(OBJET), compareByXPosition);
+        qsort(obj_list, obj_count, sizeof(OBJET), compareByZPosition);
     }
 
     // Trouver l'indice de séparation pour diviser les objets en deux groupes
     int midpoint = obj_count / 2;
 
     // Assigner les objets aux groupes gauche et droit
-    *left_objs = obj_list;
+    *left_objs = malloc(midpoint* sizeof(OBJET));
+    for (int i = 0; i < midpoint; i++){
+        (*left_objs)[i] = obj_list[i];
+    }
     *left_count = midpoint;
 
-    *right_objs = obj_list + midpoint;
+    *right_objs = malloc((obj_count - midpoint)* sizeof(OBJET));
+    for (int i = 0; i < obj_count - midpoint; i++){
+        (*right_objs)[i] = obj_list[midpoint + i];
+    }    
     *right_count = obj_count - midpoint;
 }
-
 
 
 // Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe x
@@ -113,8 +99,7 @@ int compareByXPosition(const void* a, const void* b) {
     OBJET obj_b = *((OBJET*)b);
 
     if (obj_a.centre.x < obj_b.centre.x) return -1;
-    if (obj_a.centre.x > obj_b.centre.x) return 1;
-    return 0;
+    return 1;
 }
 
 // Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe y
@@ -123,8 +108,7 @@ int compareByYPosition(const void* a, const void* b) {
     OBJET obj_b = *((OBJET*)b);
 
     if (obj_a.centre.y < obj_b.centre.y) return -1;
-    if (obj_a.centre.y > obj_b.centre.y) return 1;
-    return 0;
+    return 1;
 }
 
 // Fonction de comparaison pour qsort : compare les objets en fonction de leur position sur l'axe z
@@ -133,10 +117,8 @@ int compareByZPosition(const void* a, const void* b) {
     OBJET obj_b = *((OBJET*)b);
 
     if (obj_a.centre.z < obj_b.centre.z) return -1;
-    if (obj_a.centre.z > obj_b.centre.z) return 1;
-    return 0;
+    return 1;
 }
-
 
 
 void buildBVHRecursive(BVHNode* node, int currentDepth) {
@@ -170,7 +152,6 @@ void buildBVHRecursive(BVHNode* node, int currentDepth) {
 }
 
 
-
 res_SDF traverseBVH(BVHNode* root, vector p, res_SDF dist) {
     res_SDF res;
     res = dist;
@@ -178,8 +159,9 @@ res_SDF traverseBVH(BVHNode* root, vector p, res_SDF dist) {
         res = min_sdf(res, SDF_Objet(p, min_lst_obj(root->obj, root->obj_count, p)));
     }   else {
         // Si ce n'est pas une feuille, il a un arbre gauche ET droit (il faut mettre MAX_OBJ_PER_LEAF >= 2)
-        float d1 = distBoite(p, root->left->box);   // Distance Boite de gauche
-        float d2 = distBoite(p, root->right->box);  // Distance Boite de droite
+        float d1 = FLT_MAX ; float d2 = FLT_MAX; 
+        if (root->left != NULL) { d1 = distBoule(p, root->left->box); }   // Distance Boite de gauche
+        if (root->right != NULL) { d2 = distBoule(p, root->right->box); }  // Distance Boite de droite
         if (d1<d2 && d1<res.dist) {
             res = traverseBVH(root->left, p, res);
             if (d2 < res.dist){
@@ -195,4 +177,15 @@ res_SDF traverseBVH(BVHNode* root, vector p, res_SDF dist) {
     return res;
 }
 
+
+void freeBVH (BVHNode* root) {
+    if (root->left != NULL) {
+        freeBVH (root->left);
+    }
+    if (root->right != NULL) {
+        freeBVH (root->right);
+    }
+    free(root);
+
+}
 

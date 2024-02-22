@@ -153,12 +153,12 @@ typedef struct param_ellipsoid_s param_ellipsoid;
 
 // BVH
 typedef struct {
-    float minX, minY, minZ; // Coin inférieur de la boîte
-    float maxX, maxY, maxZ; // Coin supérieur de la boîte
-} AABB;
+    vector centre;  // Centre de la boule englobante
+    float r;        // Rayon de la boule
+} BOULE;
 
 typedef struct BVHNode {
-    AABB box; // Axis-Aligned Bounding Box (Boîte englobante alignée sur les axes)
+    BOULE box; // Axis-Aligned Bounding Box (Boîte englobante alignée sur les axes)
     struct BVHNode* left;
     struct BVHNode* right;
     OBJET* obj; // Pointeur vers l'objet (ou un tableau d'objets) contenu dans ce nœud

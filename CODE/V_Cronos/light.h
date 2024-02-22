@@ -28,6 +28,10 @@ extern color c_bleu_berlin;
 float all_light(vector pts, vector source, res_SDF(*scene_actuelle)(vector));
 float light_diffuse(vector pts, vector source, res_SDF(*scene_actuelle)(vector));
 
+// float all_light_bvh(vector pts, BVHNode* scene, vector source, res_SDF(*scene_actuelle)(BVHNode*, vector, res_SDF));
+// float light_diffuse_bvh(vector pts, BVHNode* scene, vector source, res_SDF(*scene_actuelle)(BVHNode*, vector, res_SDF));
+
+
 // --- OMBRES --- //
 
 float shadow_1(vector pts, vector source, res_SDF(*scene_act)(vector));

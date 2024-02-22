@@ -80,7 +80,7 @@ void* ray_marching_thread(void* ptr_args){
 }
 
 
-color ray_marching_bvh(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(BVHNode*, vector, res_SDF), vector n, vector m, color c){
+color ray_marching_bvh(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(vector), res_SDF (*scene_bvh)(BVHNode*, vector, res_SDF), vector n, vector m, color c){
     clock_t begin_r = clock();
     float dist_tot = 0.0;
     vector position_actuelle = r.origine;
@@ -90,8 +90,8 @@ color ray_marching_bvh(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(BVHNode*
     for (int i = 0; i < MAX_RAY_STEPS; i++){
 
         res_SDF sdf_plan = SDF_plan(position_actuelle, n, m, c);
-        
-        res_SDF result_scene = scene_actuelle(scene, position_actuelle, sdf_plan);
+
+        res_SDF result_scene = scene_bvh(scene, position_actuelle, sdf_plan);
 
         float dist = result_scene.dist;
 
