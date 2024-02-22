@@ -7,5 +7,6 @@
 #include "signed_distance_function.h" 
 #include "bvh.h"
 
-res_SDF SDF_pingouin(vector pts, vector c);
+// res_SDF scene_pingouin(vector pts);
+BVHNode* BVH_pingouin();
 #endif

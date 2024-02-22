@@ -34,8 +34,8 @@ dessin_fct.o : dessin_fct.h dessin_fct.c options.h light.h
 objets.o : objets.h objets.c vector.h signed_distance_function.h utiles.h pingouin_sdf.h options.h
 	$(CC) -c objets.c $(OPTIONS) -o objets.o
 
-# pingouin_sdf.o : pingouin_sdf.h pingouin_sdf.c options.h vector.h utiles.h signed_distance_function.h bvh.h
-# 	$(CC) -c pingouin_sdf.c $(OPTIONS) -o pingouin_sdf.o
+pingouin_sdf.o : pingouin_sdf.h pingouin_sdf.c options.h vector.h utiles.h signed_distance_function.h bvh.h objets.h
+	$(CC) -c pingouin_sdf.c $(OPTIONS) -o pingouin_sdf.o
 
 # 3d obj
 # 3d_obj/pingouin_1_sdf.o : 3d_obj/pingouin_1_sdf.h 3d_obj.pingouin_1_sdf.c vector.h utiles.h signed_distance_function.h
@@ -52,11 +52,11 @@ objets.o : objets.h objets.c vector.h signed_distance_function.h utiles.h pingou
 #test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o
 #	$(CC) main_test.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o -lm -lglfw -lGL -O3 -o test_ecran
 
-test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o bvh.o scene.o ray_marching.o light.o dessin_fct.o objets.o
-	$(CC) main_test.c vector.o utiles.o signed_distance_function.o bvh.o scene.o ray_marching.o light.o dessin_fct.o objets.o  $(OPTIONS) $(ADD) -o test_ecran
+test_ecran : main_test.c options.h vector.o utiles.o signed_distance_function.o bvh.o scene.o ray_marching.o light.o dessin_fct.o objets.o pingouin_sdf.o
+	$(CC) main_test.c vector.o utiles.o signed_distance_function.o bvh.o scene.o ray_marching.o light.o dessin_fct.o objets.o pingouin_sdf.o $(OPTIONS) $(ADD) -o test_ecran
 
-main_4 : main_4.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o
-	$(CC) main_4.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o $(OPTIONS) $(ADD) -o main_4
+main_4 : main_4.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o pingouin_sdf.o
+	$(CC) main_4.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o pingouin_sdf.o $(OPTIONS) $(ADD) -o main_4
 
 
 # main_1 : main_1.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 
@@ -65,8 +65,8 @@ main_4 : main_4.c options.h vector.o utiles.o signed_distance_function.o scene.o
 # main_2 : main_2.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o
 # 	$(CC) main_2.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o $(OPTIONS) $(ADD) -o main_2
 
-main_3 : main_3.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o
-	$(CC) main_3.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o $(OPTIONS) $(ADD) -o main_3
+main_3 : main_3.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o pingouin_sdf.o
+	$(CC) main_3.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o pingouin_sdf.o $(OPTIONS) $(ADD) -o main_3
 
 clean : 
 	rm -f ./test_ecran

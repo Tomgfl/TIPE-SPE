@@ -12,7 +12,7 @@
 #include "objets.h"
 
 
-#define MAX_OBJ_PER_LEAF 3  // Nombre de sdf max par feuille
+#define MAX_OBJ_PER_LEAF 2  // Nombre de sdf max par feuille
 
 
 
