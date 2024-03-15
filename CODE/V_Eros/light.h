@@ -22,6 +22,7 @@ extern color c_jaune;
 extern color c_orange;
 extern color c_bistre;
 extern color c_bleu_berlin;
+extern color c_iceberg;
 
 // --- LUMIERES --- //
 

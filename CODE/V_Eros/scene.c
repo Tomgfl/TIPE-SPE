@@ -97,6 +97,45 @@ BVHNode* scene1_bvh () {
 }
 
 
+BVHNode* TestBanquise () {
+    int nb = 3;
+    OBJET all_obj[nb];
+    all_obj[0] = BuildBox((vector){0,10,-10}, 500, 500, 20, c_blanc);
+    all_obj[1] = BuildSphere((vector){10, 70, 5}, 20, c_iceberg);
+    all_obj[2] = BuildRotX(BuildTor((vector){-10, 40, 5}, 7, 2, c_iceberg), 0);
+
+    BVHNode* root = buildBVH(all_obj, nb);
+    return root;
+
+}
+
+res_SDF scene_banquise(vector pts){
+    int nb = 3;
+    res_SDF all_sdf[nb];
+
+
+    OBJET obj1 = BuildBox((vector){0,10,-10}, 500, 500, 20, c_blanc);
+    res_SDF sdf_box1 = SDF_Objet(pts, obj1);
+    FreeObj(obj1);
+    OBJET obj2 = BuildSphere((vector){10, 70, 5}, 20, c_iceberg);
+    res_SDF sdf_cyl = SDF_Objet(pts, obj2);
+    FreeObj(obj2);
+    OBJET obj3 = BuildTor((vector){-10, 40, 5}, 7, 2, c_iceberg);
+    OBJET obj4 = BuildRotX(obj3, 0);
+    res_SDF sdf_tri = SDF_Objet(pts, obj4);
+    FreeObj(obj3);
+    FreeObj(obj4);
+
+    all_sdf[0] = sdf_box1;
+    all_sdf[1] = sdf_cyl;
+    all_sdf[2] = sdf_tri;
+    
+    // all_sdf[6] = sdf_ell;
+    return min_lst_sdf(all_sdf, nb);
+}
+
+
+
 
 
 
@@ -202,61 +241,16 @@ BVHNode* scene1_bvh () {
 
 
 
-// // --- SCENE #3 --- //
-// float scene_3(vector pts){
-//     int nb = 4;
-//     float all_sdf[nb];
 
-//     vector C_1 = {15,25,15};
-//     float sdf_box = SDF_box(pts, C_1, 10,10,10);
-
-//     vector C_2 = {15,25,15};
-//     float sdf_sphere = SDF_sphere(pts, C_2, 6.5);
-
-
-//     vector C_3 = {15,25,-5};
-//     float sdf_box2 = SDF_box(pts, C_3, 10,10,10);
-
-//     vector C_4 = {15,25,-5};
-//     float sdf_sphere2 = SDF_sphere(pts, C_4, 6.5);
-
-
-//     vector C_5 = {-15,25,15};
-//     float sdf_box3 = SDF_box(pts, C_5, 10,10,10);
-
-//     vector C_6 = {-15,25,15};
-//     float sdf_sphere3 = SDF_sphere(pts, C_6, 6.5);
-
-
-//     vector C_7 = {-15,25,-5};
-//     float sdf_box4 = SDF_box(pts, C_7, 12,12,12);
-
-//     vector C_8 = {-15,25,-5};
-//     float sdf_sphere4 = SDF_sphere(pts, C_8, 6);
-
-
-
-//     all_sdf[0] = IntersectSDF(sdf_box, sdf_sphere);
-//     all_sdf[1] = SmoothUnionSDF(sdf_box2, sdf_sphere2,1);
-//     all_sdf[2] = SubstractSDF(sdf_box3, sdf_sphere3);
-//     all_sdf[3] = SubstractSDF(sdf_sphere4, sdf_box4);
-
-
-
-//     return min_lst(all_sdf, nb);
-// }
 
 
 // // --- SCENE #4 --- // Test ellipsoid
 // float scene_4(vector pts){
 //     int nb = 1;
 //     float all_sdf[nb];
-
 //     vector C_1 = {-5,10,15};
 //     float sdf_ellipsoid = SDF_Ellipsoid(rotation_z((vector){pts.x-C_1.x,pts.y-C_1.y,pts.z-C_1.z}, time_scene), (vector){0,0,0}, 2,3,5);
-
 //     all_sdf[0] = sdf_ellipsoid;
-
 //     return min_lst(all_sdf, nb);
 // }
 
@@ -265,12 +259,9 @@ BVHNode* scene1_bvh () {
 // res_SDF scene_pingoo(vector pts){
 //     int nb = 1;
 //     res_SDF all_sdf[nb];
-
 //     vector C_1 = {10,10,10};
 //     res_SDF tete = SDF_Pingoo(pts, C_1, 3); 
-
 //     all_sdf[0] = tete;
-
 //     return min_lst_sdf(all_sdf, nb);
 // }
 
@@ -326,6 +317,16 @@ res_SDF SCENE_PRINCIPALE(vector pts){
 
 res_SDF SCENE_BVH(BVHNode* scene, vector pts, res_SDF Plan){
     res_SDF res = traverseBVH(scene, pts, Plan);
+    return res;
+}
+
+
+res_SDF SCENE_BANQUISE(vector pts){
+    return scene_banquise(pts);
+    // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
+}
+res_SDF SCENE_BVH_Bis(BVHNode* scene, vector pts){
+    res_SDF res = traverseBVH(scene, pts, (res_SDF){500,c_rouge});
     return res;
 }
 

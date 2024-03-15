@@ -7,10 +7,11 @@ color c_vert = {0,255,0,1.0};
 color c_noir = {0,0,0,1.0};
 color c_blanc = {255,255,255,1.0};
 color c_gris = {63, 63, 63,1.0};
-color c_fond = {3,27,73,1.0};
+color c_fond = {135,206,250, 1.0};
 color c_orange = {255,165,0,1.0};
 color c_bistre = {61,43,31,1.0};
 color c_bleu_berlin = {36,68,92,1.0};
+color c_iceberg = {113, 166, 210, 1.0};
 color c_jaune = {255,255,0,1.0};
 
 // --- LUMIERES --- //

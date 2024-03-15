@@ -11,8 +11,31 @@ extern float time_scene;
 // --- FONCTIONS DE SDF --- //
 res_SDF SDF_Objet(vector p, OBJET obj) {
     res_SDF res;
-    if (obj.type == 0) {
-        res =SDF_sphere(p, obj.param, obj.couleur);
+    // if (obj.type == 0) {
+    //     res =SDF_sphere(p, obj.param, obj.couleur);
+    // }   else if (obj.type == -6) {
+    //     res =SDF_sphere(p, obj.param, obj.couleur);
+    // }   else if (obj.type == -5) {
+    //     res =SDF_sphere(p, obj.param, obj.couleur);
+    // }   else if (obj.type == -4) {
+    //     res =SDF_sphere(p, obj.param, obj.couleur);
+    if (obj.type == -9) {
+        param_opsimple* args = (param_opsimple*) obj.param;
+        res = SDF_Objet(rotation_z(p, args->k), args->o1);
+    }   else if (obj.type == -8) {
+        param_opsimple* args = (param_opsimple*) obj.param;
+        res = SDF_Objet(rotation_y(p, args->k), args->o1);
+    }   else if (obj.type == -7) {
+        param_opsimple* args = (param_opsimple*) obj.param;
+        res = SDF_Objet(rotation_x(p, args->k), args->o1);
+    }   else if (obj.type == -3) {
+        res = SubstractSDF (p, obj.param);
+    }   else if (obj.type == -2) {
+        res =  IntersectSDF (p, obj.param); 
+    }   else if (obj.type == -1) {
+        res = UnionSDF(p, obj.param); 
+    }   else if (obj.type == 0) {
+        res = SDF_sphere(p, obj.param, obj.couleur);
     }   else if (obj.type == 1) {
         res = SDF_Tor(p, obj.param, obj.couleur);
     }   else if (obj.type == 2) {
@@ -141,9 +164,6 @@ res_SDF SDF_Pyramide(vector p, void* param, color couleur){
     }
 
     float distTo1, distTo2, distTo3, distTo4;
-
-    // res.dist = ??
-
     return res;
 }
 
@@ -507,42 +527,48 @@ res_SDF SDF_Ellipsoid(vector p, void* param, color couleur){
 
 
 // // --- ROTATIONS --- //
-// // renvoie le produit entre la matrice de rotation Rx et le vec v
-// vector rotation_x (vector v, float angle){// angle en degres
-//     return (vector){v.x, v.y*cos(angle*3.14/180) - v.z*sin(angle*3.14/180), v.y*sin(angle*3.14/180) + v.z*cos(angle*3.14/180)};
-// }
+// renvoie le produit entre la matrice de rotation Rx et le vec v
+vector rotation_x (vector v, float angle){      // angle en degres
+    return (vector){v.x, v.y*cos(angle*3.14/180) - v.z*sin(angle*3.14/180), v.y*sin(angle*3.14/180) + v.z*cos(angle*3.14/180)};
+}
 
-// // renvoie le produit entre la matrice de rotation Rx et le vec v
-// vector rotation_y (vector v, float angle){// angle en degres
-//     return (vector){v.x*cos(angle*3.14/180) + v.z*sin(angle*3.14/180), v.y, v.z*cos(angle*3.14/180) - v.x*sin(angle*3.14/180)};
-// }
+// renvoie le produit entre la matrice de rotation Ry et le vec v
+vector rotation_y (vector v, float angle){      // angle en degres
+    return (vector){v.x*cos(angle*3.14/180) + v.z*sin(angle*3.14/180), v.y, v.z*cos(angle*3.14/180) - v.x*sin(angle*3.14/180)};
+}
 
-// // renvoie le produit entre la matrice de rotation Rx et le vec v
-// vector rotation_z (vector v, float angle){// angle en degres
-//     return (vector){v.x*cos(angle*3.14/180) - v.y*sin(angle*3.14/180), v.x*sin(angle*3.14/180) + v.y*cos(angle*3.14/180), v.z};
-// }
+// renvoie le produit entre la matrice de rotation Rz et le vec v
+vector rotation_z (vector v, float angle){      // angle en degres
+    return (vector){v.x*cos(angle*3.14/180) - v.y*sin(angle*3.14/180), v.x*sin(angle*3.14/180) + v.y*cos(angle*3.14/180), v.z};
+}
 
 
 
 
 // // --- OPERATIONS --- //
-// // Union de 2 formes
-// res_SDF UnionSDF (res_SDF d1, res_SDF d2){
-//     return min_sdf(d1,d2);
-//     // return fmin(d1, d2);
-// }
+// Union de 2 formes
+res_SDF UnionSDF (vector p, void* param){
+    param_opdouble* args = (param_opdouble*) param;
+    res_SDF r1 = SDF_Objet(p, args->o1);
+    res_SDF r2 = SDF_Objet(p, args->o2);
+    return min_sdf(r1,r2);
+}
 
-// // Intersection de 2 formes
-// res_SDF IntersectSDF (res_SDF d1, res_SDF d2){
-//     return max_sdf(d1,d2);
-//     // return fmax(d1, d2);
-// }
+// Intersection de 2 formes
+res_SDF IntersectSDF (vector p, void* param){
+    param_opdouble* args = (param_opdouble*) param;
+    res_SDF r1 = SDF_Objet(p, args->o1);
+    res_SDF r2 = SDF_Objet(p, args->o2);
+    return max_sdf(r1,r2);
+}
 
-// // Soustraction : On enlève le forme 2 de la forme 1
-// res_SDF SubstractSDF (res_SDF d1, res_SDF d2){
-//     return max_sdf(d1,(res_SDF){-d2.dist, d2.c});
-//     // return fmax(d1, -d2); 
-// }
+// Soustraction : On enlève le forme 2 de la forme 1
+res_SDF SubstractSDF (vector p, void* param){
+    param_opdouble* args = (param_opdouble*) param;
+    res_SDF r1 = SDF_Objet(p, args->o1);
+    res_SDF r2 = SDF_Objet(p, args->o2);
+    return max_sdf(r1,(res_SDF){-r2.dist, r2.c});
+}
 
 // // -- SMOOTH -- //
 // // Union Smooth

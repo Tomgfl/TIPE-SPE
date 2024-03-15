@@ -18,12 +18,17 @@
 
 res_SDF scene_1(vector pts);
 BVHNode* scene1_bvh () ;
+BVHNode* TestBanquise () ;
+res_SDF scene_banquise(vector pts);
 // res_SDF scene_effets(vector pts);
 // res_SDF banquise(vector pts);
 // res_SDF paysage(vector pts);
 
 res_SDF SCENE_PRINCIPALE(vector pts);
+res_SDF SCENE_BANQUISE(vector pts);
 res_SDF SCENE_BVH(BVHNode* scene, vector pts, res_SDF Plan);
+res_SDF SCENE_BVH_Bis(BVHNode* scene, vector pts);
+
 
 // res_SDF scene_sphere(vector pts);
 

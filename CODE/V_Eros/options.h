@@ -11,7 +11,7 @@ typedef struct vector_s vector;
 // --- COULEURS --- //
 struct color_s{
     int r, g, b;
-    float opp; // oppaciter de la couleur 
+    float opp; // oppacité de la couleur 
 };
 typedef struct color_s color;
 
@@ -143,6 +143,20 @@ struct param_ellipsoid_s{
     float c;
 };
 typedef struct param_ellipsoid_s param_ellipsoid;
+
+
+struct param_opdouble_s{
+    OBJET o1;
+    OBJET o2;
+};
+typedef struct param_opdouble_s param_opdouble;
+
+
+struct param_opsimple_s{
+    OBJET o1;
+    float k;
+};
+typedef struct param_opsimple_s param_opsimple;
 
 // BVH
 typedef struct {

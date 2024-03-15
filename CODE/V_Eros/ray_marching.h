@@ -12,6 +12,7 @@
 
 color ray_marching(ray r, res_SDF (*scene_actuelle)(vector));
 color ray_marching_bvh(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(vector), res_SDF (*scene_bvh)(BVHNode*, vector, res_SDF), vector n, vector m, color c);
+color ray_marching_bvhNoPlan(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(vector), res_SDF (*scene_bvh)(BVHNode*, vector));
 void* ray_marching_bvh_thread(void* ptr_args);
 
 #endif 
