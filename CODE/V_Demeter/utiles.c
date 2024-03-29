@@ -73,3 +73,24 @@ RES_SDF max_sdf(RES_SDF d1, RES_SDF d2){
 //     }
 //     return y;
 // }
+
+
+float** create_2d_tab(int n, int m, float val){
+    float** res = malloc(n*sizeof(float*));
+    for (int i = 0; i < n; i++){
+        res[i] = malloc(m*sizeof(float));
+        for (int j = 0; j < m; j++){
+            res[i][j] = val;
+        }
+    }    
+    return res;
+}
+
+
+void free_tab_2d(float** tab, int n){
+    for (int i = 0; i < n; i++){
+        free(tab[i]);
+    }
+    free(tab);
+    return;
+}

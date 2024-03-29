@@ -77,7 +77,7 @@ RES_SDF banquise(VECTOR pts){
 
 
 RES_SDF nurbs_scene(VECTOR pts){
-    SURFACE surf = create_surface(2,2);
+    SURFACE surf = create_surface(3,3);
 
     CNET net = create_cnet(5,5);
     net->Pw[0][0] = (CPOINT){-6,-3.8,0,1};
@@ -111,35 +111,37 @@ RES_SDF nurbs_scene(VECTOR pts){
     net->Pw[4][4] = (CPOINT){3.44,1.41,-0.7,1};
     surf->net = net;
 
-    KNOTVECTOR knu = create_knotvector(8);
+    KNOTVECTOR knu = create_knotvector(9);
     knu->U[0] = 0;
     knu->U[1] = 0;
     knu->U[2] = 0;
-    knu->U[3] = 1.0/3.0;
-    knu->U[4] = 2.0/3.0;
+    knu->U[3] = 0;
+    knu->U[4] = 0.5;
     knu->U[5] = 1;
     knu->U[6] = 1;
     knu->U[7] = 1;
+    knu->U[8] = 1;
     surf->knu = knu;
 
-    KNOTVECTOR knv = create_knotvector(8);
+    KNOTVECTOR knv = create_knotvector(9);
     knv->U[0] = 0;
     knv->U[1] = 0;
     knv->U[2] = 0;
-    knv->U[3] = 1.0/3.0;
-    knv->U[4] = 2.0/3.0;
+    knv->U[3] = 0;
+    knv->U[4] = 0.5;
     knv->U[5] = 1;
-    knu->U[6] = 1;
-    knu->U[7] = 1;
+    knv->U[6] = 1;
+    knv->U[7] = 1;
+    knv->U[8] = 1;
 
     surf->knv = knv;
 
     // affiche_surface(nurbs_test);
 
     RES_SDF N;
-    N.dist = norm_vector(v_sub(pts,projection_nurbs(surf, pts)));
+    N.dist = norm_vector(v_sub(pts,projection_nurbs_2(surf, pts)));
     N.c = c_orange;
-    // free_surface(nurbs_test);
+    free_surface(surf);
 
     RES_SDF A = SDF_sphere(pts, (VECTOR){-6,-3.8,0},0.5, c_vert);
     RES_SDF B = SDF_sphere(pts, (VECTOR){-5.43,5.2,1.5},0.5, c_vert);

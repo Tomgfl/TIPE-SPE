@@ -108,7 +108,7 @@ int main(){
     }
 
     SURFACE nurbs_test = nurbs_2();
-    affiche_surface(nurbs_test);
+    // affiche_surface(nurbs_test);
 
     // vector Q_1 = S_nurbs(0.0, 0.0, nurbs_test);
     // printf("Q_1 : %f | %f | %f \n", Q_1.x, Q_1.y, Q_1.z);
@@ -122,9 +122,40 @@ int main(){
     // vector Q_4 = S_nurbs(0.99,0.99,nurbs_test);
     // printf("Q_4 : %f | %f | %f \n", Q_4.x, Q_4.y, Q_4.z);
 
-    // vector Q = projection_nurbs(nurbs_test, (vector){1.0 ,-2.0, 3.0});
+    // VECTOR Q = projection_nurbs(nurbs_test, (VECTOR){1.0 ,-2.0, 3.0});
     // printf("Q : %f | %f | %f \n", Q.x, Q.y, Q.z);
     // return 0;
+    // float test_u = 0.45;
+    // KNOTVECTOR test_U = nurbs_test->knu;
+
+    
+    
+    // printf("%f\n",N_nurbs(0,2,0.45,nurbs_test->knu));
+    // printf("%f\n",N_nurbs(5,2,0.45,nurbs_test->knu));
+
+    // float** test_N = N_nurbs_tab(nurbs_test->knu, 0.45, 2);
+
+    // for (int i = 0; i < nurbs_test->knu->m; i++){
+    //     for (int j = 0; j < nurbs_test->p+1; j++){
+    //         fflush(stdout);
+    //         printf("%d-%d : %f |",i,j,test_N[i][j]);
+    //     }
+    //     printf("\n");
+    // }
+    // printf("\n\n");
+
+
+    // for (int i = 0; i < nurbs_test->knu->m; i++){
+    //     for (int j = 0; j < nurbs_test->p+1; j++){
+    //         fflush(stdout);
+    //         printf("%d-%d : %f |",i,j,N_nurbs(i,j,test_u, test_U));
+    //     }
+    //     printf("\n");
+    // }
+    
+
+    
+    // printf("%f\n%f\n", test_N[0][2], test_N[5][2]);
 
 
 

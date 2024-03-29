@@ -8,6 +8,7 @@
 #include "options.h"
 #include "math.h"
 #include "vector.h"
+#include "utiles.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -55,7 +56,16 @@ float next_vi(float u, float v, float det, SURFACE s, VECTOR P);
 bool crit_1(float u, float v, SURFACE s, VECTOR P);
 bool crit_2(float u, float v, SURFACE s, VECTOR P);
 VECTOR projection_nurbs(SURFACE s, VECTOR P);
+VECTOR projection_nurbs_2(SURFACE s, VECTOR P);
+
 // float dist_nurbs(SURFACE s, vector P);
+
+
+// --- Prog dyn --- //
+float** N_nurbs_tab(KNOTVECTOR k, float u, int n, int p);
+// float** dN_nurbs_tab(KNOTVECTOR knot, float u, int p, float** N_tab, int k);
+float* dN_nurbs_tab(KNOTVECTOR knot, float u, int n, int p, float** N_tab);
+float* ddN_nurbs_tab(KNOTVECTOR knot, float u, int n, int p, float** N_tab);
 
 
 
@@ -63,7 +73,6 @@ VECTOR projection_nurbs(SURFACE s, VECTOR P);
 SURFACE nurbs_1();
 SURFACE nurbs_2();
 void affiche_surface(SURFACE s);
-
 
 
 

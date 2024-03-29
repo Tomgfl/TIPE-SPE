@@ -91,7 +91,7 @@ SURFACE nurbs_1(){
 
 
 SURFACE nurbs_2(){
-    SURFACE res = create_surface(2,2);
+    SURFACE res = create_surface(3,3);
 
     CNET net = create_cnet(5,5);
     net->Pw[0][0] = (CPOINT){-6,-3.8,0,1};
@@ -125,27 +125,30 @@ SURFACE nurbs_2(){
     net->Pw[4][4] = (CPOINT){3.44,1.41,-0.7,1};
     res->net = net;
 
-    KNOTVECTOR knu = create_knotvector(8);
+    KNOTVECTOR knu = create_knotvector(10);
     knu->U[0] = 0;
     knu->U[1] = 0;
     knu->U[2] = 0;
-    knu->U[3] = 1.0/3.0;
-    knu->U[4] = 2.0/3.0;
-    knu->U[5] = 1;
+    knu->U[3] = 0;
+    knu->U[4] = 1.0/3.0;
+    knu->U[5] = 2.0/3.0;
     knu->U[6] = 1;
     knu->U[7] = 1;
+    knu->U[8] = 1;
+    knu->U[9] = 1;
     res->knu = knu;
 
-    KNOTVECTOR knv = create_knotvector(8);
+    KNOTVECTOR knv = create_knotvector(10);
     knv->U[0] = 0;
     knv->U[1] = 0;
     knv->U[2] = 0;
-    knv->U[3] = 1.0/3.0;
-    knv->U[4] = 2.0/3.0;
-    knv->U[5] = 1;
-    knu->U[6] = 1;
-    knu->U[7] = 1;
-
+    knv->U[3] = 0;
+    knv->U[4] = 1.0/3.0;
+    knv->U[5] = 2.0/3.0;
+    knv->U[6] = 1;
+    knv->U[7] = 1;
+    knv->U[8] = 1;
+    knv->U[9] = 1;
     res->knv = knv;
     return res;
 }
@@ -161,6 +164,7 @@ SURFACE nurbs_2(){
 
 // Fonction de base Nij associer a U
 float N_nurbs(int i, int p, float u, KNOTVECTOR U){
+    // printf("N : %d | %d \n", i, p);
     // printf("-- %f --\n", u);
     if (p == 0){
         if ((U->U[i] <= u) && (u < U->U[i+1])){
@@ -259,7 +263,7 @@ void affiche_surface(SURFACE s){
 
 
 
-// ### V1 - (pas opti) ### //
+// --- V1 - (pas opti) --- //
 VECTOR R_nurbs(float u, float v, SURFACE s){
     VECTOR res = {0.0 ,0.0 ,0.0};
     for (int i = 0; i < s->net->n; i++){
@@ -436,6 +440,8 @@ VECTOR S_vv_nurbs(float u, float v, SURFACE s){
 
 
 
+
+
 // ALGO DE PROJECTION
 VECTOR r_nurbs(float u, float v, SURFACE s, VECTOR P){
     return v_sub(S_nurbs(u,v,s), P);
@@ -487,21 +493,21 @@ float next_vi(float u, float v, float det, SURFACE s, VECTOR P){
     return (f_nurbs(u, v, s, P)*g_u_nurbs(u, v, s, P) - g_nurbs(u, v, s, P)*f_u_nurbs(u, v, s, P))/det;
 }
 
-bool crit_1(float u, float v, SURFACE s, VECTOR P){
-    if (norm_vector(r_nurbs(u, v, s, P)) <= EPS_1){
-        return true;
-    }
-    return false;
-}
+// bool crit_1(float u, float v, SURFACE s, VECTOR P){
+//     if (norm_vector(r_nurbs(u, v, s, P)) <= EPS_1){
+//         return true;
+//     }
+//     return false;
+// }
 
-bool crit_2(float u, float v, SURFACE s, VECTOR P){
-    if ((fabs(prod_scal(S_u_nurbs(u, v, s),r_nurbs(u, v, s, P))))/(norm_vector(S_u_nurbs(u, v, s))*norm_vector(r_nurbs(u, v, s, P))) <= EPS_2){
-        if ((fabs(prod_scal(S_v_nurbs(u, v, s),r_nurbs(u, v, s, P))))/(norm_vector(S_v_nurbs(u, v, s))*norm_vector(r_nurbs(u, v, s, P))) <= EPS_2){
-            return true;
-        }
-    }
-    return false;
-}
+// bool crit_2(float u, float v, SURFACE s, VECTOR P){
+//     if ((fabs(prod_scal(S_u_nurbs(u, v, s),r_nurbs(u, v, s, P))))/(norm_vector(S_u_nurbs(u, v, s))*norm_vector(r_nurbs(u, v, s, P))) <= EPS_2){
+//         if ((fabs(prod_scal(S_v_nurbs(u, v, s),r_nurbs(u, v, s, P))))/(norm_vector(S_v_nurbs(u, v, s))*norm_vector(r_nurbs(u, v, s, P))) <= EPS_2){
+//             return true;
+//         }
+//     }
+//     return false;
+// }
 
 
 VECTOR projection_nurbs_aux(SURFACE s, VECTOR P, float u_0, float v_0){
@@ -510,9 +516,7 @@ VECTOR projection_nurbs_aux(SURFACE s, VECTOR P, float u_0, float v_0){
 
     int i = 0;
     VECTOR Q = S_nurbs(u, v, s);
-    // printf("Q_%d : %f | %f | %f \n",i, Q.x, Q.y, Q.z);
-    while (i < 7){ // !crit_1(u, v, s, P) || !crit_2(u, v, s, P)
-        // printf("%f | %f \n ", u, v);
+    while (i < 7){ 
         float det = det_sys(u, v, s, P);
 
         float ui = u;
@@ -520,16 +524,12 @@ VECTOR projection_nurbs_aux(SURFACE s, VECTOR P, float u_0, float v_0){
 
         u = next_ui(ui, vi, det, s, P) + ui;
         v = next_vi(ui, vi, det, s, P) + vi;
-        // printf("u_i+1 = %f \n", u);
-        // printf("v_i+1 = %f \n", v);
-
         
         if (u < 0){
             u = 0.0;
         }
         if (u >= 1){
             u = 0.999;
-            // u = 1-u;
         }
         
         if (v < 0){
@@ -537,14 +537,9 @@ VECTOR projection_nurbs_aux(SURFACE s, VECTOR P, float u_0, float v_0){
         }
         if (v >= 1){
             v = 0.999;
-            // v = fmax(1-v, 0);
         }
         i++;
-        VECTOR Q = S_nurbs(u, v, s);
-        // printf("Q_%d : %f | %f | %f \n",i, Q.x, Q.y, Q.z);
-        if (i == 100){
-            return S_nurbs(u, v, s);
-        }        
+        VECTOR Q = S_nurbs(u, v, s);       
     }
     return S_nurbs(u, v, s);
 }
@@ -571,5 +566,305 @@ VECTOR projection_nurbs(SURFACE s, VECTOR P){
 
 
 
+VECTOR projection_nurbs_aux_2(SURFACE s, VECTOR P, float u_0, float v_0){
+    int p = s->p; int q = s->q; int n = s->net->n; int m = s->net->m;
+    float u = u_0;
+    float v = v_0;
+    VECTOR S;
+    
+    for (int iterations = 0; iterations < 7; iterations++){
+        float** N_tab_u = N_nurbs_tab(s->knu, u, n, p);
+        float** N_tab_v = N_nurbs_tab(s->knv, v, m, q);
+
+        float* dN_tab_u = dN_nurbs_tab(s->knu, u, n, p, N_tab_u);
+        float* dN_tab_v = dN_nurbs_tab(s->knv, v, m, q, N_tab_v);
+
+        float* ddN_tab_u = ddN_nurbs_tab(s->knu, u, n, p, N_tab_u);
+        float* ddN_tab_v = ddN_nurbs_tab(s->knv, v, m, q, N_tab_v);
+
+        // Calcule de R et D
+        VECTOR R = {0.0,0.0,0.0};
+        VECTOR Ru = {0.0,0.0,0.0};
+        VECTOR Rv = {0.0,0.0,0.0};
+        VECTOR Ruv = {0.0,0.0,0.0};
+        VECTOR Ruu = {0.0,0.0,0.0};
+        VECTOR Rvv = {0.0,0.0,0.0};
+
+        float D = 0.0;
+        float Du = 0.0;
+        float Dv = 0.0;
+        float Duv = 0.0;
+        float Duu = 0.0;
+        float Dvv = 0.0;
+
+        // Calcule des R et D pour les S
+        for (int i = 0; i < n; i++){
+            for (int j = 0; j < m; j++){
+                // R et D
+                float temp_1 = N_tab_u[i][p]*N_tab_v[j][q]*s->net->Pw[i][j].w;
+                D += temp_1;
+                R.x += temp_1*s->net->Pw[i][j].x;
+                R.y += temp_1*s->net->Pw[i][j].y;
+                R.z += temp_1*s->net->Pw[i][j].z;
+
+                // Ru et Du
+                float temp_2 = dN_tab_u[i]*N_tab_v[j][q]*s->net->Pw[i][j].w;
+                Du += temp_2;
+                Ru.x += temp_2*s->net->Pw[i][j].x;
+                Ru.y += temp_2*s->net->Pw[i][j].y;
+                Ru.z += temp_2*s->net->Pw[i][j].z;
+
+                // Rv et Dv
+                float temp_3 = N_tab_u[i][p]*dN_tab_v[j]*s->net->Pw[i][j].w;
+                Dv += temp_3;
+                Rv.x += temp_3*s->net->Pw[i][j].x;
+                Rv.y += temp_3*s->net->Pw[i][j].y;
+                Rv.z += temp_3*s->net->Pw[i][j].z;
+
+                // Ruv et Duv
+                float temp_4 = dN_tab_u[i]*dN_tab_v[j]*s->net->Pw[i][j].w;
+                Duv += temp_4;
+                Ruv.x += temp_4*s->net->Pw[i][j].x;
+                Ruv.y += temp_4*s->net->Pw[i][j].y;
+                Ruv.z += temp_4*s->net->Pw[i][j].z;
+
+                // Ruu et Duu
+                float temp_5 = ddN_tab_u[i]*N_tab_v[j][q]*s->net->Pw[i][j].w;
+                Duu += temp_5;
+                Ruu.x += temp_5*s->net->Pw[i][j].x;
+                Ruu.y += temp_5*s->net->Pw[i][j].y;
+                Ruu.z += temp_5*s->net->Pw[i][j].z;
+
+                // Rvv et Dvv
+                float temp_6 = N_tab_u[i][p]*ddN_tab_v[j]*s->net->Pw[i][j].w;
+                Dvv += temp_6;
+                Rvv.x += temp_6*s->net->Pw[i][j].x;
+                Rvv.y += temp_6*s->net->Pw[i][j].y;
+                Rvv.z += temp_6*s->net->Pw[i][j].z;
+            }
+        }
+    
+        // VECTOR S = {0.0,0.0,0.0};
+        VECTOR Su = {0.0,0.0,0.0};
+        VECTOR Sv = {0.0,0.0,0.0};
+        VECTOR Suv = {0.0,0.0,0.0};
+        VECTOR Suu = {0.0,0.0,0.0};
+        VECTOR Svv = {0.0,0.0,0.0};
+
+        // printf("D = %f\n", D);
+
+        S = v_mult_scal(R, 1.0/D);
+        Su = v_mult_scal(v_sub(Ru,v_mult_scal(S,Du)),1.0/D);
+        Sv = v_mult_scal(v_sub(Rv,v_mult_scal(S,Dv)),1.0/D);
+        Suv.x = (Ruv.x - Duv*S.x - Du*Sv.x - Dv*Su.x)/D;
+        Suv.y = (Ruv.y - Duv*S.y - Du*Sv.y - Dv*Su.y)/D;
+        Suv.z = (Ruv.z - Duv*S.z - Du*Sv.z - Dv*Su.z)/D;
+
+        Suu.x = (Ruu.x - 2*Du*Su.x - Duu*S.x)/D;
+        Suu.y = (Ruu.y - 2*Du*Su.y - Duu*S.y)/D;
+        Suu.z = (Ruu.z - 2*Du*Su.z - Duu*S.z)/D;
+
+        Svv.x = (Rvv.x - 2*Dv*Sv.x - Dvv*S.x)/D;
+        Svv.y = (Rvv.y - 2*Dv*Sv.y - Dvv*S.y)/D;
+        Svv.z = (Rvv.z - 2*Dv*Sv.z - Dvv*S.z)/D;
+
+        VECTOR r = v_sub(S,P);
+        float f = prod_scal(r, Su);
+        float g = prod_scal(r, Sv);
+        float fu = norm_vector(Su)*norm_vector(Su) + prod_scal(r,Suu);
+        float fv = prod_scal(Su, Sv) + prod_scal(r,Suv);
+        float gu = prod_scal(Su, Sv) + prod_scal(r, Suv);
+        float gv = norm_vector(Sv)*norm_vector(Sv) + prod_scal(r, Svv);    
+
+        float det = fu*gv-fv*gu;
+        // printf("f = %f\n", f);
+        // printf("g = %f\n", g);
+        // printf("fu = %f\n", fu);
+        // printf("fv = %f\n", fv);
+        // printf("gu = %f\n", gu);
+        // printf("gv = %f\n", gv);
+
+        float dui = (g*fv-f*gv)/det;
+        float dvi = (f*gu-g*fu)/det;
+
+        // printf("det = %f\n", det);
+        float nu = u + dui;
+        float nv = v + dvi;
+        
+        if (nu < 0){nu = 0.0;}
+        if (nu >= 1){nu = 0.9999;}
+        if (nv < 0){nv = 0.0;}
+        if (nv >= 1){nv = 0.9999;}
+
+        if (u == nu && v == nv){
+            return S;
+        }
+
+        u = nu;
+        v = nv;
+
+        free(dN_tab_u);
+        free(dN_tab_v);
+        free(ddN_tab_u);
+        free(ddN_tab_v);
+        free_tab_2d(N_tab_u, n+p+1);
+        free_tab_2d(N_tab_v, m+q+1);
+        // printf("u = %f | v = %f \n", u,v);
+        // printf("S : %f | %f | %f \n", S.x, S.y, S.z);
+    }
+
+    // printf("S final : %f | %f | %f \n", S.x, S.y, S.z);
+    return S;
+}
+
+VECTOR projection_nurbs_2(SURFACE s, VECTOR P){
+    VECTOR Q_1 = projection_nurbs_aux_2(s, P, 0.0, 0.0);
+    VECTOR Q_2 = projection_nurbs_aux_2(s, P, 0.999, 0.0);
+    VECTOR Q_3 = projection_nurbs_aux_2(s, P, 0.0, 0.999);
+    VECTOR Q_4 = projection_nurbs_aux_2(s, P, 0.999, 0.999);
+
+    // printf("Q1 : %f | %f | %f \n", Q_1.x, Q_1.y, Q_1.z);
+    // printf("Q2 : %f | %f | %f \n", Q_2.x, Q_2.y, Q_2.z);
+    // printf("Q3 : %f | %f | %f \n", Q_3.x, Q_3.y, Q_3.z);
+    // printf("Q4 : %f | %f | %f \n", Q_4.x, Q_4.y, Q_4.z);
+
+    float d_1 = dist_2_pts(P, Q_1);
+    float d_2 = dist_2_pts(P, Q_2);
+    float d_3 = dist_2_pts(P, Q_3);
+    float d_4 = dist_2_pts(P, Q_4);
+
+    float d = fmin(fmin(d_1, d_2), fmin(d_3, d_4));
+
+    if (d_1 == d){return Q_1;}
+    if (d_2 == d){return Q_2;}
+    if (d_3 == d){return Q_3;}
+    return Q_4;
+}
 
 
+
+// Prog dyn
+float** N_nurbs_tab(KNOTVECTOR knot, float u, int n, int p){ 
+    // float m = n + p;
+    float** tab = create_2d_tab(n+p+1, p+1, 0.0);
+    
+    for (int i = 0; i < n+p+1; i++){
+        if ((knot->U[i] <= u) && (u < knot->U[i+1])){
+            tab[i][0] = 1.0;
+        } else {
+            tab[i][0] = 0.0;
+        }
+    }
+    
+
+    for (int j = 1; j < p + 1; j++){
+        for (int i = 0; i < n+p+1; i++){
+            // printf("%d-%d\n", i,j);
+            if (i + j > p + n){
+                tab[i][j] = 0.0;
+            }
+            else {
+                float t1, t2;
+                if (knot->U[i+j] - knot->U[i] == 0){
+                    t1 = 0.0;
+                } else {
+                    t1 = (u - knot->U[i])/(knot->U[i+j] - knot->U[i]);
+                }
+
+                if (knot->U[i+j+1] - knot->U[i+1] == 0){
+                    t2 = 0.0;
+                } else {
+                    t2 = (knot->U[i+j+1] - u)/(knot->U[i+j+1] - knot->U[i+1]);
+                }
+
+                tab[i][j] = t1*tab[i][j-1] + t2*tab[i+1][j-1];
+            }   
+        }
+    }
+    
+    return tab;
+}
+
+
+float* dN_nurbs_tab(KNOTVECTOR knot, float u, int n, int p, float** N_tab){ 
+    float* tab = malloc((n+1)*sizeof(float));
+
+    
+    for (int i = 0; i < n+1; i++){
+        float t1, t2;
+        if (knot->U[i+p] - knot->U[i] == 0){
+            t1 = 0.0;
+        } else {
+            t1 = (p)/(knot->U[i+p] - knot->U[i]);
+        }
+
+        if (knot->U[i+p+1] - knot->U[i+1] == 0){
+            t2 = 0.0;
+        } else {
+            t2 = (p)/(knot->U[i+p+1] - knot->U[i+1]);
+        }
+        // printf("ok%d\n",i);fflush(stdout);
+        // tab[i] = 0;
+        // printf("%d\n", i);
+        
+        tab[i] = t1*N_tab[i][p-1] - t2*N_tab[i+1][p-1]; // N'_i_p
+    }
+    
+    
+    return tab;
+}
+
+float* ddN_nurbs_tab(KNOTVECTOR knot, float u, int n, int p, float** N_tab){ 
+    float* tab = malloc((n+1)*sizeof(float));
+    for (int i = 0; i < n+1; i++){
+        float t1, t2, t3, t4, t5, t6;
+        float T1, T2;
+        
+        if (knot->U[i+p] - knot->U[i] == 0){
+            t1 = 0.0;
+        } else {
+            t1 = (p)/(knot->U[i+p] - knot->U[i]);
+        }
+
+        if (t1 == 0){
+            T1 = 0;
+        } else {
+            if (knot->U[i+p-1] - knot->U[i] == 0){
+                t3 = 0;
+            } else {
+                t3 = (p-1)/(knot->U[i+p-1] - knot->U[i]);
+            }
+            if (knot->U[i+p] - knot->U[i+1] == 0){
+                t4 = 0;
+            } else {
+                t4 = (p-1)/(knot->U[i+p] - knot->U[i+1]);
+            }
+            T1 = t1*(t3*N_tab[i][p-2] - t4*N_tab[i+1][p-2]);
+        }
+
+        if (knot->U[i+p+1] - knot->U[i+1] == 0){
+            t2 = 0.0;
+        } else {
+            t2 = (p)/(knot->U[i+p+1] - knot->U[i+1]);
+        }
+        
+        if (t2 == 0){
+            T2 = 0;
+        } else {
+            if (knot->U[i+p] - knot->U[i+1] == 0){
+                t5 = 0;
+            } else {
+                t5 = (p-1)/(knot->U[i+p] - knot->U[i+1]);
+            }
+            if (knot->U[i+p+1] - knot->U[i+2] == 0){
+                t6 = 0;
+            } else {
+                t6 = (p-1)/(knot->U[i+p+1] - knot->U[i+2]);
+            }
+            T2 = t2*(t5*N_tab[i+1][p-2] - t6*N_tab[i+2][p-2]);
+        }
+
+        tab[i] = T1 - T2;
+    }
+    return tab;
+}

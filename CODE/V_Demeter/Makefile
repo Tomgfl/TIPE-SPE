@@ -1,12 +1,12 @@
 # test_ecran : main_test.c dessin_fct.c options.h vector.c signed_distance_function.c utiles.c light.c scene.c 3d_obj/*.c ray_marching.c 
 # 	gcc main_test.c dessin_fct.c vector.c utiles.c ray_marching.c signed_distance_function.c light.c scene.c 3d_obj/*.c -O3 -lm -lglfw -lGL -o test_ecran
-
+#-fsanitize=address
 CC = clang
-OPTIONS = -O3 -ffast-math -g -fsanitize=address
+OPTIONS = -g -O3 -ffast-math
 ADD = -lglfw -lGL -pthread -lm
 ALL_O = vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o nurbs.o
 
-all : test_ecran main_1 main_2 main_3 main_4 main_5
+all : test_ecran main_1 main_2 main_3 main_4 main_5 main_6
 
 vector.o : vector.c vector.h options.h
 	$(CC) -c vector.c $(OPTIONS) -o vector.o
@@ -33,7 +33,7 @@ dessin_fct.o : dessin_fct.h dessin_fct.c options.h light.h
 pingouin_sdf.o : pingouin_sdf.h pingouin_sdf.c options.h vector.h utiles.h signed_distance_function.h
 	$(CC) -c pingouin_sdf.c $(OPTIONS) -o pingouin_sdf.o
 
-nurbs.o : nurbs.c nurbs.h options.h vector.h vector.c
+nurbs.o : nurbs.c nurbs.h options.h vector.h vector.c utiles.h
 	$(CC) -c nurbs.c $(OPTIONS) $(ADD) -o nurbs.o
 
 # 3d obj
@@ -70,10 +70,13 @@ main_4 : main_4.c options.h $(ALL_O)
 main_5 : main_5.c options.h $(ALL_O)
 	$(CC) main_5.c $(ALL_O) $(OPTIONS) $(ADD) -o main_5
 
+main_6 : main_6.c options.h $(ALL_O)
+	$(CC) main_6.c $(ALL_O) $(OPTIONS) $(ADD) -o main_6
+
 clean : 
 	rm -f ./test_ecran
 	rm -f *.o
-	rm -f main_1 main_2 main_3 main_4 main_5 test_ecran
+	rm -f main_1 main_2 main_3 main_4 main_5 main_6 test_ecran
 # rm -f 3d_obj/*.o
 
 

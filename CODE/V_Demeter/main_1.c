@@ -24,6 +24,8 @@ RES_SDF (*My_scene_p)(VECTOR); // pointeur vers la scene
 int main(){
     // clock_t begin_all = clock();
 
+    
+
     srand(time(NULL));
     My_scene_p = scene_1;
 
