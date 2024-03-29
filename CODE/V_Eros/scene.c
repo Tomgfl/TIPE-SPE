@@ -1,5 +1,10 @@
 #include "scene.h"
+#include <stdio.h>
 #include <stdlib.h>
+
+
+
+extern float time_scene;
 
 
 
@@ -23,7 +28,7 @@ extern float time_scene;
 
 // --- SCENE #1 --- // Tous les objets
 res_SDF scene_1(vector pts){
-    int nb = 6;
+    int nb = 8;
     res_SDF all_sdf[nb];
 
     vector n_plan = {0, 0, 1};
@@ -41,13 +46,27 @@ res_SDF scene_1(vector pts){
     res_SDF sdf_tor = SDF_Objet(pts, obj3);
     FreeObj(obj3);
 
-    OBJET obj4 = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
-    res_SDF sdf_cyl = SDF_Objet(pts, obj4);
+    OBJET obj4 = BuildSphere((vector){20 + 20*cos(time_scene/2), -20 + 20*sin(time_scene/2), 10 + 2*cos(time_scene/2)}, 3, c_rouge);
+    OBJET obj5 = BuildSphere((vector){20 + 20*cos(time_scene/3), -20 + 20*sin(time_scene/3), 10 + 2*cos(time_scene/3)}, 3, c_rouge);
+    OBJET obj6 = BuildSphere((vector){20 + 20*cos(time_scene/4), -20 + 20*sin(time_scene/4), 10 + 2*cos(time_scene/4)}, 3, c_rouge);
+    OBJET obj7 = BuildSphere((vector){20 + 20*cos(time_scene/5), -20 + 20*sin(time_scene/5), 10 + 2*cos(time_scene/5)}, 3, c_rouge);
+    res_SDF sdf_sph1 = SDF_Objet(pts, obj4);
     FreeObj(obj4);
-
-    OBJET obj5 = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
-    res_SDF sdf_tri = SDF_Objet(pts, obj5);
+    res_SDF sdf_sph2 = SDF_Objet(pts, obj5);
     FreeObj(obj5);
+    res_SDF sdf_sph3 = SDF_Objet(pts, obj6);
+    FreeObj(obj6);
+    res_SDF sdf_sph4 = SDF_Objet(pts, obj7);
+    FreeObj(obj7);
+
+
+    // OBJET obj4 = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
+    // res_SDF sdf_cyl = SDF_Objet(pts, obj4);
+    // FreeObj(obj4);
+
+    // OBJET obj5 = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
+    // res_SDF sdf_tri = SDF_Objet(pts, obj5);
+    // FreeObj(obj5);
 
     // OBJET obj6 = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
     // res_SDF sdf_ell = SDF_Objet(pts, obj6);
@@ -73,8 +92,12 @@ res_SDF scene_1(vector pts){
     all_sdf[1] = sdf_box;
     all_sdf[2] = sdf_sphere;
     all_sdf[3] = sdf_tor;
-    all_sdf[4] = sdf_cyl;
-    all_sdf[5] = sdf_tri;
+    all_sdf[4] = sdf_sph1;
+    all_sdf[5] = sdf_sph2;
+    all_sdf[6] = sdf_sph3;
+    all_sdf[7] = sdf_sph4;
+    // all_sdf[4] = sdf_cyl;
+    // all_sdf[5] = sdf_tri;
     // all_sdf[6] = sdf_ell;
     return min_lst_sdf(all_sdf, nb);
 }
@@ -82,13 +105,13 @@ res_SDF scene_1(vector pts){
 
 BVHNode* scene1_bvh () {
 
-    int nb = 5;
+    int nb = 3;
     OBJET all_obj[nb];
     all_obj[0] = BuildBox((vector){-10,10,0}, 4, 4, 4, c_bleu);
     all_obj[1] = BuildSphere((vector){-10, 10, 10}, 2, c_blanc);
     all_obj[2] = BuildTor((vector){10, 10, 0}, 2, 1, c_bleu_berlin);
-    all_obj[3] = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
-    all_obj[4] = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
+    // all_obj[3] = BuildCylindre((vector){10, 10, 10}, 4, 2, c_rouge);
+    // all_obj[4] = BuildTriangle((vector){-3, 10, 8}, (vector){3,10,10}, (vector){0,10,13}, c_orange);
     // all_obj[5] = BuildEllipsoid((vector){0, 10, 0}, 2, 2.7, 3.5, c_vert);
 
     BVHNode* root = buildBVH(all_obj, nb);
@@ -98,19 +121,19 @@ BVHNode* scene1_bvh () {
 
 
 BVHNode* TestBanquise () {
-    int nb = 3;
+    int nb = 4;
     OBJET all_obj[nb];
     all_obj[0] = BuildBox((vector){0,10,-10}, 500, 500, 20, c_blanc);
     all_obj[1] = BuildSphere((vector){10, 70, 5}, 20, c_iceberg);
-    all_obj[2] = BuildRotX(BuildTor((vector){-10, 40, 5}, 7, 2, c_iceberg), 0);
+    all_obj[2] = BuildRotY(BuildTor((vector){10, 40, 10}, 7, 2, c_iceberg), 2);
+    all_obj[3] = BuildSphere((vector){10, 40, 10}, 2, c_rouge);
 
     BVHNode* root = buildBVH(all_obj, nb);
     return root;
-
 }
 
 res_SDF scene_banquise(vector pts){
-    int nb = 3;
+    int nb = 4;
     res_SDF all_sdf[nb];
 
 
@@ -120,20 +143,37 @@ res_SDF scene_banquise(vector pts){
     OBJET obj2 = BuildSphere((vector){10, 70, 5}, 20, c_iceberg);
     res_SDF sdf_cyl = SDF_Objet(pts, obj2);
     FreeObj(obj2);
-    OBJET obj3 = BuildTor((vector){-10, 40, 5}, 7, 2, c_iceberg);
+    OBJET obj3 = BuildTor((vector){10, 40, 10}, 7, 2, c_iceberg);
     OBJET obj4 = BuildRotX(obj3, 0);
     res_SDF sdf_tri = SDF_Objet(pts, obj4);
     FreeObj(obj3);
     FreeObj(obj4);
+    OBJET obj5 = BuildSphere((vector){10, 40, 10}, 2, c_rouge);
+    res_SDF sdf_sph = SDF_Objet(pts, obj5);
+    FreeObj(obj5);
 
     all_sdf[0] = sdf_box1;
     all_sdf[1] = sdf_cyl;
     all_sdf[2] = sdf_tri;
+    all_sdf[3] = sdf_sph;
     
     // all_sdf[6] = sdf_ell;
     return min_lst_sdf(all_sdf, nb);
 }
 
+
+BVHNode* SceneBouge () {
+    int nb = 4;
+    OBJET all_obj[nb];
+    all_obj[0] = BuildSphere((vector){20 + 20*cos(time_scene/2), -20 + 20*sin(time_scene/2), 10 + 2*cos(time_scene/2)}, 3, c_rouge);
+    all_obj[1] = BuildSphere((vector){20 + 20*cos(time_scene/3), -20 + 20*sin(time_scene/3), 10 + 2*cos(time_scene/3)}, 3, c_rouge);
+    all_obj[2] = BuildSphere((vector){20 + 20*cos(time_scene/4), -20 + 20*sin(time_scene/4), 10 + 2*cos(time_scene/4)}, 3, c_rouge);
+    all_obj[3] = BuildSphere((vector){20 + 20*cos(time_scene/5), -20 + 20*sin(time_scene/5), 10 + 2*cos(time_scene/5)}, 3, c_rouge);
+
+    BVHNode* root = buildBVH(all_obj, nb);
+    return root;
+
+}
 
 
 
@@ -327,6 +367,16 @@ res_SDF SCENE_BANQUISE(vector pts){
 }
 res_SDF SCENE_BVH_Bis(BVHNode* scene, vector pts){
     res_SDF res = traverseBVH(scene, pts, (res_SDF){500,c_rouge});
+    return res;
+}
+
+
+res_SDF SCENE_FIXE(vector pts){
+    return scene_1(pts);
+    // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
+}
+BVHNode* SCENE_MOUVANTE(){
+    BVHNode* res = SceneBouge();
     return res;
 }
 

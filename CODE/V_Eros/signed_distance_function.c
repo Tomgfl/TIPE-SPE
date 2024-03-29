@@ -24,10 +24,10 @@ res_SDF SDF_Objet(vector p, OBJET obj) {
         res = SDF_Objet(rotation_z(p, args->k), args->o1);
     }   else if (obj.type == -8) {
         param_opsimple* args = (param_opsimple*) obj.param;
-        res = SDF_Objet(rotation_y(p, args->k), args->o1);
+        res = SDF_Objet(rotation_y(v_sub(p,obj.centre), args->k), args->o1);
     }   else if (obj.type == -7) {
         param_opsimple* args = (param_opsimple*) obj.param;
-        res = SDF_Objet(rotation_x(p, args->k), args->o1);
+        res = SDF_Objet(rotation_x(v_sub(p,obj.centre), args->k), args->o1);
     }   else if (obj.type == -3) {
         res = SubstractSDF (p, obj.param);
     }   else if (obj.type == -2) {
@@ -54,6 +54,7 @@ res_SDF SDF_Objet(vector p, OBJET obj) {
     return res;
 }
 
+
 // SDF du plan (n le vecteur normal et m un pts du plan)
 res_SDF SDF_plan(vector p, vector n, vector m, color couleur){
     res_SDF res;
@@ -64,7 +65,6 @@ res_SDF SDF_plan(vector p, vector n, vector m, color couleur){
     res.dist = fabs(prod_scal(n,v))/norm_vector(n);
     return res;
 }
-
 
 // Fonction de SDF d'une sphère
 res_SDF SDF_sphere(vector p, void* param, color couleur){
@@ -78,7 +78,6 @@ res_SDF SDF_sphere(vector p, void* param, color couleur){
     return res;
 }
 
-
 // Fonction de SDF d'un Tor
 res_SDF SDF_Tor(vector p, void* param, color couleur) {
     param_tor* args = (param_tor*) param;
@@ -90,7 +89,6 @@ res_SDF SDF_Tor(vector p, void* param, color couleur) {
     res_SDF res = {dist, couleur};
     return res;
 }
-
 
 // SDF d'un cylindre
 res_SDF SDF_cylindre(vector p, void* param, color couleur){
@@ -118,7 +116,6 @@ res_SDF SDF_cylindre(vector p, void* param, color couleur){
     }
 }
 
-
 // SDF d'un cône
 res_SDF SDF_Cone(vector p, void* param, color couleur){    // Centre du cylindre, rayon r de la base, hauteur H du cylindre
     param_cone* args = (param_cone*) param;
@@ -145,8 +142,6 @@ res_SDF SDF_Cone(vector p, void* param, color couleur){    // Centre du cylindre
     }
 }
 
-
-
 // SDF d'une pyramide (base carrée) selon le centre de sa base // marche pas
 res_SDF SDF_Pyramide(vector p, void* param, color couleur){
     param_pyramide* args = (param_pyramide*) param;
@@ -166,7 +161,6 @@ res_SDF SDF_Pyramide(vector p, void* param, color couleur){
     float distTo1, distTo2, distTo3, distTo4;
     return res;
 }
-
 
 // Fonction de SDF d'une boite (parralépipède rectangle)
 res_SDF SDF_box(vector p,void* param, color couleur){
@@ -195,8 +189,6 @@ res_SDF SDF_box(vector p,void* param, color couleur){
         return res;
     }
 }
-
-
 
 res_SDF SDF_triangle(vector p, void* param, color couleur){
     param_triangle* args = (param_triangle*) param;
@@ -256,7 +248,6 @@ res_SDF SDF_triangle(vector p, void* param, color couleur){
 
     return res;
 }
-
 
 res_SDF SDF_sphere_circonscrite_triangle(vector p, void* param, color couleur){
     param_triangle* args = (param_triangle*) param;

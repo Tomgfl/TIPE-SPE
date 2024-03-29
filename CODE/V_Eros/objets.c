@@ -177,10 +177,11 @@ OBJET BuildRotX (OBJET a, float angle) {
     OBJET obj;
     obj.type = -7; // Type "5" pour une boîte
     obj.param = malloc(sizeof(param_opsimple)); // Allouer de la mémoire pour les paramètres de la boîte
-    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte
+    obj.centre = a.centre;
+    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte
+    ((param_opsimple*)obj.param)->o1.centre = (vector){0,0,0};
     ((param_opsimple*)obj.param)->k = angle;  // Longueur de la boîte
     obj.couleur = a.couleur;
-    obj.centre = a.centre;
     obj.rayon = a.rayon; 
     return obj;
 }
@@ -189,7 +190,9 @@ OBJET BuildRotY (OBJET a, float angle) {
     OBJET obj;
     obj.type = -8; // Type "5" pour une boîte
     obj.param = malloc(sizeof(param_opsimple)); // Allouer de la mémoire pour les paramètres de la boîte
-    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte
+    obj.centre = a.centre;
+    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte
+    ((param_opsimple*)obj.param)->o1.centre = (vector){0,0,0};
     ((param_opsimple*)obj.param)->k = angle;  // Longueur de la boîte
     obj.couleur = a.couleur;
     obj.centre = a.centre;
@@ -201,7 +204,9 @@ OBJET BuildRotZ (OBJET a, float angle) {
     OBJET obj;
     obj.type = -9; // Type "5" pour une boîte
     obj.param = malloc(sizeof(param_opsimple)); // Allouer de la mémoire pour les paramètres de la boîte
-    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte
+    obj.centre = a.centre;
+    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte    ((param_opsimple*)obj.param)->o1 = a;  // Centre de la boîte
+    ((param_opsimple*)obj.param)->o1.centre = (vector){0,0,0};
     ((param_opsimple*)obj.param)->k = angle;  // Longueur de la boîte
     obj.couleur = a.couleur;
     obj.centre = a.centre;

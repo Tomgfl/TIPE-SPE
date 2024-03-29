@@ -31,6 +31,9 @@ res_SDF SCENE_BVH_Bis(BVHNode* scene, vector pts);
 
 
 // res_SDF scene_sphere(vector pts);
+BVHNode* SceneBouge();
+res_SDF SCENE_FIXE(vector pts);
+BVHNode* SCENE_MOUVANTE();
 
 
 
