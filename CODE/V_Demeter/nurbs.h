@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <assert.h>
 
 // --- FONCTIONS D'INITIALISATIONS --- //
 CNET create_cnet(int n, int m);

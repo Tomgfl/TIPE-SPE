@@ -1,8 +1,9 @@
 # test_ecran : main_test.c dessin_fct.c options.h vector.c signed_distance_function.c utiles.c light.c scene.c 3d_obj/*.c ray_marching.c 
 # 	gcc main_test.c dessin_fct.c vector.c utiles.c ray_marching.c signed_distance_function.c light.c scene.c 3d_obj/*.c -O3 -lm -lglfw -lGL -o test_ecran
-#-fsanitize=address
-CC = clang
-OPTIONS = -g -O3 -ffast-math
+#-fsanitize=address (agresive unloop, )
+CC = gcc 
+OPTIONS = -g -O3 -ffast-math 
+# flto
 ADD = -lglfw -lGL -pthread -lm
 ALL_O = vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o pingouin_sdf.o nurbs.o
 

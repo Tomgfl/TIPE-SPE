@@ -77,64 +77,7 @@ RES_SDF banquise(VECTOR pts){
 
 
 RES_SDF nurbs_scene(VECTOR pts){
-    SURFACE surf = create_surface(3,3);
-
-    CNET net = create_cnet(5,5);
-    net->Pw[0][0] = (CPOINT){-6,-3.8,0,1};
-    net->Pw[1][0] = (CPOINT){-5,-2.3,0.7,1};
-    net->Pw[2][0] = (CPOINT){-6,1,1,1};
-    net->Pw[3][0] = (CPOINT){-5.8,3.4,1.1,1}; 
-    net->Pw[4][0] = (CPOINT){-5.4,5.2,1.5,1};
-
-    net->Pw[0][1] = (CPOINT){-3.14,-4.5,0.6,1};
-    net->Pw[1][1] = (CPOINT){-3.5,-2.9,1.3,1};
-    net->Pw[2][1] = (CPOINT){-3.8,-0.9,1.9,1};
-    net->Pw[3][1] = (CPOINT){-4.24,0.8,0.8,1}; 
-    net->Pw[4][1] = (CPOINT){-4,3.2,2,1};
-
-    net->Pw[0][2] = (CPOINT){-1.46,-5.4,1,1};
-    net->Pw[1][2] = (CPOINT){-1.7,-3.9,1.21,1};
-    net->Pw[2][2] = (CPOINT){-1.72,-2.9,4.0,2};
-    net->Pw[3][2] = (CPOINT){-2.3,1.54,0.42,1};
-    net->Pw[4][2] = (CPOINT){-2.4,3.2,1.5,1};
-
-    net->Pw[0][3] = (CPOINT){1.5,-6.8,0,1};
-    net->Pw[1][3] = (CPOINT){1.3,-4,0.85,1};
-    net->Pw[2][3] = (CPOINT){1.8,-2.5,1.01,1};
-    net->Pw[3][3] = (CPOINT){1.6,0.97,0.6,1};
-    net->Pw[4][3] = (CPOINT){1.68,2.08,0.2,1};
-
-    net->Pw[0][4] = (CPOINT){3.73,-7.47,-1.15,1};
-    net->Pw[1][4] = (CPOINT){3.72,-5.5,-0.81,1};
-    net->Pw[2][4] = (CPOINT){3.52,-4.14,-0.96,1};
-    net->Pw[3][4] = (CPOINT){3.73,-3.15,-0.7,1};
-    net->Pw[4][4] = (CPOINT){3.44,1.41,-0.7,1};
-    surf->net = net;
-
-    KNOTVECTOR knu = create_knotvector(9);
-    knu->U[0] = 0;
-    knu->U[1] = 0;
-    knu->U[2] = 0;
-    knu->U[3] = 0;
-    knu->U[4] = 0.5;
-    knu->U[5] = 1;
-    knu->U[6] = 1;
-    knu->U[7] = 1;
-    knu->U[8] = 1;
-    surf->knu = knu;
-
-    KNOTVECTOR knv = create_knotvector(9);
-    knv->U[0] = 0;
-    knv->U[1] = 0;
-    knv->U[2] = 0;
-    knv->U[3] = 0;
-    knv->U[4] = 0.5;
-    knv->U[5] = 1;
-    knv->U[6] = 1;
-    knv->U[7] = 1;
-    knv->U[8] = 1;
-
-    surf->knv = knv;
+    SURFACE surf = nurbs_2();
 
     // affiche_surface(nurbs_test);
 
@@ -143,18 +86,18 @@ RES_SDF nurbs_scene(VECTOR pts){
     N.c = c_orange;
     free_surface(surf);
 
-    RES_SDF A = SDF_sphere(pts, (VECTOR){-6,-3.8,0},0.5, c_vert);
-    RES_SDF B = SDF_sphere(pts, (VECTOR){-5.43,5.2,1.5},0.5, c_vert);
-    RES_SDF C = SDF_sphere(pts, (VECTOR){3.73,-7.47,-1.15},0.5, c_vert);
-    RES_SDF D = SDF_sphere(pts, (VECTOR){3.44,1.41,-0.68},0.5, c_vert);
+    // RES_SDF A = SDF_sphere(pts, (VECTOR){-6,-3.8,0},0.5, c_vert);
+    // RES_SDF B = SDF_sphere(pts, (VECTOR){-5.43,5.2,1.5},0.5, c_vert);
+    // RES_SDF C = SDF_sphere(pts, (VECTOR){3.73,-7.47,-1.15},0.5, c_vert);
+    // RES_SDF D = SDF_sphere(pts, (VECTOR){3.44,1.41,-0.68},0.5, c_vert);
 
-    RES_SDF E = min_sdf(min_sdf(A,B),min_sdf(C,D));
+    // RES_SDF E = min_sdf(min_sdf(A,B),min_sdf(C,D));
     // if (res.dist < E.dist){
     //     printf("ok\n");
     // }
     
 
-    return min_sdf(N,E);
+    return N;
 }
 
 

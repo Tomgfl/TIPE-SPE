@@ -125,30 +125,28 @@ SURFACE nurbs_2(){
     net->Pw[4][4] = (CPOINT){3.44,1.41,-0.7,1};
     res->net = net;
 
-    KNOTVECTOR knu = create_knotvector(10);
+    KNOTVECTOR knu = create_knotvector(9);
     knu->U[0] = 0;
     knu->U[1] = 0;
     knu->U[2] = 0;
     knu->U[3] = 0;
-    knu->U[4] = 1.0/3.0;
-    knu->U[5] = 2.0/3.0;
+    knu->U[4] = 1.0/2.0;
+    knu->U[5] = 1;
     knu->U[6] = 1;
     knu->U[7] = 1;
     knu->U[8] = 1;
-    knu->U[9] = 1;
     res->knu = knu;
 
-    KNOTVECTOR knv = create_knotvector(10);
+    KNOTVECTOR knv = create_knotvector(9);
     knv->U[0] = 0;
     knv->U[1] = 0;
     knv->U[2] = 0;
     knv->U[3] = 0;
-    knv->U[4] = 1.0/3.0;
-    knv->U[5] = 2.0/3.0;
+    knv->U[4] = 1.0/2.0;
+    knv->U[5] = 1;
     knv->U[6] = 1;
     knv->U[7] = 1;
     knv->U[8] = 1;
-    knv->U[9] = 1;
     res->knv = knv;
     return res;
 }
@@ -572,7 +570,7 @@ VECTOR projection_nurbs_aux_2(SURFACE s, VECTOR P, float u_0, float v_0){
     float v = v_0;
     VECTOR S;
     
-    for (int iterations = 0; iterations < 7; iterations++){
+    for (int iterations = 0; iterations < 10; iterations++){
         float** N_tab_u = N_nurbs_tab(s->knu, u, n, p);
         float** N_tab_v = N_nurbs_tab(s->knv, v, m, q);
 
@@ -644,6 +642,13 @@ VECTOR projection_nurbs_aux_2(SURFACE s, VECTOR P, float u_0, float v_0){
             }
         }
     
+        free(dN_tab_u);
+        free(dN_tab_v);
+        free(ddN_tab_u);
+        free(ddN_tab_v);
+        free_tab_2d(N_tab_u, n+p+1);
+        free_tab_2d(N_tab_v, m+q+1);
+
         // VECTOR S = {0.0,0.0,0.0};
         VECTOR Su = {0.0,0.0,0.0};
         VECTOR Sv = {0.0,0.0,0.0};
@@ -695,6 +700,7 @@ VECTOR projection_nurbs_aux_2(SURFACE s, VECTOR P, float u_0, float v_0){
         if (nu >= 1){nu = 0.9999;}
         if (nv < 0){nv = 0.0;}
         if (nv >= 1){nv = 0.9999;}
+        
 
         if (u == nu && v == nv){
             return S;
@@ -703,12 +709,6 @@ VECTOR projection_nurbs_aux_2(SURFACE s, VECTOR P, float u_0, float v_0){
         u = nu;
         v = nv;
 
-        free(dN_tab_u);
-        free(dN_tab_v);
-        free(ddN_tab_u);
-        free(ddN_tab_v);
-        free_tab_2d(N_tab_u, n+p+1);
-        free_tab_2d(N_tab_v, m+q+1);
         // printf("u = %f | v = %f \n", u,v);
         // printf("S : %f | %f | %f \n", S.x, S.y, S.z);
     }
@@ -770,7 +770,7 @@ float** N_nurbs_tab(KNOTVECTOR knot, float u, int n, int p){
                 } else {
                     t1 = (u - knot->U[i])/(knot->U[i+j] - knot->U[i]);
                 }
-
+                // assert(i+j+1 < knot->m);
                 if (knot->U[i+j+1] - knot->U[i+1] == 0){
                     t2 = 0.0;
                 } else {
@@ -803,14 +803,10 @@ float* dN_nurbs_tab(KNOTVECTOR knot, float u, int n, int p, float** N_tab){
         } else {
             t2 = (p)/(knot->U[i+p+1] - knot->U[i+1]);
         }
-        // printf("ok%d\n",i);fflush(stdout);
-        // tab[i] = 0;
-        // printf("%d\n", i);
         
         tab[i] = t1*N_tab[i][p-1] - t2*N_tab[i+1][p-1]; // N'_i_p
     }
-    
-    
+        
     return tab;
 }
 
