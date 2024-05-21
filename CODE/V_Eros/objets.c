@@ -214,6 +214,16 @@ OBJET BuildRotZ (OBJET a, float angle) {
     return obj;
 }
 
+
 void FreeObj (OBJET obj) {
-    free(obj.param);
+    if (obj.param != NULL){
+        free(obj.param);
+    }
+}
+
+void FreeObjList (OBJET* l, int nb) {
+    for (int i = 0; i<nb; i++){
+        FreeObj(l[i]);
+    }
+    free(l);
 }

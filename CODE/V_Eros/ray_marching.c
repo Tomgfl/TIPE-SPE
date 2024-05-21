@@ -221,13 +221,11 @@ color ray_marching_bvhNoPlan(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(ve
 
 
 color ray_marching_bvh_moving(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(vector), res_SDF (*scene_bvh)(BVHNode*, vector)){
-    // clock_t begin_r = clock();
     float dist_tot = 0.0;
     vector position_actuelle = r.origine;
 
     vector Lumiere = {0, 30, 50}; // lumiere mis a la mano
-    
-    BVHNode* Scene2 = SCENE_MOUVANTE();
+    BVHNode* Scene2 = SCENE_MOUVANTE();   // Arbre contenant les objets mouvants
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
 
@@ -250,20 +248,12 @@ color ray_marching_bvh_moving(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(v
 
 
             res.opp = val_light*val_shadow*0.8 + 0.2;
-        
-            // res.opp = fmin(val_light, val_shadow)*0.8 + 0.2;
-            // clock_t end_r = clock();
-            // STATS.temps_raymarch += (double)(end_r - begin_r)/CLOCKS_PER_SEC - (double)(end_s - begin_s)/CLOCKS_PER_SEC - (double)(end_l - begin_l)/CLOCKS_PER_SEC;
-            // STATS.nb_rayons_tot += 1;
-            // STATS.nb_rayons_etapes += i+1;
+            freeBVH(Scene2);
             return res;
         }
 
         if (dist_tot > MAX_TOTAL_LENGHT){ // Si on va trop loin
-            // clock_t end_r = clock();
-            // STATS.temps_raymarch += (double)(end_r - begin_r)/CLOCKS_PER_SEC;
-            // STATS.nb_rayons_tot += 1;
-            // STATS.nb_rayons_etapes += i+1;
+            freeBVH(Scene2);
             return c_fond;
         }
         
@@ -272,13 +262,6 @@ color ray_marching_bvh_moving(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(v
         position_actuelle.y = r.origine.y + r.direction.y * dist_tot;
         position_actuelle.z = r.origine.z + r.direction.z * dist_tot;      
     }
-
     freeBVH(Scene2);
-
-    // aucun objet atteint
-    // clock_t end_r = clock();
-    // STATS.temps_raymarch += (double)(end_r - begin_r)/CLOCKS_PER_SEC;
-    // STATS.nb_rayons_etapes += MAX_RAY_STEPS;
-    // STATS.nb_rayons_tot += 1;
     return c_rouge;
 }

@@ -24,6 +24,7 @@ OBJET BuildRotX (OBJET a, float angle);
 OBJET BuildRotY (OBJET a, float angle);
 OBJET BuildRotZ (OBJET a, float angle);
 void FreeObj (OBJET obj);
+void FreeObjList (OBJET* l, int nb);
 
 
 #endif

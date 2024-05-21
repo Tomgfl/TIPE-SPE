@@ -26,7 +26,7 @@ res_SDF (*My_scene_bvh)(BVHNode*, vector); // pointeur vers la scene
 
 
 int main(){
-    clock_t begin_all = clock();
+    // clock_t begin_all = clock();
 
 
     srand(time(NULL));
@@ -84,7 +84,7 @@ int main(){
 
     /* Boucle principale */
     // while (!glfwWindowShouldClose(window)){
-    for (int i = 0; i < 15; i++){
+    for (int i = 0; i < 20; i++){
     
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -105,14 +105,15 @@ int main(){
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
-    clock_t end_all = clock();
-    STATS.temps_tot = (double)(end_all-begin_all)/CLOCKS_PER_SEC;
+    // clock_t end_all = clock();
+    // STATS.temps_tot = (double)(end_all-begin_all)/CLOCKS_PER_SEC;
 
     glfwTerminate();
 
     for (int i = 0; i < WIDTH; i++){
         free(ecran_ray_directions[i]);
     }
+    freeBVH(MyBvhScene);
     free(ecran_ray_directions);
 
     return 0;

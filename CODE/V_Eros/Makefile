@@ -2,10 +2,10 @@
 # 	gcc main_test.c dessin_fct.c vector.c utiles.c ray_marching.c signed_distance_function.c light.c scene.c 3d_obj/*.c -O3 -lm -lglfw -lGL -o test_ecran
 
 CC = clang
-OPTIONS = -O3 -ffast-math -g 
+OPTIONS = -O3 -ffast-math -g -Wall
 ADD = -lglfw -lGL -pthread -lm
 
-all : test_ecran main_6 main_5 main_4 main_3 main_1
+all : test_ecran main_6 main_5 main_4 main_3 main_1 test
 
 vector.o : vector.c vector.h options.h
 	$(CC) -c vector.c $(OPTIONS) -o vector.o
@@ -74,10 +74,14 @@ main_1 : main_1.c options.h vector.o utiles.o signed_distance_function.o scene.o
 main_3 : main_3.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o pingouin_sdf.o
 	$(CC) main_3.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o pingouin_sdf.o $(OPTIONS) $(ADD) -o main_3
 
+test : TestsFree.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o pingouin_sdf.o
+	$(CC) TestsFree.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o pingouin_sdf.o $(OPTIONS) $(ADD) -o test
+
+
 clean : 
 	rm -f ./test_ecran
 	rm -f *.o
-	rm -f main_1 main_2 main_3 main_4 main_5 main_6 test_ecran
+	rm -f main_1 main_2 main_3 main_4 main_5 main_6 test_ecran test
 # rm -f 3d_obj/*.o
 
 

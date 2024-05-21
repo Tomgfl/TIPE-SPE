@@ -8,7 +8,7 @@
 
 
 BVHNode* buildBVH(OBJET* obj_list, int obj_count) {
-    BVHNode* root = (BVHNode*)malloc(sizeof(BVHNode));
+    BVHNode* root = (BVHNode*)malloc(sizeof(struct BVHNode_s));
     root->obj = obj_list;
     root->obj_count = obj_count;
     // Calculer la boîte englobante pour la racine en fonction des objets contenus
@@ -178,14 +178,30 @@ res_SDF traverseBVH(BVHNode* root, vector p, res_SDF dist) {
 }
 
 
-void freeBVH (BVHNode* root) {
-    if (root->left != NULL) {
-        freeBVH (root->left);
-    }
-    if (root->right != NULL) {
-        freeBVH (root->right);
-    }
-    free(root);
 
+void freeBVHAux(BVHNode* node){
+    if (node == NULL) {
+        return;
+    }
+    // Libérer la mémoire des sous-arbres gauche et droit
+    freeBVHAux(node->left);
+    freeBVHAux(node->right);
+    free(node->obj);
+    free(node);
+}
+
+void freeBVH(BVHNode* node) {
+    if (node == NULL) {
+        return;
+    }
+    // Libérer la mémoire des sous-arbres gauche et droit
+    freeBVHAux(node->left);
+    freeBVHAux(node->right);
+
+    // Libérer la mémoire des objets
+    if (node->obj_count > 0 && node->obj != NULL) {
+        FreeObjList(node->obj, node->obj_count);
+    }
+    free(node);
 }
 

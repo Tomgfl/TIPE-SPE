@@ -164,13 +164,14 @@ typedef struct {
     float r;        // Rayon de la boule
 } BOULE;
 
-typedef struct BVHNode {
+typedef struct BVHNode_s BVHNode;
+struct BVHNode_s {
     BOULE box; // Axis-Aligned Bounding Box (Boîte englobante alignée sur les axes)
-    struct BVHNode* left;
-    struct BVHNode* right;
+    BVHNode* left;
+    BVHNode* right;
     OBJET* obj; // Pointeur vers l'objet (ou un tableau d'objets) contenu dans ce nœud
     int obj_count; // Nombre d'objets contenu dans ce nœud
-} BVHNode;
+};
 
 // Pour pthread
 struct arg_s{
@@ -188,7 +189,7 @@ typedef struct arg_s arg;
 
 
 // taille de l'ecran
-#define WIDTH 600
+#define WIDTH 640
 #define HEIGHT 480
 
 // Parametres du ray marching
@@ -197,7 +198,7 @@ typedef struct arg_s arg;
 #define MAX_TOTAL_LENGHT 500 // distance max que peut parcourir un rayon
 #define EPSILON 0.00001 // pour le calcule des gradients
 
-#define NB_THREADS 6
+#define NB_THREADS 8
 
 
 

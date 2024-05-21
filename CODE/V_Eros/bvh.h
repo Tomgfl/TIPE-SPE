@@ -26,6 +26,7 @@ int compareByZPosition(const void* a, const void* b) ;
 BOULE calculateBoundingBox(OBJET* sdf_list, int sdf_count) ;
 void buildBVHRecursive(BVHNode* node, int currentDepth) ;
 res_SDF traverseBVH(BVHNode* root, vector p, res_SDF dist) ;
+void freeBVHAux (BVHNode* root) ;
 void freeBVH (BVHNode* root) ;
 
 #endif 
