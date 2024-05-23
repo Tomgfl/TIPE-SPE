@@ -29,7 +29,7 @@ extern float time_scene;
 // --- SCENE #1 --- // Tous les objets
 res_SDF scene_1(vector pts){
     int nb = 8;
-    res_SDF all_sdf[nb];
+    res_SDF* all_sdf = malloc(nb*sizeof(res_SDF));
 
     vector n_plan = {0, 0, 1};
     res_SDF sdf_plan = SDF_plan(pts, n_plan, (vector){0,0,-4}, c_gris);
@@ -46,10 +46,10 @@ res_SDF scene_1(vector pts){
     res_SDF sdf_tor = SDF_Objet(pts, obj3);
     FreeObj(obj3);
 
-    OBJET obj4 = BuildSphere((vector){20 + 20*cos(time_scene/2), -20 + 20*sin(time_scene/2), 10 + 2*cos(time_scene/2)}, 3, c_rouge);
-    OBJET obj5 = BuildSphere((vector){20 + 20*cos(time_scene/3), -20 + 20*sin(time_scene/3), 10 + 2*cos(time_scene/3)}, 3, c_rouge);
-    OBJET obj6 = BuildSphere((vector){20 + 20*cos(time_scene/4), -20 + 20*sin(time_scene/4), 10 + 2*cos(time_scene/4)}, 3, c_rouge);
-    OBJET obj7 = BuildSphere((vector){20 + 20*cos(time_scene/5), -20 + 20*sin(time_scene/5), 10 + 2*cos(time_scene/5)}, 3, c_rouge);
+    OBJET obj4 = BuildSphere((vector){20 + 20*cos(time_scene/2), -20 + 20*cos(time_scene/2), 10}, 3, c_blanc);
+    OBJET obj5 = BuildSphere((vector){20 + 20*cos(time_scene/3), -20 + 20*cos(time_scene/3), 10}, 3, c_blanc);
+    OBJET obj6 = BuildSphere((vector){20 + 20*cos(time_scene/4), -20 + 20*cos(time_scene/4), 10}, 3, c_blanc);
+    OBJET obj7 = BuildSphere((vector){20 + 20*cos(time_scene/5), -20 + 20*cos(time_scene/5), 10}, 3, c_blanc);
     res_SDF sdf_sph1 = SDF_Objet(pts, obj4);
     FreeObj(obj4);
     res_SDF sdf_sph2 = SDF_Objet(pts, obj5);
@@ -99,14 +99,16 @@ res_SDF scene_1(vector pts){
     // all_sdf[4] = sdf_cyl;
     // all_sdf[5] = sdf_tri;
     // all_sdf[6] = sdf_ell;
-    return min_lst_sdf(all_sdf, nb);
+    res_SDF res = min_lst_sdf(all_sdf, nb);
+    free(all_sdf);
+    return res;
 }
 
 
 BVHNode* scene1_bvh () {
 
     int nb = 3;
-    OBJET all_obj[nb];
+    OBJET* all_obj = malloc(nb*sizeof(OBJET));
     all_obj[0] = BuildBox((vector){-10,10,0}, 4, 4, 4, c_bleu);
     all_obj[1] = BuildSphere((vector){-10, 10, 10}, 2, c_blanc);
     all_obj[2] = BuildTor((vector){10, 10, 0}, 2, 1, c_bleu_berlin);
@@ -122,7 +124,7 @@ BVHNode* scene1_bvh () {
 
 BVHNode* TestBanquise () {
     int nb = 4;
-    OBJET all_obj[nb];
+    OBJET* all_obj = malloc(nb*sizeof(OBJET));
     all_obj[0] = BuildBox((vector){0,10,-10}, 500, 500, 20, c_blanc);
     all_obj[1] = BuildSphere((vector){10, 70, 5}, 20, c_iceberg);
     all_obj[2] = BuildRotY(BuildTor((vector){10, 40, 10}, 7, 2, c_iceberg), 2);
@@ -164,7 +166,7 @@ res_SDF scene_banquise(vector pts){
 
 BVHNode* SceneBouge () {
     int nb = 4;
-    OBJET all_obj[nb];
+    OBJET* all_obj = malloc(nb*sizeof(OBJET));
     all_obj[0] = BuildSphere((vector){20 + 20*cos(time_scene/2), -20 + 20*sin(time_scene/2), 10 + 2*cos(time_scene/2)}, 3, c_rouge);
     all_obj[1] = BuildSphere((vector){20 + 20*cos(time_scene/3), -20 + 20*sin(time_scene/3), 10 + 2*cos(time_scene/3)}, 3, c_rouge);
     all_obj[2] = BuildSphere((vector){20 + 20*cos(time_scene/4), -20 + 20*sin(time_scene/4), 10 + 2*cos(time_scene/4)}, 3, c_rouge);
@@ -172,7 +174,18 @@ BVHNode* SceneBouge () {
 
     BVHNode* root = buildBVH(all_obj, nb);
     return root;
+}
 
+BVHNode* SceneWindows () {  // A regarder par dessus
+    int nb = 4;
+    OBJET* all_obj = malloc(nb*sizeof(OBJET));
+    all_obj[0] = BuildSphere((vector){20 + 20*cos(time_scene/2), -20 + 20*cos(time_scene/2), 10}, 3, c_blanc);
+    all_obj[1] = BuildSphere((vector){20 + 20*cos(time_scene/3), -20 + 20*cos(time_scene/3), 10}, 3, c_blanc);
+    all_obj[2] = BuildSphere((vector){20 + 20*cos(time_scene/4), -20 + 20*cos(time_scene/4), 10}, 3, c_blanc);
+    all_obj[3] = BuildSphere((vector){20 + 20*cos(time_scene/5), -20 + 20*cos(time_scene/5), 10}, 3, c_blanc);
+
+    BVHNode* root = buildBVH(all_obj, nb);
+    return root;
 }
 
 
@@ -376,7 +389,7 @@ res_SDF SCENE_FIXE(vector pts){
     // return SDF_pingouin_2(rotation_x(rotation_z(pts, -50),270),pts);
 }
 BVHNode* SCENE_MOUVANTE(){
-    BVHNode* res = SceneBouge();
+    BVHNode* res = SceneWindows();
     return res;
 }
 

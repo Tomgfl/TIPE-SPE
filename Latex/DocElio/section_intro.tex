@@ -1,0 +1,65 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section[Première section]{Introduction}
+%------------------------------------------------
+\begin{frame}
+\frametitle{titre d'une slide avant la sous-section\esp}
+ici on n'a pas encore de titre de sous-section
+\label{slides_hors_subsec}
+\end{frame}
+
+
+%++++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{Principe de Ray Marching}
+\begin{frame}
+\frametitle{titre d'une slide dans la sous-section\esp}
+ici on n'a un titre de sous-section, contrairement à la slide~\ref{slides_hors_subsec}\\[2cm]
+Regarder le code ici pour référencer une slide avec \texttt{$\backslash$label} et la citer un numéro de slide avec  \texttt{$\backslash$ref}
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Ce qui apparaît dans l'en-tête}
+
+Dans la \important{première ligne}:
+\begin{itemize}
+\flch la version courte du titre, précisée en option  de  \texttt{$\backslash$title}\\
+\remarque{( en option = entre crochets, avant les accolades)}
+\flch la version courte du nom, voire des initiales, redéfinir la commande
+\texttt{$\backslash$newcommand\{$\backslash$initiales\}\{Petit Nom \}} 
+\flch la version courte de la date, précisée en option de \texttt{$\backslash$date}\\
+\end{itemize}
+\bigskip
+Dans la \important{deuxième ligne}:
+\begin{itemize}
+\flch le numéro et le titre de la section, sauf si le numéro est nul\\
+\remarque{s'il est précisé en option de} \texttt{$\backslash$section}
+\remarque{le titre court est utilisé}
+\flch le numéro et le titre de la sous-section, sauf si le numéro est nul\\
+\remarque{s'il est précisé en option de} \texttt{$\backslash$subsection}
+\remarque{le titre court est utilisé}
+\end{itemize}
+
+\end{frame}
+
+
+%++++++++++++++++++++++++++++++++++++++++++++++++
+\subsection{La modélisation dans le jeu vidéo}
+%------------------------------------------------
+\begin{frame}
+\frametitle{titre de la slide sans lettre descendant sous la baseline}
+pour régler ce problème, utiliser la commande \texttt{$\backslash$esp} à la fin du titre, cf slide suivante
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{titre de la slide sans lettre descendant sous la baseline\esp}
+ici c'est mieux non?
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{titre de la slide qui marche tout seul grâce au q et au g}
+\end{frame}
