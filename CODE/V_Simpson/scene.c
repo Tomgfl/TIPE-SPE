@@ -1,6 +1,7 @@
 #include "scene.h"
 #include "bvh.h"
 #include "simpsons_bvh.h"
+#include "plage_bvh.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <float.h>
@@ -137,16 +138,28 @@ res_SDF SCENE_BVH_Bis(BVHNode* scene, vector pts){
 }
 
 BVHNode* SCENE_MOUVANTE() {
-    return BVH_Maison();
+    return BVH_Plage();
 }
 
 BVHNode* Scene_Simpson_Test() {
     return BVH_Maison();
 }
 
+BVHNode* Scene_Plage_Test() {
+    return BVH_Plage();
+}
+
 res_SDF Test_Simpsons(vector pts){
     res_SDF maxsdf = (res_SDF){FLT_MAX, c_blanc};
     BVHNode* a = Scene_Simpson_Test();
+    res_SDF res = traverseBVH(a, pts, maxsdf);
+    freeBVH(a);
+    return res;
+}
+
+res_SDF Test_Plage(vector pts){
+    res_SDF maxsdf = (res_SDF){FLT_MAX, c_blanc};
+    BVHNode* a = Scene_Plage_Test();
     res_SDF res = traverseBVH(a, pts, maxsdf);
     freeBVH(a);
     return res;

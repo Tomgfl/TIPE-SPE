@@ -52,11 +52,12 @@ int main(){
 
     camera CAMERA;
     CAMERA.size_L_e = 2.0;
-    CAMERA.dir_ecran_c = (vector){-1,-0.5,-0.5};
+    CAMERA.dir_ecran_c = (vector){1,-0.6,-1};
 
     CAMERA.up_c = normalise_vecteur((vector){0,1,0});
-    CAMERA.position_c = (vector){3.5,1.5,1.5};
+    CAMERA.position_c = (vector){-20,15,20};
     CAMERA.dist_screen = 2.0;
+
 
     CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
     CAMERA.de = CAMERA.size_L_e / WIDTH;

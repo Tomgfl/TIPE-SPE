@@ -5,7 +5,7 @@ CC = clang
 OPTIONS = -O3 -ffast-math -g
 ADD = -lglfw -lGL -pthread -lm
 
-all : testSimpson test
+all : testSimpson testPlage test
 
 vector.o : vector.c vector.h options.h
 	$(CC) -c vector.c $(OPTIONS) -o vector.o
@@ -37,6 +37,9 @@ objets.o : objets.h objets.c vector.h signed_distance_function.h utiles.h pingou
 simpson.o : simpsons_bvh.h simpsons_bvh.c options.h vector.h utiles.h signed_distance_function.h bvh.h objets.h
 	$(CC) -c simpsons_bvh.c $(OPTIONS) -o simpson.o
 
+plage.o : plage_bvh.h plage_bvh.c options.h vector.h utiles.h signed_distance_function.h bvh.h objets.h
+	$(CC) -c plage_bvh.c $(OPTIONS) -o plage.o
+
 pingouin.o : pingouin_sdf.h pingouin_sdf.c options.h vector.h utiles.h signed_distance_function.h bvh.h objets.h
 	$(CC) -c pingouin_sdf.c $(OPTIONS) -o pingouin.o
 
@@ -56,17 +59,20 @@ pingouin.o : pingouin_sdf.h pingouin_sdf.c options.h vector.h utiles.h signed_di
 #	$(CC) main_test.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o 3d_obj/cube_sdf.o 3d_obj/pingouin_2_sdf.o -lm -lglfw -lGL -O3 -o test_ecran
 
 
-testSimpson : main_simpson.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o 
-	$(CC) main_simpson.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o $(OPTIONS) $(ADD) -o testSimpson
+testSimpson : main_simpson.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o plage.o
+	$(CC) main_simpson.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o plage.o $(OPTIONS) $(ADD) -o testSimpson
 
-test : TestsFree.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o 
-	$(CC) TestsFree.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o $(OPTIONS) $(ADD) -o test
+testPlage : main_plage.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o plage.o
+	$(CC) main_plage.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o plage.o $(OPTIONS) $(ADD) -o testPlage
+
+test : TestsFree.c options.h vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o plage.o
+	$(CC) TestsFree.c vector.o utiles.o signed_distance_function.o scene.o ray_marching.o light.o dessin_fct.o objets.o bvh.o simpson.o pingouin.o plage.o $(OPTIONS) $(ADD) -o test
 
 
 clean : 
 	rm -f ./test_ecran
 	rm -f *.o
-	rm -f main_7 main_2 main_3 main_4 main_5 main_6 test_ecran test
+	rm -f test testSimpson testPlage
 # rm -f 3d_obj/*.o
 
 

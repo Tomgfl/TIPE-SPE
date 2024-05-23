@@ -33,6 +33,11 @@ color c_l3 = {74, 175, 86, 1.0};
 color c_table1 = {60, 70, 90, 1.0};
 color c_table2 = {67, 55, 90, 1.0};
 
+color c_feuille = {151,203,76,1.0};
+color c_sable = {231,193,120,1.0};
+color c_eau = {2,149,203,1.0};
+color c_bois = {164, 69, 63, 1.0};
+color c_socle = {129,132,225,1.0};
 
 // --- LUMIERES --- //
 

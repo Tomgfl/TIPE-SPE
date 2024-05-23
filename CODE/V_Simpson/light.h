@@ -43,6 +43,12 @@ extern color c_l3;
 extern color c_table1;
 extern color c_table2;
 
+extern color c_feuille;
+extern color c_sable;
+extern color c_eau;
+extern color c_bois;
+extern color c_socle;
+
 
 // --- LUMIERES --- //
 

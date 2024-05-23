@@ -3,6 +3,7 @@
 
 #include "options.h"
 #include "simpsons_bvh.h"
+#include "plage_bvh.h"
 // #include "3d_obj/pingouin_2_sdf.h"
 // #include "3d_obj/cube_sdf.h"
 #include "utiles.h"
