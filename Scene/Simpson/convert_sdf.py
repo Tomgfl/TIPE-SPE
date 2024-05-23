@@ -14,7 +14,7 @@ with open(f"{filename}_sdf.h","w") as file:
     file.write('#include "utiles.h" \n')
     file.write('#include "signed_distance_function.h" \n\n')
 
-    file.write(f"BVHNode* BVH_{filename}(vector pts);\n")
+    file.write(f"res_SDF scene_{filename}(vector pts);\n")
 
     file.write("#endif")
 
@@ -25,9 +25,9 @@ with open(f"{filename}_sdf.c","w") as file:
     j = 0
     file.write(f'#include "{filename}_sdf.h"\n\n')
 
-    file.write(f"BVHNode* BVH_{filename}(vector pts) {{ \n")
+    file.write(f"res_SDF scene_{filename}(vector pts) {{ \n")
     file.write(f"   int nb = ; \n")
-    file.write(f"   OBJET* all_obj = malloc(nb*sizeof(OBJET)); \n")
+    file.write(f"   res_SDF* all_sdf = malloc(nb*sizeof(res_SDF)); \n")
 
     for l in lines:
         if l[0] == "v":
@@ -39,7 +39,7 @@ with open(f"{filename}_sdf.c","w") as file:
         if l[0] == "f":
             coord = l.split(" ")
             coord[3] = coord[3].replace("\n","")
-            file.write(f"   all_obj[{j}] = BuildTriangle(C_{coord[1]},C_{coord[2]},C_{coord[3]}, c_blanc);\n")
+            file.write(f"   OBJET obj{j} = BuildTriangle(C_{coord[1]},C_{coord[2]},C_{coord[3]}, c_blanc);\n")
             j += 1
     
     file.write(f"   int nb = {j};\n")
