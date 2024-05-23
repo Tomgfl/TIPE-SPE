@@ -77,19 +77,20 @@ RES_SDF banquise(VECTOR pts){
 
 
 RES_SDF nurbs_scene(VECTOR pts){
-    SURFACE surf = nurbs_2();
+    // SURFACE surf = nurbs_2();
+    SURFACE surf = nurbs_rd();
 
     // affiche_surface(nurbs_test);
 
     RES_SDF N;
-    N.dist = norm_vector(v_sub(pts,projection_nurbs_2(surf, pts)));
+    N.dist = norm_vector(v_sub(pts,projection_nurbs_5(surf, pts, 0,1,0,1, 0, 10)));
     N.c = c_orange;
     free_surface(surf);
 
-    // RES_SDF A = SDF_sphere(pts, (VECTOR){-6,-3.8,0},0.5, c_vert);
-    // RES_SDF B = SDF_sphere(pts, (VECTOR){-5.43,5.2,1.5},0.5, c_vert);
-    // RES_SDF C = SDF_sphere(pts, (VECTOR){3.73,-7.47,-1.15},0.5, c_vert);
-    // RES_SDF D = SDF_sphere(pts, (VECTOR){3.44,1.41,-0.68},0.5, c_vert);
+    // RES_SDF A = SDF_sphere(pts, (VECTOR){-6,-4,0},0.5, c_vert);
+    // RES_SDF B = SDF_sphere(pts, (VECTOR){-6,5,0},0.5, c_vert);
+    // RES_SDF C = SDF_sphere(pts, (VECTOR){4,5,0},0.5, c_vert);
+    // RES_SDF D = SDF_sphere(pts, (VECTOR){4,-4,0},0.5, c_vert);
 
     // RES_SDF E = min_sdf(min_sdf(A,B),min_sdf(C,D));
     // if (res.dist < E.dist){
@@ -97,6 +98,7 @@ RES_SDF nurbs_scene(VECTOR pts){
     // }
     
 
+    // return min_sdf(min_sdf(A,B),min_sdf(C,D));
     return N;
 }
 

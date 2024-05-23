@@ -5,6 +5,7 @@
 
 #include "options.h"
 #include <stdlib.h>
+#include <assert.h>
 
 float min_lst (float* lst, int n);
 // float MIN(float x, float y);
@@ -22,5 +23,8 @@ void free_tab_2d(float** tab, int n);
 
 
 RES_SYS_2 solve_systeme_2(float a, float b, float c, float d, float alpha, float beta);
+
+float det_mat_3(float* mat);
+VECTOR inv_mat_3_x_vect(float* mat, VECTOR X);
 
 #endif 

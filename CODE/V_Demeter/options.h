@@ -74,6 +74,11 @@ struct stats_opti_s{
 };
 typedef struct stats_opti_s STATS_OPTI;
 
+struct stats_nurbs_s{
+    long int nb_iterations;
+    long int nb_points;
+};
+typedef struct stats_nurbs_s* STATS_NURBS;
 
 // Pour pthread
 struct arg_thread_s{
@@ -137,6 +142,7 @@ typedef struct res_nurbs_s RES_NURBS;
 #define DIST_MIN 0.01 // diatance a partir de laquel on a atteint un objet
 #define MAX_TOTAL_LENGHT 500 // distance max que peut parcourir un rayon
 #define EPSILON 0.0001 // pour le calcule des gradients
+#define EPSILON_CRIT_NURBS 0.01 
 
 #define NB_THREADS 12
 

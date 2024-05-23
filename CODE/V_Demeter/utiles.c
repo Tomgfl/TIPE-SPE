@@ -94,3 +94,26 @@ void free_tab_2d(float** tab, int n){
     free(tab);
     return;
 }
+
+// Renvoie le det d'une matrice 3x3
+float det_mat_3(float* mat){
+    return mat[1]*mat[5]*mat[6] - mat[2]*mat[4]*mat[6] + mat[2]*mat[3]*mat[7] - mat[0]*mat[5]*mat[7] - mat[1]*mat[3]*mat[8] + mat[0]*mat[4]*mat[8];
+}
+
+
+
+// renvoie M^-1*X
+VECTOR inv_mat_3_x_vect(float* mat, VECTOR X){
+    VECTOR res = {0,0,0};
+
+    float det = det_mat_3(mat);
+    assert(det != 0);
+
+    float det2 = 1/det;
+
+    res.x = det2 * ( (mat[4]*mat[8] - mat[5]*mat[7])*X.x + (mat[2]*mat[7] - mat[1]*mat[8])*X.y + (mat[1]*mat[5] - mat[2]*mat[4])*X.z );
+    res.y = det2 * ( (mat[5]*mat[6] - mat[3]*mat[8])*X.x + (mat[0]*mat[8] - mat[2]*mat[6])*X.y + (mat[2]*mat[3] - mat[0]*mat[5])*X.z );
+    res.z = det2 * ( (mat[3]*mat[7] - mat[4]*mat[6])*X.x + (mat[1]*mat[6] - mat[0]*mat[7])*X.y + (mat[0]*mat[4] - mat[1]*mat[3])*X.z );
+
+    return res;
+}

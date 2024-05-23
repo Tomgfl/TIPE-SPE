@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <assert.h>
+#include <pthread.h>
 
 // --- FONCTIONS D'INITIALISATIONS --- //
 CNET create_cnet(int n, int m);
@@ -42,6 +43,8 @@ VECTOR S_uv_nurbs(float u, float v, SURFACE s);
 VECTOR S_uu_nurbs(float u, float v, SURFACE s);
 VECTOR S_vv_nurbs(float u, float v, SURFACE s);
 
+VECTOR S_nurbs_2(SURFACE s, float u, float v);
+
 
 // --- Projection --- //
 VECTOR r_nurbs(float u, float v, SURFACE s, VECTOR P);
@@ -57,9 +60,19 @@ float next_vi(float u, float v, float det, SURFACE s, VECTOR P);
 bool crit_1(float u, float v, SURFACE s, VECTOR P);
 bool crit_2(float u, float v, SURFACE s, VECTOR P);
 VECTOR projection_nurbs(SURFACE s, VECTOR P);
-VECTOR projection_nurbs_2(SURFACE s, VECTOR P);
 
-// float dist_nurbs(SURFACE s, vector P);
+// Prog dyn //
+VECTOR projection_nurbs_aux_2(SURFACE s, VECTOR P, float u_0, float v_0);
+VECTOR projection_nurbs_2(SURFACE s, VECTOR P);
+// Prog dyn recursif //
+VECTOR projection_nurbs_aux_3(SURFACE s, VECTOR P, float a, float b, float c, float d, int max_it);
+VECTOR projection_nurbs_3(SURFACE s, VECTOR P, float a, float b, float c, float d, int k,int max_it);
+// Quasi Newton + Recursif
+VECTOR projection_nurbs_aux_4(SURFACE s, VECTOR P, float a, float b, float c, float d, int max_it);
+VECTOR projection_nurbs_4(SURFACE s, VECTOR P, float a, float b, float c, float d, int k, int max_it);
+
+VECTOR projection_nurbs_aux_5(SURFACE s, VECTOR P, float a, float b, float c, float d, int max_it);
+VECTOR projection_nurbs_5(SURFACE s, VECTOR P, float a, float b, float c, float d, int k, int max_it);
 
 
 // --- Prog dyn --- //
@@ -73,6 +86,7 @@ float* ddN_nurbs_tab(KNOTVECTOR knot, float u, int n, int p, float** N_tab);
 // --- NURBS --- //
 SURFACE nurbs_1();
 SURFACE nurbs_2();
+SURFACE nurbs_rd();
 void affiche_surface(SURFACE s);
 
 
