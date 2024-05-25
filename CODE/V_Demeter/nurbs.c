@@ -1095,6 +1095,7 @@ VECTOR projection_nurbs_aux_3(SURFACE s, VECTOR P, float a, float b, float c, fl
     }
 
     // printf("S final : %f | %f | %f \n", S.x, S.y, S.z);
+    // printf("S final : %f | %f | %f \n", S.x, S.y, S.z);
     pthread_mutex_lock(&verrou);
     Stats_nurbs->nb_points ++;
     Stats_nurbs->nb_iterations += max_it;
@@ -1493,6 +1494,7 @@ VECTOR projection_nurbs_aux_5(SURFACE s, VECTOR P, float a, float b, float c, fl
         mat[3] = Su.y; mat[4] = Sv.y; mat[5] = normal.y;
         mat[6] = Su.z; mat[7] = Sv.z; mat[8] = normal.z;
 
+        // return M^-1 * X
         VECTOR lambda = inv_mat_3_x_vect(mat, v_sub(P, P_proj));
 
         float lambda_1 = lambda.x;
@@ -1515,23 +1517,18 @@ VECTOR projection_nurbs_aux_5(SURFACE s, VECTOR P, float a, float b, float c, fl
         float kn1 = h11*lambda_1*lambda_1 + h12*lambda_1*lambda_2 + h21*lambda_2*lambda_1 + h22*lambda_2*lambda_2;
         float kn2 = g11*lambda_1*lambda_1 + g12*lambda_1*lambda_2 + g21*lambda_2*lambda_1 + g22*lambda_2*lambda_2;
         float kn = (kn1/kn2);
-        // float k1 = h11*h22 - h12*h12;
-        // float k2 = g11*g22 - g12*g21;
-        // float kn = (k1/k2);
 
-        // VECTOR q = v_add(v_add(P_proj,v_mult_scal(normal,1.0/kn)), v_mult_scal(v_sub(P, P_proj), 1.0/kn));
-        VECTOR q1 = v_sub(P, P_proj);
+        // Center of the curve
+        VECTOR C = v_add(P_proj, v_mult_scal(normal, 1.0/kn));
+        // kn = fabs(kn);
+        float ray = fabs(1.0/kn);
+        VECTOR q = v_mult_scal(normalise_vecteur(v_sub(P, P_proj)), ray);
 
+        // Delta t^2 = 2/kn * ||c'(0) x q-P_0 || / || c'(0) ||^3
+        float t2 = (2.0*ray)*norm_vector(prod_vect(cp0, v_sub(q,P_proj)))*1.0/(norm_vector(cp0)*norm_vector(cp0)*norm_vector(cp0));
 
-        q1 = v_sub(q1, v_mult_scal(normal, 1.0/kn));
-        kn = fabs(kn);
-        VECTOR q = v_mult_scal(normalise_vecteur(q1), 1.0/kn);
-
-        float t2 = (2.0/kn)*norm_vector(prod_vect(cp0, v_sub(q,P_proj)))*1.0/(norm_vector(cp0)*norm_vector(cp0)*norm_vector(cp0));
-        t2 = t2;
-
+        // Signe of Delta t
         float t;
-
         if (prod_scal(cp0, v_sub(q, P_proj)) > 0){
             t = sqrt(t2);
         } else {
@@ -1541,24 +1538,11 @@ VECTOR projection_nurbs_aux_5(SURFACE s, VECTOR P, float a, float b, float c, fl
         float nu = u + lambda_1*t;
         float nv = v + lambda_2*t;
 
-
+        // If nu && nv aren't valid arguments
         if (nu < a){nu = a;}
         if (nu >= b){nu = b - 0.0001;}
         if (nv < c){nv = c;}
-        if (nv >= d){nv = d - 0.0001;}
-        
-
-        // float c1 = fabs(f/(norm_vector(Su)*norm_vector(r)));
-        // float c2 = fabs(g/(norm_vector(Sv)*norm_vector(r)));
-
-        // if (c1 <= EPSILON_CRIT_NURBS && c2 <= EPSILON_CRIT_NURBS){
-        //     pthread_mutex_lock(&verrou);
-        //     Stats_nurbs->nb_points ++;
-        //     Stats_nurbs->nb_iterations += iterations + 1;
-        //     pthread_mutex_unlock(&verrou);
-        //     return S;
-        // }
-        
+        if (nv >= d){nv = d - 0.0001;}        
 
         if (u == nu && v == nv){
             pthread_mutex_lock(&verrou);
@@ -1567,6 +1551,12 @@ VECTOR projection_nurbs_aux_5(SURFACE s, VECTOR P, float a, float b, float c, fl
             pthread_mutex_unlock(&verrou);
             return S;
         }
+
+        u = nu;
+        v = nv;
+        P_proj = S_nurbs_2(s, u, v);
+
+
         // printf("\n");
         // printf("l1 : %f | l2 : %f\n", lambda_1, lambda_2);
         // printf("Su : %f | %f | %f\n", Su.x, Su.y, Su.z);
@@ -1575,9 +1565,6 @@ VECTOR projection_nurbs_aux_5(SURFACE s, VECTOR P, float a, float b, float c, fl
         // printf("kn : %f\n", kn);
         // printf("u : %f | v : %f | nu : %f | nv : %f \n", u, v, nu, nv);
         // printf("P : %f |%f |%f \n", P_proj.x, P_proj.y, P_proj.z);
-        u = nu;
-        v = nv;
-        P_proj = S_nurbs_2(s, u, v);
 
     }
     pthread_mutex_lock(&verrou);
@@ -1585,7 +1572,6 @@ VECTOR projection_nurbs_aux_5(SURFACE s, VECTOR P, float a, float b, float c, fl
     Stats_nurbs->nb_iterations += max_it + 1;
     pthread_mutex_unlock(&verrou);
     return S;
-
 }
 
 

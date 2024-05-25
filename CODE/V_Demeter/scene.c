@@ -83,7 +83,7 @@ RES_SDF nurbs_scene(VECTOR pts){
     // affiche_surface(nurbs_test);
 
     RES_SDF N;
-    N.dist = norm_vector(v_sub(pts,projection_nurbs_5(surf, pts, 0,1,0,1, 0, 10)));
+    N.dist = norm_vector(v_sub(pts,projection_nurbs_4(surf, pts, 0,1,0,1, 0, 10)));
     N.c = c_orange;
     free_surface(surf);
 
