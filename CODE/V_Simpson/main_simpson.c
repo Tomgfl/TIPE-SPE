@@ -39,7 +39,7 @@ int main(){
     srand(time(NULL));
     My_scene_p = Test_Simpsons;
 
-    BVHNode* MyBvhScene = BVH_Plage();
+    BVHNode* MyBvhScene = BVH_Maison();
     My_scene_bvh_move = SCENE_BVH_Bis;
     My_scene_bvh_fix = SCENE_BVH;
 

@@ -43,7 +43,7 @@ int main(){
 
     // printf("%d\n", root->obj_count);
 
-    BVHNode* root = BVH_CanapeTrombone();
+    BVHNode* root = BVH_Maison();
     printf("%d\n", root->obj_count);
 
     freeBVH(root);

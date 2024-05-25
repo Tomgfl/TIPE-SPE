@@ -98,10 +98,6 @@ Construction de 2 arbres :
 \end{itemize}
 \\[1cm]
 
-Ne compte pas la page de titre, ni les pages de plan. \\[1cm]
-Compte le nombre total de slides\\[1cm]
-Si vous avez n slides bonus, vous pouvez fausser (mais rectifier) 
-le nombre total de slides avec  \texttt{$\backslash$addtocounter\{framenumber\}\{-n\} } 
 \end{frame}
 
 
@@ -112,6 +108,45 @@ le nombre total de slides avec  \texttt{$\backslash$addtocounter\{framenumber\}\
 \frametitle{Bilan et gains}
 \label{derniere_slide_effective}
 \end{frame}
+
+Temps de génération et de libération de l'arbre négligeables (0,04s pour la scène 1)
+\medskip 
+
+\begin{tabular}{p{.5\textwidth}p{.5\textwidth}}
+    \flushleft  
+    Scène test 1 :  
+    \medskip 
+    
+    \begin{figure}
+        \includegraphics[width=5cm]{ImagesElio/Simpson.jpg}
+    \end{figure}
+    \medskip
+
+    6500 triangles
+    \smallskip
+
+    6 threads, écran de 960x540 :
+
+    \hspace{1cm}
+    7min
+    
+        & \flushright 
+        Scène test 2 : 
+        \medskip 
+
+            \begin{figure}[H]
+                \includegraphics[width=5cm]{ImagesElio/Plage.jpg}
+            \end{figure}
+            \medskip 
+
+            3000 triangles 
+            \medskip 
+
+            6 threads, écran de 960x540 :
+
+            \hspace{1cm}
+            40s
+    \end{tabular}
 
 
 %------------------------------------------------
