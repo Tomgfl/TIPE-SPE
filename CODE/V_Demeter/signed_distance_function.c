@@ -503,5 +503,36 @@ RES_SDF Disturb(VECTOR p, RES_SDF d) {
 }
 
 
+// Relie deux points avec un cylindre
+RES_SDF join_2_points(VECTOR p, VECTOR C1, VECTOR C2, float size, COLOR color){
+    VECTOR M = v_sub(C2, C1);
+
+    // printf("M : %f | %f | %f \n", M.x, M.y, M.z);
+
+    float rho = norm_vector(M);
+
+    float theta = 180 - acos(M.z/rho)* 57.296;
+
+    float phi = 0.0;
+
+    if (M.y < 0){
+        phi = 360.0 - acos(M.x / (sqrt(M.x*M.x + M.y*M.y)))*57.296;
+    } else {
+        phi = acos(M.x / (sqrt(M.x*M.x + M.y*M.y)))*57.296;
+    }
+    phi = 360 - phi;
+    
+
+    // 360.0 - theta
+    // printf("%f | %f \n", phi, theta);
+
+    // rotation_y(v_sub(P, C1), theta)
+
+    RES_SDF res = SDF_cylindre(rotation_y(rotation_z(v_sub(p, C1), phi), theta), (VECTOR){0,0,0}, rho, size, color);
+    // RES_SDF res = min_sdf(SDF_cylindre(rotation_z(rotation_y(v_sub(p, C1), theta), phi), (VECTOR){0,0,0}, rho, 0.25, color)
+    //     ,SDF_cylindre(rotation_y(rotation_z(v_sub(p, C1), phi), theta), (VECTOR){0,0,0}, rho, 0.25, color));
+
+    return res;   
+}
 
 

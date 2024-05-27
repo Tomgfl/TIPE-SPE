@@ -109,7 +109,7 @@ int main(){
 
     /* Boucle principale */
     // while (!glfwWindowShouldClose(window)){
-    for (int img = 0; img < 3; img++){
+    for (int img = 0; img < 5; img++){
     
         glClear(GL_COLOR_BUFFER_BIT);
 

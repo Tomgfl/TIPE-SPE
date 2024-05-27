@@ -45,10 +45,20 @@ int main(){
 
     CAMERA cam;
     cam.size_L_e = 2.0;
-    cam.dir_ecran_c = (VECTOR){1,0,0};
 
-    cam.up_c = normalise_vecteur((VECTOR){0,0,1});
-    cam.position_c = (VECTOR){-20,0,6};
+    // cam.dir_ecran_c = (VECTOR){1,0,0};
+    // cam.up_c = normalise_vecteur((VECTOR){0,0,1});
+    // cam.position_c = (VECTOR){-20,0,6};
+    // cam.dist_screen = 2.0;
+
+    // cam.dir_ecran_c = (VECTOR){0,0,-1};
+    // cam.up_c = normalise_vecteur((VECTOR){1,0,0});
+    // cam.position_c = (VECTOR){0,0,30};
+    // cam.dist_screen = 2.0;
+
+    cam.dir_ecran_c = normalise_vecteur((VECTOR){1,0,-0.4});
+    cam.up_c = normalise_vecteur((VECTOR){0.4,0,1});
+    cam.position_c = (VECTOR){-20,1,13};
     cam.dist_screen = 2.0;
 
 
@@ -122,7 +132,7 @@ int main(){
     
     // Boucle principale 
     // while (!glfwWindowShouldClose(window)){
-    for (int i = 0; i < 5; i++){
+    for (int i = 0; i < 500; i++){
     
         glClear(GL_COLOR_BUFFER_BIT);
 

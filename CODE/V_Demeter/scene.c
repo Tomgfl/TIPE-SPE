@@ -83,8 +83,13 @@ RES_SDF nurbs_scene(VECTOR pts){
     // affiche_surface(nurbs_test);
 
     RES_SDF N;
-    N.dist = norm_vector(v_sub(pts,projection_nurbs_4(surf, pts, 0,1,0,1, 0, 10)));
+    // N.dist = norm_vector(v_sub(pts,projection_nurbs_3(surf, pts, 0,1,0,1, 2, 10)));
+    // N.dist = norm_vector(v_sub(pts,projection_nurbs_4(surf, pts, 3, 10)));
     N.c = c_orange;
+
+    // RES_SDF res = min_sdf(res, dist_c_net(surf->net, pts));
+    RES_SDF res = dist_c_net(surf->net, pts);
+
     free_surface(surf);
 
     // RES_SDF A = SDF_sphere(pts, (VECTOR){-6,-4,0},0.5, c_vert);
@@ -99,7 +104,7 @@ RES_SDF nurbs_scene(VECTOR pts){
     
 
     // return min_sdf(min_sdf(A,B),min_sdf(C,D));
-    return N;
+    return res;
 }
 
 

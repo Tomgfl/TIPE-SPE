@@ -52,6 +52,8 @@ RES_SDF SmoothSubstractSDF(RES_SDF d1, RES_SDF d2, float k);
 // Modification de forme
 RES_SDF Disturb(VECTOR p, RES_SDF d);
 
+RES_SDF join_2_points(VECTOR p, VECTOR C1, VECTOR C2, float size, COLOR color);
+
 
 
 #endif 

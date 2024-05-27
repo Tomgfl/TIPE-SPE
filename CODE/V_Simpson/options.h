@@ -203,7 +203,7 @@ typedef struct arg_s arg;
 #define MAX_TOTAL_LENGHT 500 // distance max que peut parcourir un rayon
 #define EPSILON 0.00001 // pour le calcul des gradients
 
-#define NB_THREADS 6
+#define NB_THREADS 12
 
 
 

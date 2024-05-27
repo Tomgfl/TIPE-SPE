@@ -134,8 +134,8 @@ typedef struct res_nurbs_s RES_NURBS;
 
 
 // taille de l'ecran
-#define WIDTH 300
-#define HEIGHT 300
+#define WIDTH 1080
+#define HEIGHT 1080
 
 // Parametres du ray marching
 #define MAX_RAY_STEPS 128 // nombre max d'étape

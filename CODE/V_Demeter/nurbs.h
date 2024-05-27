@@ -14,6 +14,8 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <pthread.h>
+#include <float.h>
+#include "signed_distance_function.h"
 
 // --- FONCTIONS D'INITIALISATIONS --- //
 CNET create_cnet(int n, int m);
@@ -62,14 +64,14 @@ bool crit_2(float u, float v, SURFACE s, VECTOR P);
 VECTOR projection_nurbs(SURFACE s, VECTOR P);
 
 // Prog dyn //
-VECTOR projection_nurbs_aux_2(SURFACE s, VECTOR P, float u_0, float v_0);
-VECTOR projection_nurbs_2(SURFACE s, VECTOR P);
+VECTOR projection_nurbs_aux_2(SURFACE s, VECTOR P, float u_0, float v_0, int max_it);
+VECTOR projection_nurbs_2(SURFACE s, VECTOR P, int max_it);
 // Prog dyn recursif //
 VECTOR projection_nurbs_aux_3(SURFACE s, VECTOR P, float a, float b, float c, float d, int max_it);
 VECTOR projection_nurbs_3(SURFACE s, VECTOR P, float a, float b, float c, float d, int k,int max_it);
-// Quasi Newton + Recursif
-VECTOR projection_nurbs_aux_4(SURFACE s, VECTOR P, float a, float b, float c, float d, int max_it);
-VECTOR projection_nurbs_4(SURFACE s, VECTOR P, float a, float b, float c, float d, int k, int max_it);
+// Heuristique 
+// VECTOR projection_nurbs_aux_4(SURFACE s, VECTOR P, float a, float b, float c, float d, int max_it);
+VECTOR projection_nurbs_4(SURFACE s, VECTOR P, int k, int max_it);
 
 VECTOR projection_nurbs_aux_5(SURFACE s, VECTOR P, float a, float b, float c, float d, int max_it);
 VECTOR projection_nurbs_5(SURFACE s, VECTOR P, float a, float b, float c, float d, int k, int max_it);
@@ -88,6 +90,8 @@ SURFACE nurbs_1();
 SURFACE nurbs_2();
 SURFACE nurbs_rd();
 void affiche_surface(SURFACE s);
+
+RES_SDF dist_c_net(CNET cnet, VECTOR P);
 
 
 
