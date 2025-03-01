@@ -1,6 +1,7 @@
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <time.h>
 #include <math.h>
 #include <pthread.h>
@@ -130,6 +131,8 @@ int main(){
         STATS.nb_images += 1;
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        usleep(16000);  // Attente pour éviter de surcharger le CPU
     }
 
     glfwTerminate();
