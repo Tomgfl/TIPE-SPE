@@ -146,21 +146,55 @@ int main() {
             NK_WINDOW_BORDER | NK_WINDOW_TITLE)) {
 
             nk_layout_row_dynamic(ctx, 30, 2); // 2 boutons par ligne
-            if (nk_button_label(ctx, "Add Sphere")) { // Ajoute une sphère
-                AjouterSphereDefaut();
-            }
-            if (nk_button_label(ctx, "Add Cube")) { // Ajoute un cube
+            if (nk_button_symbol_label(ctx, NK_SYMBOL_CIRCLE_SOLID, "Sphère", NK_TEXT_RIGHT)) { // Ajoute une sphère
                 if (MyScene.count < MAX_OBJETS) {
-                    MyScene.liste[MyScene.count] = BuildBox((vector){0, 0, 0}, 1, 1, 1, c_blanc);
+                    MyScene.liste[MyScene.count] = BuildSphere((vector){0, 0, 0}, 1, c_blanc);
                     MyScene.count++;
                 }
             }
-            if (nk_button_label(ctx, "Add Tor")) { // Ajoute un tor
+            if (nk_button_symbol_label(ctx, NK_SYMBOL_CIRCLE_OUTLINE, "Tor", NK_TEXT_RIGHT)) { // Ajoute un tor
                 if (MyScene.count < MAX_OBJETS) {
                     MyScene.liste[MyScene.count] = BuildTor((vector){0, 0, 0}, 1, 0.2, c_blanc);
                     MyScene.count++;
                 }
             }
+            if (nk_button_symbol_label(ctx, NK_SYMBOL_CIRCLE_SOLID, "Cylindre", NK_TEXT_RIGHT)) { // Ajoute un cylindre
+                if (MyScene.count < MAX_OBJETS) {
+                    MyScene.liste[MyScene.count] = BuildCylindre((vector){0, 0, 0}, 1, 0.5, c_blanc);
+                    MyScene.count++;
+                }
+            }
+            if (nk_button_symbol_label(ctx, NK_SYMBOL_TRIANGLE_UP, "Cone", NK_TEXT_RIGHT)) { // Ajoute un cylindre
+                if (MyScene.count < MAX_OBJETS) {
+                    MyScene.liste[MyScene.count] = BuildCone((vector){0, 0, 0}, 1, 0.5, c_blanc);
+                    MyScene.count++;
+                }
+            }
+            if (nk_button_symbol_label(ctx, NK_SYMBOL_TRIANGLE_UP, "Pyramide", NK_TEXT_RIGHT)) { // Ajoute un cylindre
+                if (MyScene.count < MAX_OBJETS) {
+                    MyScene.liste[MyScene.count] = BuildPyramide((vector){0, 0, 0}, 1, 0.5, c_blanc);
+                    MyScene.count++;
+                }
+            }
+            if (nk_button_symbol_label(ctx, NK_SYMBOL_RECT_SOLID, "Boite", NK_TEXT_RIGHT)) { // Ajoute un cube
+                if (MyScene.count < MAX_OBJETS) {
+                    MyScene.liste[MyScene.count] = BuildBox((vector){0, 0, 0}, 1, 1, 1, c_blanc);
+                    MyScene.count++;
+                }
+            }
+            if (nk_button_symbol_label(ctx, NK_SYMBOL_TRIANGLE_DOWN, "Triangle", NK_TEXT_RIGHT)) { // Ajoute un triangle
+                if (MyScene.count < MAX_OBJETS) {
+                    MyScene.liste[MyScene.count] = BuildTriangle((vector){0, -0.5, 0}, (vector){0, 0.5, 0}, (vector){0, 0, 1}, c_blanc);
+                    MyScene.count++;
+                }
+            }
+            if (nk_button_symbol_label(ctx, NK_SYMBOL_CIRCLE_OUTLINE, "Ellipsoide", NK_TEXT_RIGHT)) { // Ajoute une ellipsoide
+                if (MyScene.count < MAX_OBJETS) {
+                    MyScene.liste[MyScene.count] = BuildEllipsoid((vector){0, 0, 0}, 1, 1, 0.5, c_blanc);
+                    MyScene.count++;
+                }
+            }
+            
 
             nk_layout_row_dynamic(ctx, 10, 1);
             nk_label(ctx, "--------------------", NK_TEXT_CENTERED);
@@ -176,8 +210,13 @@ int main() {
                 for (int i = 0; i < MyScene.count; ++i) {
                     char buffer[64];
                     const char* type_name = (MyScene.liste[i].type == 0) ? "Sphere" : 
-                                            (MyScene.liste[i].type == 5) ? "Box" :
-                                            (MyScene.liste[i].type == 1) ? "Tor" : "Objet" ;
+                                            (MyScene.liste[i].type == 1) ? "Tor" :
+                                            (MyScene.liste[i].type == 2) ? "Cylindre" :
+                                            (MyScene.liste[i].type == 3) ? "Cone" :
+                                            (MyScene.liste[i].type == 4) ? "Pyramide" : 
+                                            (MyScene.liste[i].type == 5) ? "Boite" :
+                                            (MyScene.liste[i].type == 6) ? "Triangle" :
+                                            (MyScene.liste[i].type == 7) ? "Ellipsoide" : "Objet" ;
                     
                     sprintf(buffer, "%d: %s", i, type_name);
                     
@@ -194,49 +233,151 @@ int main() {
                 
                 nk_layout_row_dynamic(ctx, 10, 1);
                 nk_label(ctx, "--------------------", NK_TEXT_CENTERED);
-                nk_layout_row_dynamic(ctx, 20, 1);
-                nk_label(ctx, "Proprietes:", NK_TEXT_LEFT);
 
-                // Position Objet
-                nk_layout_row_dynamic(ctx, 25, 1);
-                nk_property_float(ctx, "Pos X", -50.0f, &obj->centre.x, 50.0f, 0.1f, 0.2f);
-                nk_property_float(ctx, "Pos Y", -50.0f, &obj->centre.y, 50.0f, 0.1f, 0.2f);
-                nk_property_float(ctx, "Pos Z", -50.0f, &obj->centre.z, 50.0f, 0.1f, 0.2f);
-                // Couleur Objet
-                nk_layout_row_dynamic(ctx, 25, 1);
-                nk_label(ctx, "Couleur:", NK_TEXT_LEFT);
-                struct nk_colorf gui_color = {obj->couleur.r/255.0f, obj->couleur.g/255.0f, obj->couleur.b/255.0f, 1.0f};
-                
-                if (nk_combo_begin_color(ctx, nk_rgb_cf(gui_color), nk_vec2(200,400))) {
-                    nk_layout_row_dynamic(ctx, 120, 1);
-                    gui_color = nk_color_picker(ctx, gui_color, NK_RGBA);
-                    obj->couleur.r = gui_color.r * 255.0f;
-                    obj->couleur.g = gui_color.g * 255.0f;
-                    obj->couleur.b = gui_color.b * 255.0f;
-                    nk_combo_end(ctx);
+                // -- SUPPRIMER OBJET --
+                nk_layout_row_dynamic(ctx, 30, 1); 
+                struct nk_color rouge = nk_rgb(180, 20, 20);
+                struct nk_color rouge_hover = nk_rgb(220, 20, 20);
+                nk_style_push_style_item(ctx, &ctx->style.button.normal, nk_style_item_color(rouge));
+                nk_style_push_style_item(ctx, &ctx->style.button.hover, nk_style_item_color(rouge_hover));
+                nk_style_push_style_item(ctx, &ctx->style.button.active, nk_style_item_color(nk_rgb(255, 0, 0)));
+
+                if (nk_button_symbol_label(ctx, NK_SYMBOL_X, "SUPPRIMER", NK_TEXT_CENTERED)) {
+                    if (obj->param) {
+                        free(obj->param);
+                    }
+                    for (int k = MyScene.selected_id; k < MyScene.count - 1; k++) {
+                        MyScene.liste[k] = MyScene.liste[k + 1];
+                    }
+                    MyScene.count--;
+                    MyScene.selected_id = -1;
                 }
 
-                // Paramètre de l'objet
-                if (obj->type == 0) { // Sphere
-                    param_sphere* p = (param_sphere*)obj->param;
-                    p->centre = obj->centre;
+                // On rétablit le style par défaut
+                nk_style_pop_style_item(ctx);
+                nk_style_pop_style_item(ctx);
+                nk_style_pop_style_item(ctx);
+                if (MyScene.selected_id != -1) {
+
+                    // -- PROPRIETES --
+                    nk_layout_row_dynamic(ctx, 20, 1);
+                    nk_label(ctx, "Proprietes:", NK_TEXT_LEFT);
+
+                    // Position Objet
                     nk_layout_row_dynamic(ctx, 25, 1);
-                    nk_property_float(ctx, "Rayon", 0.1f, &p->rayon, 20.0f, 0.1f, 0.1f);
-                } 
-                else if (obj->type == 5) { // Boite
-                    param_box* p = (param_box*)obj->param;
-                    p->centre = obj->centre; 
+                    nk_property_float(ctx, "Pos X", -50.0f, &obj->centre.x, 50.0f, 0.1f, 0.2f);
+                    nk_property_float(ctx, "Pos Y", -50.0f, &obj->centre.y, 50.0f, 0.1f, 0.2f);
+                    nk_property_float(ctx, "Pos Z", -50.0f, &obj->centre.z, 50.0f, 0.1f, 0.2f);
+                    // Couleur Objet
                     nk_layout_row_dynamic(ctx, 25, 1);
-                    nk_property_float(ctx, "Len X", 0.1f, &p->L, 20.0f, 0.1f, 0.1f);
-                    nk_property_float(ctx, "Len Y", 0.1f, &p->l, 20.0f, 0.1f, 0.1f);
-                    nk_property_float(ctx, "Len Z", 0.1f, &p->h, 20.0f, 0.1f, 0.1f);
-                }
-                else if (obj->type == 1) { // Tor
-                    param_tor* p = (param_tor*)obj->param;
-                    p->centre = obj->centre;
-                    nk_layout_row_dynamic(ctx, 25, 1);
-                    nk_property_float(ctx, "Rayon", 0.1f, &p->R, 20.0f, 0.1f, 0.1f);
-                    nk_property_float(ctx, "Epaisseur", 0.1f, &p->r, 20.0f, 0.1f, 0.1f);
+                    nk_label(ctx, "Couleur:", NK_TEXT_LEFT);
+                    struct nk_colorf gui_color = {obj->couleur.r/255.0f, obj->couleur.g/255.0f, obj->couleur.b/255.0f, 1.0f};
+                    
+                    if (nk_combo_begin_color(ctx, nk_rgb_cf(gui_color), nk_vec2(200,400))) {
+                        nk_layout_row_dynamic(ctx, 120, 1);
+                        gui_color = nk_color_picker(ctx, gui_color, NK_RGBA);
+                        obj->couleur.r = gui_color.r * 255.0f;
+                        obj->couleur.g = gui_color.g * 255.0f;
+                        obj->couleur.b = gui_color.b * 255.0f;
+                        nk_combo_end(ctx);
+                    }
+
+                    // Paramètre de l'objet
+                    if (obj->type == 0) { // Sphere
+                        param_sphere* p = (param_sphere*)obj->param;
+                        p->centre = obj->centre;
+                        nk_layout_row_dynamic(ctx, 25, 1);
+                        nk_property_float(ctx, "Rayon", 0.1f, &p->rayon, 20.0f, 0.1f, 0.1f);
+                    } 
+                    else if (obj->type == 1) { // Tor
+                        param_tor* p = (param_tor*)obj->param;
+                        p->centre = obj->centre;
+                        nk_layout_row_dynamic(ctx, 25, 1);
+                        nk_property_float(ctx, "Rayon", 0.1f, &p->R, 20.0f, 0.1f, 0.1f);
+                        nk_property_float(ctx, "Epaisseur", 0.1f, &p->r, 20.0f, 0.1f, 0.1f);
+                    }
+                    else if (obj->type == 2) { // Cylindre
+                        param_cylindre* p = (param_cylindre*)obj->param;
+                        p->centre = obj->centre;
+                        nk_layout_row_dynamic(ctx, 25, 1);
+                        nk_property_float(ctx, "Hauteur", 0.1f, &p->H, 20.0f, 0.1f, 0.1f);
+                        nk_property_float(ctx, "Rayon", 0.1f, &p->r, 20.0f, 0.1f, 0.1f);
+                    }
+                    else if (obj->type == 3) { // Cone
+                        param_cone* p = (param_cone*)obj->param;
+                        p->centre = obj->centre;
+                        nk_layout_row_dynamic(ctx, 25, 1);
+                        nk_property_float(ctx, "Hauteur", 0.1f, &p->H, 20.0f, 0.1f, 0.1f);
+                        nk_property_float(ctx, "Rayon", 0.1f, &p->r, 20.0f, 0.1f, 0.1f);
+                    }
+                    else if (obj->type == 4) { // Pyramide
+                        param_pyramide* p = (param_pyramide*)obj->param;
+                        p->centre = obj->centre;
+                        nk_layout_row_dynamic(ctx, 25, 1);
+                        nk_property_float(ctx, "Hauteur", 0.1f, &p->H, 20.0f, 0.1f, 0.1f);
+                        nk_property_float(ctx, "Rayon", 0.1f, &p->c, 20.0f, 0.1f, 0.1f);
+                    }
+                    else if (obj->type == 5) { // Boite
+                        param_box* p = (param_box*)obj->param;
+                        p->centre = obj->centre; 
+                        nk_layout_row_dynamic(ctx, 25, 1);
+                        nk_property_float(ctx, "Len X", 0.1f, &p->L, 20.0f, 0.1f, 0.1f);
+                        nk_property_float(ctx, "Len Y", 0.1f, &p->l, 20.0f, 0.1f, 0.1f);
+                        nk_property_float(ctx, "Len Z", 0.1f, &p->h, 20.0f, 0.1f, 0.1f);
+                    }
+                    else if (obj->type == 6) { // Triangle
+                        param_triangle* p = (param_triangle*)obj->param;
+
+                        // --- POINT A ---
+                        nk_layout_row_dynamic(ctx, 20, 1);
+                        nk_label(ctx, "Point A :", NK_TEXT_LEFT);
+                        
+                        nk_layout_row_dynamic(ctx, 25, 3); // 3 colonnes pour X, Y, Z
+                        nk_property_float(ctx, "Ax", -50.0f, &p->a.x, 50.0f, 0.1f, 0.05f);
+                        nk_property_float(ctx, "Ay", -50.0f, &p->a.y, 50.0f, 0.1f, 0.05f);
+                        nk_property_float(ctx, "Az", -50.0f, &p->a.z, 50.0f, 0.1f, 0.05f);
+
+                        // --- POINT B ---
+                        nk_layout_row_dynamic(ctx, 20, 1);
+                        nk_label(ctx, "Point B :", NK_TEXT_LEFT);
+
+                        nk_layout_row_dynamic(ctx, 25, 3);
+                        nk_property_float(ctx, "Bx", -50.0f, &p->b.x, 50.0f, 0.1f, 0.05f);
+                        nk_property_float(ctx, "By", -50.0f, &p->b.y, 50.0f, 0.1f, 0.05f);
+                        nk_property_float(ctx, "Bz", -50.0f, &p->b.z, 50.0f, 0.1f, 0.05f);
+
+                        // --- POINT C ---
+                        nk_layout_row_dynamic(ctx, 20, 1);
+                        nk_label(ctx, "Point C :", NK_TEXT_LEFT);
+
+                        nk_layout_row_dynamic(ctx, 25, 3);
+                        nk_property_float(ctx, "Cx", -50.0f, &p->c.x, 50.0f, 0.1f, 0.05f);
+                        nk_property_float(ctx, "Cy", -50.0f, &p->c.y, 50.0f, 0.1f, 0.05f);
+                        nk_property_float(ctx, "Cz", -50.0f, &p->c.z, 50.0f, 0.1f, 0.05f);
+
+                        // --- MISE À JOUR AUTOMATIQUE DU CENTRE ET RAYON ---
+                        // Important : On recalcule le barycentre et la Bounding Sphere 
+                        // car les points ont bougé.
+                        
+                        // 1. Nouveau Centre (Moyenne des positions)
+                        obj->centre.x = (p->a.x + p->b.x + p->c.x) / 3.0f;
+                        obj->centre.y = (p->a.y + p->b.y + p->c.y) / 3.0f;
+                        obj->centre.z = (p->a.z + p->b.z + p->c.z) / 3.0f;
+
+                        // 2. Nouveau Rayon (Distance max au centre)
+                        float ra = norm_vector(v_sub(p->a, obj->centre));
+                        float rb = norm_vector(v_sub(p->b, obj->centre));
+                        float rc = norm_vector(v_sub(p->c, obj->centre));
+                        obj->rayon = fmaxf(fmaxf(ra, rb), rc);
+                    }
+                    else if (obj->type == 7) { // Ellipsoide
+                        param_ellipsoid* p = (param_ellipsoid*)obj->param;
+                        p->centre = obj->centre; 
+                        nk_layout_row_dynamic(ctx, 25, 1);
+                        nk_property_float(ctx, "Longueur", 0.1f, &p->a, 20.0f, 0.1f, 0.1f);
+                        nk_property_float(ctx, "Largeur", 0.1f, &p->b, 20.0f, 0.1f, 0.1f);
+                        nk_property_float(ctx, "Hauteur", 0.1f, &p->c, 20.0f, 0.1f, 0.1f);
+                    }
                 }
             }
 
