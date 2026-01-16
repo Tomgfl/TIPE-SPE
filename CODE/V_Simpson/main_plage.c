@@ -37,9 +37,9 @@ int main(){
     vector n_plan = {0, 0, -1000000}; vector m_plan = {0, 0, -1000000}; color c_plan  = c_blanc;
 
     srand(time(NULL));
-    My_scene_p = Test_Simpsons;
+    My_scene_p = scene_banquise;
 
-    BVHNode* MyBvhScene = BVH_Plage();
+    BVHNode* MyBvhScene = TestBanquise();
     My_scene_bvh_move = SCENE_BVH_Bis;
     My_scene_bvh_fix = SCENE_BVH;
 
