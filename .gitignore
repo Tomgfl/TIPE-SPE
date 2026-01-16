@@ -1,9 +1,21 @@
-**.vscode
-**.o
-Latex/*.aux
-Latex/*.fdb_latexmk
-Latex/*.fls
-Latex/*.log
-Latex/*.out
-Latex/*.synctex.gz
-Latex/*.toc
+# --- Binaires et Exécutables ---
+*.exe
+*.out
+*.app
+*.dll
+
+# --- Fichiers objets ---
+*.o
+*.obj
+
+# --- Dossiers de génération ---
+bin/
+build/
+obj/
+
+# --- IDE et Système ---
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
