@@ -185,6 +185,7 @@ struct arg_s{
     int id;             // id du thread
     ray** t_in;         // les rayons de l'ecran
     color** t_out;      // tab du resultat
+    vector light_pos;
     vector n;
     vector m;
     color c;
@@ -199,7 +200,7 @@ typedef struct arg_s arg;
 
 // Parametres du ray marching
 #define MAX_RAY_STEPS 512 // nombre max d'étape
-#define DIST_MIN 0.0001 // diatance a partir de laquel on a atteint un objet
+#define DIST_MIN 0.00001 // diatance a partir de laquel on a atteint un objet
 #define MAX_TOTAL_LENGHT 500 // distance max que peut parcourir un rayon
 #define EPSILON 0.00001 // pour le calcul des gradients
 

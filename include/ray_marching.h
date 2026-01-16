@@ -17,7 +17,7 @@ color ray_marching_bvhNoPlan(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(ve
 color ray_marching_bvh_moving(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(vector), res_SDF (*scene_bvh)(BVHNode*, vector));
 void* ray_marching_bvh_thread(void* ptr_args);
 
-color ray_marching_editor(ray r, BVHNode* scene_root);
+color ray_marching_editor(ray r, BVHNode* scene_root, vector source_lum);
 void* thread_editor_bvh(void* ptr_args);
 
 #endif 

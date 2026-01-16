@@ -32,6 +32,9 @@
 float time_scene = 0.0f;
 res_SDF (*My_scene_p)(vector) = NULL;
 int GLOBAL_PIXEL_STEP = 1;
+float CAM_YAW = 0.0f;   // Rotation horizontale
+float CAM_PITCH = 0.0f; // Rotation verticale
+vector LIGHT_POS = {10.0f, 10.0f, 10.0f}; // Position lumière initiale
 stats_opti STATS = {0,0,0,0,0,0.0,0.0,0.0,0.0};
 
 typedef struct {
@@ -126,7 +129,18 @@ int main() {
     pthread_t* threads = (pthread_t*) malloc(NB_THREADS*sizeof(pthread_t));
     arg* args = (arg*) malloc(NB_THREADS*sizeof(arg));
     for (int i = 0; i < NB_THREADS; i++){
-        args[i] = (arg){My_scene_p, NULL, NULL, NULL, i, ecran_ray, ecran_res, n_plan, m_plan, c_plan};
+        // CORRECTION ICI : On utilise les noms des champs pour éviter les erreurs d'ordre
+        args[i] = (arg){
+            .fct_scene_p = My_scene_p,  // Fonction de la scène
+            .bvh = NULL,                // Sera défini plus bas
+            .id = i,                    // ID du thread
+            .t_in = ecran_ray,          // Tableau d'entrée
+            .t_out = ecran_res,         // Tableau de sortie
+            .n = n_plan,           // (Si votre struct arg a ces champs)
+            .m = m_plan,
+            .c = c_plan,
+            .light_pos = LIGHT_POS      // La lumière (Nouveau champ)
+        };
     }
 
     // --- BOUCLE PRINCIPALE ---
@@ -141,9 +155,68 @@ int main() {
 
         int pixel_step = is_interacting ? 4 : 1;
 
+
+        // --- GESTION CAMERA & LUMIERE ---
+        
+        CAMERA.dir_ecran_c.x = cos(CAM_PITCH) * cos(CAM_YAW);
+        CAMERA.dir_ecran_c.y = cos(CAM_PITCH) * sin(CAM_YAW);
+        CAMERA.dir_ecran_c.z = sin(CAM_PITCH);
+        CAMERA.dir_ecran_c = normalise_vecteur(CAMERA.dir_ecran_c);
+
+        CAMERA.up_c = (vector){0, 0, 1}; 
+        CAMERA.orthcam = normalise_vecteur(prod_vect(CAMERA.up_c, CAMERA.dir_ecran_c));
+        CAMERA.up_c = normalise_vecteur(prod_vect(CAMERA.dir_ecran_c, CAMERA.orthcam));
+
+        CAMERA.de = CAMERA.size_L_e / WIDTH;
+        CAMERA.size_l_e = HEIGHT*CAMERA.de;
+        
+        CAMERA.A = (vector){
+            CAMERA.position_c.x + CAMERA.dist_screen*CAMERA.dir_ecran_c.x + CAMERA.size_l_e/2.0*CAMERA.up_c.x + CAMERA.size_L_e/2.0*CAMERA.orthcam.x,
+            CAMERA.position_c.y + CAMERA.dist_screen*CAMERA.dir_ecran_c.y + CAMERA.size_l_e/2.0*CAMERA.up_c.y + CAMERA.size_L_e/2.0*CAMERA.orthcam.y,
+            CAMERA.position_c.z + CAMERA.dist_screen*CAMERA.dir_ecran_c.z + CAMERA.size_l_e/2.0*CAMERA.up_c.z + CAMERA.size_L_e/2.0*CAMERA.orthcam.z
+        };
+
+        CAMERA.vlde = (vector){-CAMERA.de*CAMERA.up_c.x, -CAMERA.de*CAMERA.up_c.y, -CAMERA.de*CAMERA.up_c.z};
+        CAMERA.vLde = (vector){-CAMERA.de*CAMERA.orthcam.x, -CAMERA.de*CAMERA.orthcam.y, -CAMERA.de*CAMERA.orthcam.z};
+
+        int step_ray = GLOBAL_PIXEL_STEP; 
+        for (int i = 0; i < WIDTH; i+= step_ray){
+            for (int j = 0; j < HEIGHT; j+= step_ray){
+                ecran_ray[i][j].origine = CAMERA.position_c;
+                ecran_ray[i][j].direction = normalise_vecteur(get_vec_2_pts(CAMERA.position_c,
+                        (vector){CAMERA.A.x + i*CAMERA.vLde.x + j*CAMERA.vlde.x,
+                                CAMERA.A.y + i*CAMERA.vLde.y + j*CAMERA.vlde.y,
+                                CAMERA.A.z + i*CAMERA.vLde.z + j*CAMERA.vlde.z}));
+            }
+        }
+
         // -- INTERFACE --
         if (nk_begin(ctx, "Inspecteur", nk_rect(WIDTH-300, 0, 300, HEIGHT),
             NK_WINDOW_BORDER | NK_WINDOW_TITLE)) {
+
+            // --- CAMERA & LUMIERE ---
+            if (nk_tree_push(ctx, NK_TREE_TAB, "Scene & Camera", NK_MAXIMIZED)) {
+                
+                nk_layout_row_dynamic(ctx, 20, 1);
+                nk_label(ctx, "Position Camera:", NK_TEXT_LEFT);
+                nk_property_float(ctx, "X", -50.0f, &CAMERA.position_c.x, 50.0f, 0.5f, 0.5f);
+                nk_property_float(ctx, "Y", -50.0f, &CAMERA.position_c.y, 50.0f, 0.5f, 0.5f);
+                nk_property_float(ctx, "Z", -50.0f, &CAMERA.position_c.z, 50.0f, 0.5f, 0.5f);
+
+                nk_layout_row_dynamic(ctx, 20, 1);
+                nk_label(ctx, "Angle Camera:", NK_TEXT_LEFT);
+                // Angles en radians pour le calcul, mais on peut afficher degrés si besoin (ici brut)
+                nk_property_float(ctx, "Yaw (Horiz)", -6.28f, &CAM_YAW, 6.28f, 0.1f, 0.1f);
+                nk_property_float(ctx, "Pitch (Vert)", -1.57f, &CAM_PITCH, 1.57f, 0.1f, 0.1f);
+
+                nk_layout_row_dynamic(ctx, 20, 1);
+                nk_label(ctx, "Source Lumiere:", NK_TEXT_LEFT);
+                nk_property_float(ctx, "LX", -100.0f, &LIGHT_POS.x, 100.0f, 1.0f, 1.0f);
+                nk_property_float(ctx, "LY", -100.0f, &LIGHT_POS.y, 100.0f, 1.0f, 1.0f);
+                nk_property_float(ctx, "LZ", -100.0f, &LIGHT_POS.z, 100.0f, 1.0f, 1.0f);
+
+                nk_tree_pop(ctx);
+            }
 
             nk_layout_row_dynamic(ctx, 30, 2); // 2 boutons par ligne
             if (nk_button_symbol_label(ctx, NK_SYMBOL_CIRCLE_SOLID, "Sphère", NK_TEXT_RIGHT)) { // Ajoute une sphère
@@ -396,6 +469,7 @@ int main() {
         GLOBAL_PIXEL_STEP = pixel_step;
         for (int i = 0; i < NB_THREADS; i++){
             args[i].bvh = rootFrame;
+            args[i].light_pos = LIGHT_POS;
         }
 
         // Threads

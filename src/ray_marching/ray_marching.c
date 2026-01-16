@@ -289,12 +289,12 @@ color ray_marching_bvh_moving(ray r, BVHNode* scene, res_SDF (*scene_actuelle)(v
 
 // --- EDITEUR GUI ---
 // Ray Marching pour l'édioteur qui utilise le BVH en permanence
-color ray_marching_editor(ray r, BVHNode* scene_root){
+color ray_marching_editor(ray r, BVHNode* scene_root, vector source_lum){
     if (scene_root == NULL) return c_fond; 
 
     float dist_tot = 0.0;
     vector position_actuelle = r.origine;
-    vector Lumiere = {10, 10, -10}; 
+    vector Lumiere = source_lum;
     res_SDF max_dist_init = {FLT_MAX, c_blanc}; 
 
     for (int i = 0; i < MAX_RAY_STEPS; i++){
@@ -331,11 +331,12 @@ void* thread_editor_bvh(void* ptr_args){
     arg* a = (arg*) ptr_args;
     int step = GLOBAL_PIXEL_STEP; 
     if (step < 1) step = 1;
+    vector lumiere_actuelle = a->light_pos;
 
     // Boucle qui saute des pixels
     for (int i = a->id*WIDTH/NB_THREADS; i < (a->id+1)*WIDTH/NB_THREADS; i += step){
         for (int j = 0; j < HEIGHT; j += step){
-            a->t_out[i][j] = ray_marching_editor(a->t_in[i][j], a->bvh);
+            a->t_out[i][j] = ray_marching_editor(a->t_in[i][j], a->bvh, lumiere_actuelle);
         }
     }
     return NULL;
